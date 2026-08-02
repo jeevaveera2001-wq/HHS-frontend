@@ -1,0 +1,873 @@
+.owner-payout-page {
+  min-height: 100vh;
+  padding: 42px;
+  color: #102235;
+  background:
+    radial-gradient(
+      circle at 5% 5%,
+      rgba(34, 211, 238, 0.18),
+      transparent 28rem
+    ),
+    #f4f8fb;
+}
+
+.owner-payout-header {
+  width: min(1250px, 100%);
+  margin: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.owner-payout-header
+  > div
+  > a {
+  display: block;
+  margin-bottom: 22px;
+  color: #0e7490;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.owner-payout-header
+  > div
+  > span,
+.owner-payout-form-heading span,
+.owner-payout-card-heading
+  > div
+  > span,
+.owner-payout-provider-card
+  > span,
+.owner-payout-history-card
+  > span {
+  color: #0891b2;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.owner-payout-header h1 {
+  margin: 7px 0;
+  color: #071827;
+  font-size:
+    clamp(34px, 5vw, 48px);
+  letter-spacing: -1.4px;
+}
+
+.owner-payout-header p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.owner-payout-header
+  > button {
+  min-height: 46px;
+  padding: 0 19px;
+  border:
+    1px solid #b8dce3;
+  border-radius: 11px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.owner-payout-warning {
+  width: min(1250px, 100%);
+  margin: 25px auto 0;
+  padding: 17px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  border:
+    1px solid #fcd34d;
+  border-radius: 15px;
+  color: #92400e;
+  background: #fffbeb;
+}
+
+.owner-payout-warning
+  > span {
+  font-size: 23px;
+}
+
+.owner-payout-warning p {
+  margin: 5px 0 0;
+  color: #a16207;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.owner-payout-layout {
+  width: min(1250px, 100%);
+  margin: 26px auto 0;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 20px;
+}
+
+.owner-payout-main,
+.owner-payout-sidebar {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.owner-payout-status-card,
+.owner-payout-account-card,
+.owner-payout-form,
+.owner-payout-disable-panel,
+.owner-payout-security-card,
+.owner-payout-provider-card,
+.owner-payout-history-card {
+  border:
+    1px solid #e0eaf0;
+  border-radius: 19px;
+  background: #ffffff;
+  box-shadow:
+    0 13px 33px
+    rgba(15, 35, 50, 0.055);
+}
+
+.owner-payout-status-card {
+  padding: 22px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+  border-left:
+    5px solid #f59e0b;
+}
+
+.owner-payout-status-card.verified {
+  border-left-color: #16a34a;
+}
+
+.owner-payout-status-card.rejected,
+.owner-payout-status-card.disabled {
+  border-left-color: #dc2626;
+}
+
+.owner-payout-status-card.under_review {
+  border-left-color: #2563eb;
+}
+
+.owner-payout-status-icon {
+  width: 49px;
+  height: 49px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #92400e;
+  background: #fef3c7;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.owner-payout-status-card.verified
+  .owner-payout-status-icon {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.owner-payout-status-card.rejected
+  .owner-payout-status-icon,
+.owner-payout-status-card.disabled
+  .owner-payout-status-icon {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.owner-payout-status-card.under_review
+  .owner-payout-status-icon {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.owner-payout-status-card
+  > div:nth-child(2)
+  > span {
+  color: #8292a2;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.owner-payout-status-card h2 {
+  margin: 5px 0;
+  color: #071827;
+  font-size: 20px;
+}
+
+.owner-payout-status-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.owner-payout-enabled {
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #166534;
+  background: #dcfce7;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.owner-payout-account-card,
+.owner-payout-form,
+.owner-payout-disable-panel {
+  padding: 24px;
+}
+
+.owner-payout-card-heading,
+.owner-payout-form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.owner-payout-card-heading h2,
+.owner-payout-form-heading h2,
+.owner-payout-disable-panel h2,
+.owner-payout-security-card h2,
+.owner-payout-provider-card h2,
+.owner-payout-history-card h2 {
+  margin: 6px 0;
+  color: #071827;
+}
+
+.owner-payout-status-badge {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #92400e;
+  background: #fef3c7;
+  font-size: 9px;
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+.owner-payout-status-badge.verified {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.owner-payout-status-badge.rejected,
+.owner-payout-status-badge.disabled {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.owner-payout-status-badge.under_review {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.owner-payout-account-details {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 12px;
+}
+
+.owner-payout-account-details.upi {
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+}
+
+.owner-payout-account-details
+  > div,
+.owner-payout-provider-card
+  > div {
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.owner-payout-account-details span,
+.owner-payout-provider-card
+  > div
+  span {
+  color: #8292a2;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.owner-payout-account-details strong,
+.owner-payout-provider-card
+  > div
+  strong {
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  color: #102235;
+  font-size: 11px;
+}
+
+.owner-payout-rejection,
+.owner-payout-replacement-note {
+  margin-top: 17px;
+  padding: 13px;
+  border-radius: 11px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.owner-payout-rejection p,
+.owner-payout-replacement-note p {
+  margin: 5px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.owner-payout-account-actions {
+  margin-top: 20px;
+  padding-top: 18px;
+  display: flex;
+  gap: 9px;
+  border-top:
+    1px solid #e8eef2;
+}
+
+.owner-payout-account-actions button,
+.owner-payout-form-heading button,
+.owner-payout-disable-panel button {
+  min-height: 40px;
+  padding: 0 14px;
+  border:
+    1px solid #b8dce3;
+  border-radius: 9px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.owner-payout-account-actions
+  button.danger,
+.owner-payout-disable-panel
+  button.danger {
+  border-color: #fecaca;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.owner-payout-form-heading p {
+  max-width: 570px;
+  margin: 4px 0 0;
+  color: #718294;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.owner-payout-methods {
+  margin: 23px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 12px;
+  border: 0;
+}
+
+.owner-payout-methods legend {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
+  color: #53697a;
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.owner-payout-methods label {
+  min-width: 0;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border:
+    1px solid #d8e3ea;
+  border-radius: 13px;
+  background: #f9fbfc;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.owner-payout-methods
+  label.active {
+  border-color: #22d3ee;
+  background: #ecfeff;
+  box-shadow:
+    0 0 0 3px
+    rgba(34, 211, 238, 0.1);
+}
+
+.owner-payout-methods input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.owner-payout-methods
+  label
+  > span {
+  width: 41px;
+  height: 41px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: #cffafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.owner-payout-methods
+  label
+  > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.owner-payout-methods strong {
+  font-size: 11px;
+}
+
+.owner-payout-methods small {
+  margin-top: 3px;
+  color: #718294;
+  font-size: 9px;
+}
+
+.owner-payout-fields {
+  margin-top: 21px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 15px;
+}
+
+.owner-payout-fields.single {
+  grid-template-columns: 1fr;
+}
+
+.owner-payout-fields label,
+.owner-payout-disable-panel label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.owner-payout-fields
+  label.full {
+  grid-column: 1 / -1;
+}
+
+.owner-payout-fields
+  label
+  > span,
+.owner-payout-disable-panel label {
+  color: #53697a;
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.owner-payout-fields input,
+.owner-payout-fields select,
+.owner-payout-disable-panel textarea {
+  width: 100%;
+  min-height: 47px;
+  margin-top: 7px;
+  padding: 0 13px;
+  border:
+    1px solid #d8e3ea;
+  border-radius: 11px;
+  outline: none;
+  color: #102235;
+  background: #f9fbfc;
+  font: inherit;
+  font-size: 12px;
+}
+
+.owner-payout-fields input:focus,
+.owner-payout-fields select:focus,
+.owner-payout-disable-panel
+  textarea:focus {
+  border-color: #0891b2;
+  box-shadow:
+    0 0 0 4px
+    rgba(8, 145, 178, 0.09);
+}
+
+.owner-payout-sensitive-input {
+  position: relative;
+}
+
+.owner-payout-sensitive-input
+  input {
+  padding-right: 63px;
+}
+
+.owner-payout-sensitive-input
+  button {
+  position: absolute;
+  top: 17px;
+  right: 8px;
+  border: 0;
+  color: #0e7490;
+  background: transparent;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.owner-payout-replacement-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.owner-payout-replacement-note p {
+  margin: 0;
+}
+
+.owner-payout-submit {
+  width: 100%;
+  min-height: 49px;
+  margin-top: 21px;
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #06b6d4
+    );
+  box-shadow:
+    0 12px 25px
+    rgba(8, 145, 178, 0.22);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.owner-payout-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.owner-payout-consent {
+  margin-top: 11px;
+  display: block;
+  color: #8292a2;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.owner-payout-disable-panel {
+  border-color: #fecaca;
+  background: #fffafa;
+}
+
+.owner-payout-disable-panel
+  > p {
+  color: #718294;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.owner-payout-disable-panel textarea {
+  min-height: 90px;
+  padding: 12px;
+  resize: vertical;
+  text-transform: none;
+}
+
+.owner-payout-disable-panel
+  > div {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.owner-payout-security-card,
+.owner-payout-provider-card,
+.owner-payout-history-card {
+  padding: 21px;
+}
+
+.owner-payout-security-card
+  > span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #dcfce7;
+  font-size: 20px;
+}
+
+.owner-payout-security-card p {
+  color: #718294;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.owner-payout-security-card ul {
+  margin: 15px 0 0;
+  padding:
+    14px 14px 14px 31px;
+  border-radius: 12px;
+  color: #53697a;
+  background: #f8fafc;
+  font-size: 10px;
+  line-height: 2;
+}
+
+.owner-payout-provider-card
+  > div {
+  margin-top: 9px;
+}
+
+.owner-payout-provider-card
+  > div
+  strong {
+  text-transform: capitalize;
+}
+
+.owner-payout-history-list {
+  margin-top: 17px;
+  display: grid;
+}
+
+.owner-payout-history-list
+  > div {
+  padding: 0 0 18px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr);
+  gap: 11px;
+  position: relative;
+}
+
+.owner-payout-history-list
+  > div:not(:last-child)::before {
+  width: 1px;
+  content: "";
+  position: absolute;
+  top: 13px;
+  bottom: -1px;
+  left: 5px;
+  background: #dbe5eb;
+}
+
+.owner-payout-history-dot {
+  width: 11px;
+  height: 11px;
+  margin-top: 3px;
+  z-index: 1;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow:
+    0 0 0 2px #fde68a;
+}
+
+.owner-payout-history-dot.verified {
+  background: #16a34a;
+  box-shadow:
+    0 0 0 2px #bbf7d0;
+}
+
+.owner-payout-history-dot.rejected,
+.owner-payout-history-dot.disabled {
+  background: #dc2626;
+  box-shadow:
+    0 0 0 2px #fecaca;
+}
+
+.owner-payout-history-dot.under_review {
+  background: #2563eb;
+  box-shadow:
+    0 0 0 2px #bfdbfe;
+}
+
+.owner-payout-history-list strong {
+  color: #102235;
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+.owner-payout-history-list p {
+  margin: 4px 0;
+  color: #64748b;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.owner-payout-history-list small {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.owner-payout-state {
+  min-height: 100vh;
+  padding: 25px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: #102235;
+  background: #f4f8fb;
+  text-align: center;
+}
+
+.owner-payout-state
+  > span {
+  font-size: 51px;
+}
+
+.owner-payout-state p {
+  color: #718294;
+}
+
+.owner-payout-state button {
+  min-height: 42px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0891b2;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.owner-payout-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #cffafe;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation:
+    owner-payout-spin
+    0.75s linear infinite;
+}
+
+@keyframes owner-payout-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 950px) {
+  .owner-payout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .owner-payout-sidebar {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .owner-payout-history-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .owner-payout-page {
+    padding: 27px 15px;
+  }
+
+  .owner-payout-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .owner-payout-header
+    > button {
+    width: 100%;
+  }
+
+  .owner-payout-status-card {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .owner-payout-enabled {
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  .owner-payout-account-details,
+  .owner-payout-account-details.upi,
+  .owner-payout-methods,
+  .owner-payout-fields,
+  .owner-payout-sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .owner-payout-history-card {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .owner-payout-account-card,
+  .owner-payout-form,
+  .owner-payout-disable-panel {
+    padding: 19px 15px;
+  }
+
+  .owner-payout-card-heading,
+  .owner-payout-form-heading {
+    flex-direction: column;
+  }
+
+  .owner-payout-form-heading
+    button,
+  .owner-payout-account-actions,
+  .owner-payout-account-actions
+    button {
+    width: 100%;
+  }
+
+  .owner-payout-account-actions {
+    flex-direction: column;
+  }
+}

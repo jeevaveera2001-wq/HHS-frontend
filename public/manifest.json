@@ -1,0 +1,54 @@
+{
+  "id": "/",
+  "name": "Hogenakkal Home Stays",
+  "short_name": "HHS",
+  "description": "Discover and book trusted homestays, cottages and resorts near Hogenakkal Falls.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f8fb",
+  "theme_color": "#071827",
+  "lang": "en-IN",
+  "categories": [
+    "travel",
+    "booking",
+    "accommodation",
+    "tourism"
+  ],
+  "icons": [
+    {
+      "src": "/pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/pwa/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Hogenakkal Home Stays desktop home page"
+    },
+    {
+      "src": "/pwa/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "label": "Hogenakkal Home Stays mobile home page"
+    }
+  ]
+}

@@ -1,0 +1,1654 @@
+/* =========================================
+   PROPERTY DETAILS PAGE
+========================================= */
+
+.property-details-page {
+  --primary: #0891b2;
+  --primary-dark: #0e7490;
+  --accent: #22d3ee;
+  --navy: #071827;
+  --text: #102235;
+  --muted: #64748b;
+  --border: #dfe9ef;
+
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(
+      circle at 5% 35%,
+      rgba(34, 211, 238, 0.09),
+      transparent 28rem
+    ),
+    #f5f9fc;
+}
+
+/* =========================================
+   LOADING AND ERROR STATES
+========================================= */
+
+.property-details-state {
+  min-height: 100vh;
+  padding: 120px 24px 60px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: #102235;
+  text-align: center;
+  background:
+    radial-gradient(
+      circle at center,
+      #cffafe,
+      transparent 30rem
+    ),
+    #f5f9fc;
+}
+
+.property-details-state > span {
+  font-size: 58px;
+}
+
+.property-details-state h1 {
+  margin: 18px 0 8px;
+  color: #071827;
+  font-size: 35px;
+}
+
+.property-details-state p {
+  max-width: 500px;
+  margin: 0;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.property-details-state a {
+  margin-top: 22px;
+  padding: 13px 23px;
+  border-radius: 12px;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #0e7490,
+    #0891b2
+  );
+  box-shadow:
+    0 12px 25px
+    rgba(8, 145, 178, 0.25);
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.property-details-spinner {
+  width: 52px;
+  height: 52px;
+  border: 4px solid #c9f1f5;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation:
+    property-details-spin
+    0.75s linear infinite;
+}
+
+/* =========================================
+   PROPERTY HERO
+========================================= */
+
+.property-details-hero {
+  height: min(650px, 70vh);
+  min-height: 480px;
+  position: relative;
+  overflow: hidden;
+  background: #0f2635;
+}
+
+.property-details-back {
+  position: absolute;
+  z-index: 5;
+  top: 105px;
+  left: max(
+    24px,
+    calc((100% - 1250px) / 2)
+  );
+  padding: 10px 14px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  color: #ffffff;
+  background:
+    rgba(7, 24, 39, 0.5);
+  backdrop-filter: blur(12px);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.property-details-back:hover {
+  transform: translateY(-2px);
+  background:
+    rgba(8, 145, 178, 0.82);
+}
+
+/* =========================================
+   SAVE PROPERTY BUTTON
+========================================= */
+
+.property-save-button {
+  min-height: 42px;
+  padding: 0 16px;
+  position: absolute;
+  z-index: 5;
+  top: 105px;
+  right: max(
+    24px,
+    calc((100% - 1250px) / 2)
+  );
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #ffffff;
+  background:
+    rgba(7, 24, 39, 0.58);
+  box-shadow:
+    0 10px 28px
+    rgba(7, 24, 39, 0.2);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.property-save-button > span {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.property-save-button:hover:not(
+  :disabled
+) {
+  transform: translateY(-2px);
+  border-color:
+    rgba(255, 255, 255, 0.5);
+  background:
+    rgba(8, 145, 178, 0.88);
+  box-shadow:
+    0 14px 32px
+    rgba(8, 145, 178, 0.3);
+}
+
+.property-save-button.saved {
+  border-color:
+    rgba(254, 202, 202, 0.78);
+  color: #991b1b;
+  background:
+    rgba(254, 226, 226, 0.96);
+  box-shadow:
+    0 12px 28px
+    rgba(190, 24, 93, 0.2);
+}
+
+.property-save-button.saved:hover:not(
+  :disabled
+) {
+  border-color: #fecaca;
+  color: #7f1d1d;
+  background: #ffffff;
+}
+
+.property-save-button:focus-visible {
+  outline:
+    3px solid
+    rgba(34, 211, 238, 0.55);
+  outline-offset: 3px;
+}
+
+.property-save-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.property-details-hero > img,
+.property-details-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.property-details-hero > img {
+  display: block;
+  object-fit: cover;
+  animation:
+    property-hero-zoom
+    1.2s ease;
+}
+
+.property-details-placeholder {
+  display: grid;
+  place-items: center;
+  color:
+    rgba(255, 255, 255, 0.92);
+  background:
+    radial-gradient(
+      circle at 25% 20%,
+      rgba(255, 255, 255, 0.2),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #075985,
+      #22d3ee
+    );
+  font-size: 72px;
+  font-weight: 900;
+  letter-spacing: 6px;
+}
+
+.property-details-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(4, 15, 25, 0.18),
+    rgba(4, 15, 25, 0.25) 40%,
+    rgba(4, 15, 25, 0.88)
+  );
+}
+
+.property-details-title {
+  width: min(
+    1250px,
+    calc(100% - 48px)
+  );
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 65px;
+  transform: translateX(-50%);
+  color: #ffffff;
+}
+
+.property-details-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.property-details-badges span {
+  padding: 8px 14px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background:
+    rgba(7, 24, 39, 0.62);
+  backdrop-filter: blur(14px);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.property-details-badges
+  .featured {
+  border-color:
+    rgba(251, 191, 36, 0.32);
+  color: #422b00;
+  background:
+    linear-gradient(
+      135deg,
+      #fde68a,
+      #fbbf24
+    );
+}
+
+.property-details-title h1 {
+  max-width: 900px;
+  margin: 17px 0 11px;
+  font-size:
+    clamp(38px, 6vw, 68px);
+  font-weight: 850;
+  letter-spacing: -2.4px;
+  line-height: 1.05;
+}
+
+.property-details-title p {
+  margin: 0;
+  color: #d9f3f6;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.property-details-container {
+  width: min(
+    1250px,
+    calc(100% - 42px)
+  );
+  margin: -32px auto 0;
+  padding-bottom: 90px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.7fr)
+    minmax(330px, 0.8fr);
+  align-items: start;
+  gap: 30px;
+  position: relative;
+  z-index: 4;
+}
+
+/* =========================================
+   PROPERTY INFORMATION
+========================================= */
+
+.property-information {
+  min-width: 0;
+  display: grid;
+  gap: 22px;
+}
+
+.property-summary {
+  padding: 20px;
+  display: grid;
+  grid-template-columns:
+    repeat(6, 1fr);
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.75);
+  border-radius: 21px;
+  background:
+    rgba(255, 255, 255, 0.93);
+  box-shadow:
+    0 20px 50px
+      rgba(15, 35, 50, 0.1),
+    inset 0 1px
+      rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+}
+
+.property-summary > div {
+  min-width: 0;
+  padding: 8px 13px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  border-right:
+    1px solid #e6eef2;
+  text-align: center;
+}
+
+.property-summary > div:last-child {
+  border-right: 0;
+}
+
+.property-summary span {
+  color: #718294;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.property-summary strong {
+  color: #071827;
+  font-size: 18px;
+}
+
+/* =========================================
+   CONTENT CARDS
+========================================= */
+
+.property-details-card {
+  padding: 30px;
+  border:
+    1px solid #dfe9ef;
+  border-radius: 21px;
+  background:
+    rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 12px 35px
+    rgba(15, 35, 50, 0.05);
+}
+
+.property-details-card h2 {
+  margin: 0 0 18px;
+  color: #071827;
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+
+.property-details-card > p {
+  margin: 0;
+  color: #586d7d;
+  line-height: 1.85;
+}
+
+.property-owner-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border:
+    1px solid #dcebef;
+  border-radius: 14px;
+  background: #f6fbfc;
+}
+
+.property-owner-avatar {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #22d3ee
+    );
+  box-shadow:
+    0 9px 20px
+    rgba(8, 145, 178, 0.2);
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.property-owner-card
+  > div:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.property-owner-card strong {
+  color: #071827;
+  font-size: 15px;
+}
+
+.property-owner-card span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================================
+   AMENITIES
+========================================= */
+
+.property-amenities {
+  display: grid;
+  grid-template-columns:
+    repeat(3, 1fr);
+  gap: 11px;
+}
+
+.property-amenities span {
+  min-height: 47px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border:
+    1px solid #dcebef;
+  border-radius: 12px;
+  color: #345164;
+  background: #f6fbfc;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* =========================================
+   PROPERTY RULES
+========================================= */
+
+.property-rules {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+
+.property-rules li {
+  padding:
+    12px 14px
+    12px 41px;
+  position: relative;
+  border-radius: 11px;
+  color: #53697a;
+  background: #f8fafc;
+  line-height: 1.6;
+}
+
+.property-rules li::before {
+  content: "•";
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 13px;
+  left: 11px;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #0891b2;
+  font-size: 15px;
+}
+
+.property-times {
+  margin-top: 20px;
+  padding-top: 18px;
+  display: flex;
+  gap: 30px;
+  border-top:
+    1px solid #e6eef2;
+}
+
+.property-times span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #718294;
+  font-size: 12px;
+}
+
+.property-times strong {
+  color: #071827;
+  font-size: 15px;
+}
+
+/* =========================================
+   GALLERY
+========================================= */
+
+.property-gallery {
+  display: grid;
+  grid-template-columns:
+    repeat(2, 1fr);
+  gap: 13px;
+}
+
+.property-gallery img {
+  width: 100%;
+  height: 220px;
+  display: block;
+  border-radius: 14px;
+  object-fit: cover;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.property-gallery img:hover {
+  transform: scale(1.02);
+  box-shadow:
+    0 15px 35px
+    rgba(15, 35, 50, 0.18);
+}
+
+/* =========================================
+   BOOKING CARD
+========================================= */
+
+.booking-card {
+  max-height:
+    calc(100vh - 30px);
+  padding: 27px;
+  position: sticky;
+  top: 15px;
+  overflow-y: auto;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.85);
+  border-radius: 23px;
+  background:
+    rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 25px 65px
+      rgba(7, 24, 39, 0.16),
+    inset 0 1px
+      rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  scrollbar-width: thin;
+  scrollbar-color:
+    #9edce6 transparent;
+}
+
+.booking-price {
+  padding-bottom: 21px;
+  display: flex;
+  align-items: flex-start;
+  justify-content:
+    space-between;
+  gap: 15px;
+  border-bottom:
+    1px solid #e6eef2;
+}
+
+.booking-price > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-price del {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.booking-price strong {
+  color: #0e7490;
+  font-size: 27px;
+  line-height: 1.25;
+}
+
+.booking-price
+  > div
+  > span {
+  color: #718294;
+  font-size: 11px;
+}
+
+.booking-price > span {
+  padding: 7px 10px;
+  border-radius: 9px;
+  color: #614500;
+  background: #fff8dc;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.booking-card form {
+  margin-top: 21px;
+  display: grid;
+  gap: 15px;
+}
+
+/* =========================================
+   BOOKING FIELDS
+========================================= */
+
+.booking-date-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, 1fr);
+  gap: 11px;
+}
+
+.booking-field {
+  min-width: 0;
+}
+
+.booking-field label {
+  display: block;
+  margin: 0 0 7px 2px;
+  color: #40576a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.booking-field input,
+.booking-field textarea {
+  width: 100%;
+  padding: 0 13px;
+  border:
+    1px solid #d8e3e9;
+  border-radius: 11px;
+  outline: none;
+  color: #102235;
+  background: #f9fbfc;
+  font: inherit;
+  font-size: 13px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.booking-field input {
+  height: 48px;
+}
+
+.booking-field textarea {
+  padding-top: 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.booking-field input:hover,
+.booking-field textarea:hover {
+  border-color: #afdce3;
+  background: #ffffff;
+}
+
+.booking-field input:focus,
+.booking-field textarea:focus {
+  border-color: #0891b2;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px
+    rgba(8, 145, 178, 0.1);
+}
+
+/* =========================================
+   AVAILABILITY
+========================================= */
+
+.availability-button {
+  min-height: 45px;
+  border:
+    1px solid #a6dae2;
+  border-radius: 11px;
+  color: #0e7490;
+  background: #ecfeff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  transition: 0.2s ease;
+}
+
+.availability-button:hover:not(
+  :disabled
+) {
+  color: #ffffff;
+  border-color: #0891b2;
+  background: #0891b2;
+}
+
+.availability-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.availability-result {
+  padding: 11px 13px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.availability-result.available {
+  border:
+    1px solid #bbf7d0;
+  color: #166534;
+  background: #f0fdf4;
+}
+
+.availability-result.unavailable {
+  border:
+    1px solid #fecaca;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+/* =========================================
+   PRICE SUMMARY
+========================================= */
+
+.booking-price-summary {
+  padding: 15px;
+  display: grid;
+  gap: 10px;
+  border:
+    1px solid #dfe9ef;
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.booking-price-summary > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content:
+    space-between;
+  gap: 15px;
+}
+
+.booking-price-summary span {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.booking-price-summary strong {
+  flex-shrink: 0;
+  color: #334155;
+  font-size: 12px;
+}
+
+.booking-price-summary
+  .booking-total {
+  padding-top: 11px;
+  border-top:
+    1px solid #dce5eb;
+}
+
+.booking-price-summary
+  .booking-total span,
+.booking-price-summary
+  .booking-total strong {
+  color: #071827;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+/* =========================================
+   BOOKING BUTTON
+========================================= */
+
+.booking-submit-button {
+  min-height: 51px;
+  border: 0;
+  border-radius: 13px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #06b6d4
+    );
+  box-shadow:
+    0 12px 26px
+    rgba(8, 145, 178, 0.26);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.booking-submit-button:hover:not(
+  :disabled
+) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px
+    rgba(8, 145, 178, 0.34);
+}
+
+.booking-submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.booking-note {
+  color: #8292a2;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   VERIFIED GUEST REVIEWS
+========================================= */
+
+.property-reviews-card {
+  display: grid;
+  gap: 24px;
+}
+
+.property-reviews-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content:
+    space-between;
+  gap: 25px;
+}
+
+.property-reviews-header h2 {
+  margin: 6px 0 8px;
+}
+
+.property-reviews-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.property-reviews-eyebrow {
+  color: #0891b2;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.property-review-overview {
+  min-width: 126px;
+  padding: 14px 16px;
+  display: grid;
+  justify-items: center;
+  border:
+    1px solid #dcebef;
+  border-radius: 15px;
+  background: #f6fbfc;
+}
+
+.property-review-overview
+  > strong {
+  color: #071827;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.property-review-overview
+  > span {
+  margin-top: 5px;
+  color: #f59e0b;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.property-review-overview
+  > small {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 9px;
+}
+
+.property-review-eligibility {
+  min-height: 66px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content:
+    space-between;
+  gap: 18px;
+  border:
+    1px solid #bae6fd;
+  border-radius: 13px;
+  color: #075985;
+  background: #f0f9ff;
+  font-size: 12px;
+}
+
+.property-review-eligibility
+  > div {
+  display: grid;
+  gap: 4px;
+}
+
+.property-review-eligibility
+  strong {
+  color: #071827;
+  font-size: 13px;
+}
+
+.property-review-eligibility
+  span {
+  color: #587083;
+}
+
+.property-review-eligibility
+  a {
+  padding: 10px 14px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  color: #ffffff;
+  background: #0891b2;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.property-review-eligibility.muted {
+  border-color: #e2e8f0;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.property-review-form {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  border:
+    1px solid #b8e5eb;
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(34, 211, 238, 0.12),
+      transparent 18rem
+    ),
+    #f8fdfe;
+}
+
+.property-review-form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content:
+    space-between;
+  gap: 16px;
+}
+
+.property-review-form-heading
+  > div {
+  display: grid;
+  gap: 4px;
+}
+
+.property-review-form-heading
+  strong {
+  color: #071827;
+  font-size: 16px;
+}
+
+.property-review-form-heading
+  span {
+  color: #15803d;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.property-review-form-heading
+  small {
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #92400e;
+  background: #fef3c7;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.property-review-stars {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.property-review-stars legend,
+.property-review-field > span {
+  margin-bottom: 7px;
+  display: block;
+  color: #40576a;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.property-review-stars > div {
+  display: flex;
+  gap: 5px;
+}
+
+.property-review-stars button {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border:
+    1px solid #dce5eb;
+  border-radius: 9px;
+  color: #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 20px;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.property-review-stars
+  button:hover,
+.property-review-stars
+  button.active {
+  transform: translateY(-2px);
+  border-color: #fbbf24;
+  color: #f59e0b;
+  background: #fffbeb;
+}
+
+.property-review-field input,
+.property-review-field textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border:
+    1px solid #d8e3e9;
+  border-radius: 11px;
+  outline: none;
+  color: #102235;
+  background: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.property-review-field textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.property-review-field
+  input:focus,
+.property-review-field
+  textarea:focus {
+  border-color: #0891b2;
+  box-shadow:
+    0 0 0 4px
+    rgba(8, 145, 178, 0.1);
+}
+
+.property-review-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.property-review-form-actions
+  button {
+  min-height: 42px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #0891b2
+    );
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.property-review-form-actions
+  button.delete {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.property-review-form-actions
+  button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.property-review-toolbar {
+  padding-top: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content:
+    space-between;
+  gap: 20px;
+  border-top:
+    1px solid #e6eef2;
+}
+
+.property-review-toolbar
+  > strong {
+  color: #071827;
+  font-size: 14px;
+}
+
+.property-review-toolbar
+  label {
+  display: grid;
+  gap: 5px;
+}
+
+.property-review-toolbar
+  label
+  > span {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.property-review-toolbar
+  select {
+  height: 40px;
+  padding:
+    0 32px 0 11px;
+  border:
+    1px solid #d8e3e9;
+  border-radius: 9px;
+  outline: none;
+  color: #40576a;
+  background: #ffffff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.property-review-list {
+  display: grid;
+  gap: 14px;
+}
+
+.property-review-item {
+  padding: 20px;
+  border:
+    1px solid #e1e9ee;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 24px
+    rgba(15, 35, 50, 0.04);
+}
+
+.property-review-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content:
+    space-between;
+  gap: 20px;
+}
+
+.property-review-person {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.property-review-avatar {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  flex: 0 0 43px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #22d3ee
+    );
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.property-review-person
+  > div:last-child,
+.property-review-rating {
+  display: grid;
+  gap: 4px;
+}
+
+.property-review-person
+  strong {
+  color: #071827;
+  font-size: 13px;
+}
+
+.property-review-person
+  span {
+  color: #15803d;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.property-review-rating {
+  justify-items: end;
+}
+
+.property-review-rating strong {
+  color: #f59e0b;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.property-review-rating span {
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.property-review-item > h3 {
+  margin: 16px 0 7px;
+  color: #071827;
+  font-size: 15px;
+}
+
+.property-review-item > p {
+  margin: 12px 0 0;
+  color: #53697a;
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.property-review-reply {
+  margin-top: 16px;
+  padding: 14px;
+  border-left:
+    3px solid #0891b2;
+  border-radius:
+    0 11px 11px 0;
+  background: #f0f9fa;
+}
+
+.property-review-reply strong {
+  color: #0e7490;
+  font-size: 11px;
+}
+
+.property-review-reply p {
+  margin: 6px 0;
+  color: #53697a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.property-review-reply span {
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.property-reviews-state {
+  min-height: 190px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.property-reviews-state > span {
+  color: #f59e0b;
+  font-size: 42px;
+}
+
+.property-reviews-state h3 {
+  margin: 8px 0 0;
+  color: #071827;
+}
+
+.property-reviews-state p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.property-reviews-state button {
+  margin-top: 12px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #0891b2;
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.property-reviews-state.error
+  > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #991b1b;
+  background: #fee2e2;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.property-review-spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid #cffafe;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation:
+    property-details-spin
+    0.75s linear infinite;
+}
+
+.property-review-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.property-review-pagination
+  button {
+  min-height: 38px;
+  padding: 0 14px;
+  border:
+    1px solid #b8dce3;
+  border-radius: 9px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.property-review-pagination
+  button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.property-review-pagination span {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes property-details-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes property-hero-zoom {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1050px) {
+  .property-details-container {
+    grid-template-columns:
+      minmax(0, 1.4fr)
+      minmax(310px, 0.8fr);
+    gap: 20px;
+  }
+
+  .property-summary {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .property-summary > div {
+    border-right: 0;
+  }
+
+  .property-amenities {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .property-details-hero {
+    height: 520px;
+  }
+
+  .property-details-container {
+    width:
+      min(
+        calc(100% - 26px),
+        1250px
+      );
+    grid-template-columns: 1fr;
+  }
+
+  .booking-card {
+    max-height: none;
+    position: static;
+    overflow: visible;
+  }
+
+  .property-reviews-header {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 600px) {
+  .property-details-hero {
+    min-height: 440px;
+  }
+
+  .property-details-title {
+    width:
+      calc(100% - 28px);
+    bottom: 45px;
+  }
+
+  .property-details-back {
+    top: 92px;
+    left: 14px;
+  }
+
+  .property-save-button {
+    top: 92px;
+    right: 14px;
+    min-height: 40px;
+    padding: 0 13px;
+    font-size: 11px;
+  }
+
+  .property-details-title h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .property-summary {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .property-details-card {
+    padding: 23px 18px;
+  }
+
+  .property-amenities,
+  .property-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .property-gallery img {
+    height: 210px;
+  }
+
+  .property-times {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .booking-card {
+    padding: 22px 17px;
+  }
+
+  .property-reviews-header,
+  .property-review-toolbar,
+  .property-review-item-top,
+  .property-review-form-heading,
+  .property-review-eligibility {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .property-review-overview {
+    width: 100%;
+  }
+
+  .property-review-eligibility
+    a {
+    width: 100%;
+    text-align: center;
+  }
+
+  .property-review-toolbar
+    label,
+  .property-review-toolbar
+    select {
+    width: 100%;
+  }
+
+  .property-review-rating {
+    justify-items: start;
+  }
+
+  .property-review-form-actions,
+  .property-review-form-actions
+    button {
+    width: 100%;
+  }
+
+  .property-review-pagination {
+    justify-content:
+      space-between;
+  }
+}
+
+@media (max-width: 410px) {
+  .property-details-container {
+    width:
+      calc(100% - 18px);
+  }
+
+  .property-summary {
+    padding: 13px;
+  }
+
+  .booking-date-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .property-details-title p {
+    font-size: 13px;
+  }
+
+  .property-save-button {
+    gap: 6px;
+    padding: 0 11px;
+  }
+
+  .property-save-button > span {
+    font-size: 19px;
+  }
+}

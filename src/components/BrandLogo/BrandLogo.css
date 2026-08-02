@@ -1,0 +1,174 @@
+/* =========================================
+   HHS BRAND LOGO
+========================================= */
+
+.hhs-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.hhs-brand-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  background: transparent;
+  object-fit: contain;
+  filter:
+    drop-shadow(
+      0 5px 10px
+      rgba(7, 24, 39, 0.14)
+    );
+  user-select: none;
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.hhs-brand-logo:hover img {
+  transform:
+    translateY(-2px)
+    scale(1.03);
+  filter:
+    drop-shadow(
+      0 8px 15px
+      rgba(7, 24, 39, 0.2)
+    );
+}
+
+.hhs-brand-logo:focus-visible {
+  border-radius: 12px;
+  outline:
+    3px solid
+    rgba(34, 211, 238, 0.55);
+  outline-offset: 3px;
+}
+
+/* =========================================
+   NAVBAR LOGO
+========================================= */
+
+.hhs-brand-logo--navbar {
+  width: 72px;
+  height: 72px;
+}
+
+/* =========================================
+   SIDEBAR LOGO
+========================================= */
+
+.hhs-brand-logo--sidebar {
+  width: 68px;
+  height: 68px;
+}
+
+/* =========================================
+   FOOTER LOGO
+========================================= */
+
+.hhs-brand-logo--footer {
+  width: 105px;
+  height: 105px;
+}
+
+/* =========================================
+   LOGIN AND REGISTER LOGO
+========================================= */
+
+.hhs-brand-logo--auth {
+  width: 150px;
+  height: 150px;
+}
+
+/* =========================================
+   DASHBOARD LOGO
+========================================= */
+
+.hhs-brand-logo--dashboard {
+  width: 82px;
+  height: 82px;
+}
+
+/* =========================================
+   IMAGE PLACEHOLDER LOGO
+========================================= */
+
+.hhs-brand-logo--placeholder {
+  width: 125px;
+  height: 125px;
+  pointer-events: none;
+}
+
+/* =========================================
+   DEFAULT LOGO
+========================================= */
+
+.hhs-brand-logo--default {
+  width: 80px;
+  height: 80px;
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+  .hhs-brand-logo--navbar {
+    width: 58px;
+    height: 58px;
+  }
+
+  .hhs-brand-logo--sidebar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .hhs-brand-logo--footer {
+    width: 88px;
+    height: 88px;
+  }
+
+  .hhs-brand-logo--auth {
+    width: 125px;
+    height: 125px;
+  }
+
+  .hhs-brand-logo--dashboard {
+    width: 72px;
+    height: 72px;
+  }
+
+  .hhs-brand-logo--placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .hhs-brand-logo--default {
+    width: 68px;
+    height: 68px;
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .hhs-brand-logo img {
+    transition: none;
+  }
+
+  .hhs-brand-logo:hover img {
+    transform: none;
+  }
+}

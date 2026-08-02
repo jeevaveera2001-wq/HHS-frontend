@@ -1,0 +1,912 @@
+.payout-management-page {
+  min-height: 100vh;
+  padding: 42px;
+  color: #102235;
+  background:
+    radial-gradient(
+      circle at 5% 5%,
+      rgba(34, 211, 238, 0.18),
+      transparent 30rem
+    ),
+    #f4f8fb;
+}
+
+.payout-management-header {
+  width: min(1450px, 100%);
+  margin: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.payout-management-back {
+  display: block;
+  margin-bottom: 22px;
+  color: #0e7490;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.payout-management-header div > span {
+  color: #0891b2;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.payout-management-header h1 {
+  margin: 7px 0;
+  color: #071827;
+  font-size: clamp(34px, 5vw, 48px);
+  letter-spacing: -1.4px;
+}
+
+.payout-management-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.payout-management-header > button {
+  min-height: 47px;
+  padding: 0 19px;
+  border: 1px solid #b8dce3;
+  border-radius: 11px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.payout-management-header > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.payout-management-summary {
+  width: min(1450px, 100%);
+  margin: 30px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.payout-management-summary article {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0eaf0;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow:
+    0 10px 28px
+    rgba(15, 35, 50, 0.05);
+}
+
+.payout-management-summary article::before {
+  width: 34px;
+  height: 4px;
+  margin-bottom: 14px;
+  border-radius: 999px;
+  background: #0891b2;
+  content: "";
+}
+
+.payout-management-summary article.pending::before {
+  background: #f59e0b;
+}
+
+.payout-management-summary article.review::before {
+  background: #3b82f6;
+}
+
+.payout-management-summary article.verified::before {
+  background: #22c55e;
+}
+
+.payout-management-summary span,
+.payout-management-summary small {
+  color: #718294;
+  font-size: 10px;
+}
+
+.payout-management-summary span {
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.payout-management-summary strong {
+  margin: 5px 0;
+  color: #071827;
+  font-size: 29px;
+}
+
+.payout-management-panel {
+  width: min(1450px, 100%);
+  margin: 19px auto 0;
+  overflow: hidden;
+  border: 1px solid #e0eaf0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow:
+    0 14px 38px
+    rgba(15, 35, 50, 0.06);
+}
+
+.payout-management-filters {
+  padding: 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1fr)
+    210px
+    210px
+    auto;
+  align-items: end;
+  gap: 14px;
+  border-bottom: 1px solid #e8eef2;
+}
+
+.payout-management-filters label,
+.payout-action-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.payout-management-filters label > span,
+.payout-action-form label > span {
+  color: #53697a;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.payout-management-filters input,
+.payout-management-filters select,
+.payout-action-form input,
+.payout-action-form textarea {
+  width: 100%;
+  border: 1px solid #d8e3ea;
+  border-radius: 11px;
+  outline: none;
+  color: #102235;
+  background: #f9fbfc;
+  font: inherit;
+  font-size: 12px;
+}
+
+.payout-management-filters input,
+.payout-management-filters select,
+.payout-action-form input {
+  height: 47px;
+  padding: 0 13px;
+}
+
+.payout-action-form textarea {
+  min-height: 90px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.payout-management-filters input:focus,
+.payout-management-filters select:focus,
+.payout-action-form input:focus,
+.payout-action-form textarea:focus {
+  border-color: #0891b2;
+  box-shadow:
+    0 0 0 4px
+    rgba(8, 145, 178, 0.1);
+}
+
+.payout-filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.payout-filter-actions button,
+.payout-management-state button,
+.payout-management-pagination button {
+  min-height: 43px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #06b6d4
+    );
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.payout-filter-actions button.clear {
+  border: 1px solid #d8e3ea;
+  color: #53697a;
+  background: #ffffff;
+}
+
+.payout-account-grid {
+  padding: 20px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 17px;
+  background: #f8fafc;
+}
+
+.managed-payout-account {
+  padding: 20px;
+  border: 1px solid #e0eaf0;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 23px
+    rgba(15, 35, 50, 0.04);
+}
+
+.managed-payout-top {
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+}
+
+.managed-owner-avatar {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #22d3ee
+    );
+  font-weight: 900;
+}
+
+.managed-payout-top > div:nth-child(2) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.managed-payout-top strong {
+  overflow: hidden;
+  color: #071827;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.managed-payout-top > div:nth-child(2) span {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #8292a2;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.managed-payout-status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 9px;
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+.managed-payout-status.pending {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.managed-payout-status.under_review {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.managed-payout-status.verified {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.managed-payout-status.rejected,
+.managed-payout-status.disabled {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.managed-payout-details {
+  margin-top: 17px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 13px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.managed-payout-details > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.managed-payout-details span {
+  color: #8292a2;
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.managed-payout-details strong {
+  margin-top: 4px;
+  overflow: hidden;
+  color: #334155;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.managed-payout-footer {
+  margin-top: 16px;
+  padding-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #edf1f4;
+}
+
+.managed-payout-footer > span {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.managed-payout-footer button {
+  min-height: 37px;
+  padding: 0 12px;
+  border: 1px solid #b8dce3;
+  border-radius: 9px;
+  color: #0e7490;
+  background: #ecfeff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.payout-management-state {
+  min-height: 360px;
+  padding: 30px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.payout-management-state > span {
+  font-size: 48px;
+}
+
+.payout-management-state.error > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #991b1b;
+  background: #fee2e2;
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.payout-management-state h2 {
+  margin-bottom: 0;
+}
+
+.payout-management-state p {
+  max-width: 500px;
+  color: #718294;
+}
+
+.payout-management-spinner {
+  width: 46px;
+  height: 46px;
+  border: 4px solid #cffafe;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation:
+    payout-management-spin
+    0.75s linear infinite;
+}
+
+.payout-management-pagination {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+  border-top: 1px solid #edf1f4;
+}
+
+.payout-management-pagination span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.payout-management-pagination button {
+  min-height: 39px;
+  border: 1px solid #cde2e7;
+  color: #0e7490;
+  background: #ffffff;
+}
+
+.payout-management-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.payout-account-modal-backdrop {
+  padding: 25px;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  overflow-y: auto;
+  display: grid;
+  place-items: center;
+  background:
+    rgba(7, 24, 39, 0.68);
+  backdrop-filter: blur(8px);
+}
+
+.payout-account-modal {
+  width: min(860px, 100%);
+  max-height:
+    calc(100vh - 50px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.25);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow:
+    0 30px 90px
+    rgba(0, 0, 0, 0.3);
+}
+
+.payout-account-modal > header {
+  padding: 21px 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 5% 0,
+      rgba(34, 211, 238, 0.24),
+      transparent 18rem
+    ),
+    #071827;
+}
+
+.payout-account-modal > header span {
+  color: #67e8f9;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.payout-account-modal > header h2 {
+  margin: 5px 0 0;
+  font-size: 22px;
+}
+
+.payout-modal-close {
+  width: 40px;
+  height: 40px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #ffffff;
+  background:
+    rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.payout-modal-body {
+  padding: 22px;
+  overflow-y: auto;
+}
+
+.payout-modal-loading {
+  min-height: 350px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+
+.payout-modal-loading p {
+  color: #718294;
+}
+
+.payout-modal-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.payout-modal-status-row > span:last-child {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.payout-modal-section {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #e5edf2;
+  border-radius: 15px;
+  background: #fbfdfe;
+}
+
+.payout-modal-section h3 {
+  margin: 0 0 14px;
+  color: #071827;
+  font-size: 14px;
+}
+
+.payout-modal-information {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 15px;
+}
+
+.payout-modal-information > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.payout-modal-information span {
+  color: #8292a2;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.payout-modal-information strong {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.payout-rejection-message {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.payout-rejection-message strong {
+  font-size: 11px;
+}
+
+.payout-rejection-message p {
+  margin: 5px 0 0;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.payout-history-empty {
+  color: #718294;
+  font-size: 11px;
+}
+
+.payout-history-list {
+  display: grid;
+  gap: 0;
+}
+
+.payout-history-list article {
+  padding: 0 0 17px 22px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.payout-history-list article:not(:last-child)::before {
+  width: 2px;
+  position: absolute;
+  top: 11px;
+  bottom: -1px;
+  left: 5px;
+  background: #dce7ed;
+  content: "";
+}
+
+.history-marker {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 2px;
+  left: 0;
+  z-index: 1;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #94a3b8;
+  box-shadow:
+    0 0 0 1px #cbd5e1;
+}
+
+.history-marker.pending {
+  background: #f59e0b;
+}
+
+.history-marker.under_review {
+  background: #3b82f6;
+}
+
+.history-marker.verified {
+  background: #22c55e;
+}
+
+.history-marker.rejected,
+.history-marker.disabled {
+  background: #ef4444;
+}
+
+.payout-history-list strong {
+  color: #334155;
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+.payout-history-list p {
+  margin: 4px 0;
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.payout-history-list small {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.payout-modal-actions {
+  margin-top: 19px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.payout-modal-actions button,
+.payout-action-buttons button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.payout-modal-actions button.review,
+.payout-action-buttons button.review {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.payout-modal-actions button.approve,
+.payout-action-buttons button.approve {
+  color: #ffffff;
+  background: #16a34a;
+}
+
+.payout-modal-actions button.reject,
+.payout-modal-actions button.disable,
+.payout-action-buttons button.reject,
+.payout-action-buttons button.disable {
+  color: #ffffff;
+  background: #dc2626;
+}
+
+.payout-action-form {
+  margin-top: 19px;
+  padding: 17px;
+  display: grid;
+  gap: 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  background: #eff6ff;
+}
+
+.payout-action-form.approve {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.payout-action-form.reject,
+.payout-action-form.disable {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.payout-action-form > div:first-child strong {
+  color: #071827;
+  font-size: 13px;
+}
+
+.payout-action-form > div:first-child p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.payout-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.payout-action-buttons button.cancel {
+  border: 1px solid #d8e3ea;
+  color: #53697a;
+  background: #ffffff;
+}
+
+.payout-action-buttons button:disabled,
+.payout-modal-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@keyframes payout-management-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1050px) {
+  .payout-management-filters {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 900px) {
+  .payout-management-page {
+    padding: 28px 16px;
+  }
+
+  .payout-management-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .payout-management-header > button {
+    width: 100%;
+  }
+
+  .payout-management-summary {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .payout-account-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .payout-management-page {
+    padding: 22px 12px;
+  }
+
+  .payout-management-summary,
+  .payout-management-filters,
+  .payout-modal-information {
+    grid-template-columns: 1fr;
+  }
+
+  .payout-filter-actions,
+  .payout-filter-actions button {
+    width: 100%;
+  }
+
+  .payout-filter-actions button {
+    flex: 1;
+  }
+
+  .managed-payout-top {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+  .managed-payout-status {
+    grid-column: 1 / -1;
+  }
+
+  .managed-payout-details {
+    grid-template-columns: 1fr;
+  }
+
+  .managed-payout-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .managed-payout-footer button {
+    width: 100%;
+  }
+
+  .payout-account-modal-backdrop {
+    padding: 0;
+    place-items: stretch;
+  }
+
+  .payout-account-modal {
+    width: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+
+  .payout-modal-actions,
+  .payout-modal-actions button,
+  .payout-action-buttons,
+  .payout-action-buttons button {
+    width: 100%;
+  }
+
+  .payout-action-buttons {
+    flex-direction: column-reverse;
+  }
+}

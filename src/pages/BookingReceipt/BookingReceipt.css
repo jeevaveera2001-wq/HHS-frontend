@@ -1,0 +1,645 @@
+/* =========================================
+   BOOKING RECEIPT PAGE
+========================================= */
+
+.booking-receipt-page {
+  min-height: 100vh;
+  padding: 120px 22px 70px;
+  color: #102235;
+  background:
+    radial-gradient(
+      circle at 5% 5%,
+      #cffafe,
+      transparent 30rem
+    ),
+    #f4f8fb;
+}
+
+/* =========================================
+   RECEIPT ACTIONS
+========================================= */
+
+.booking-receipt-actions {
+  width: min(900px, 100%);
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.booking-receipt-actions a {
+  color: #0e7490;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.booking-receipt-actions a:hover {
+  text-decoration: underline;
+}
+
+.booking-receipt-actions button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #0e7490,
+    #06b6d4
+  );
+  box-shadow: 0 10px 24px
+    rgba(8, 145, 178, 0.2);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.booking-receipt-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px
+    rgba(8, 145, 178, 0.3);
+}
+
+/* =========================================
+   RECEIPT DOCUMENT
+========================================= */
+
+.booking-receipt-document {
+  width: min(900px, 100%);
+  margin: auto;
+  padding: 42px;
+  overflow: hidden;
+  border: 1px solid #dce8ed;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 20px 55px
+    rgba(15, 35, 50, 0.1);
+}
+
+/* =========================================
+   RECEIPT HEADER
+========================================= */
+
+.receipt-header {
+  padding-bottom: 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  border-bottom: 2px solid #d8eef2;
+}
+
+.receipt-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.receipt-logo {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 16px;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #075985,
+    #22d3ee
+  );
+  box-shadow: 0 10px 22px
+    rgba(8, 145, 178, 0.2);
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.receipt-brand h1 {
+  margin: 0;
+  color: #071827;
+  font-size: 25px;
+}
+
+.receipt-brand p {
+  margin: 5px 0 0;
+  color: #718294;
+  font-size: 12px;
+}
+
+.receipt-reference {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  text-align: right;
+}
+
+.receipt-reference span {
+  color: #8292a2;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.receipt-reference strong {
+  margin-top: 4px;
+  color: #0891b2;
+  font-size: 16px;
+}
+
+.receipt-reference small {
+  margin-top: 5px;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+/* =========================================
+   STATUS ROW
+========================================= */
+
+.receipt-status-row {
+  padding: 18px 0;
+  display: flex;
+  gap: 35px;
+  border-bottom: 1px solid #e7eef2;
+}
+
+.receipt-status-row > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.receipt-status-row span {
+  color: #718294;
+  font-size: 10px;
+}
+
+.receipt-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #92400e;
+  background: #fef3c7;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.receipt-status.pending {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.receipt-status.paid,
+.receipt-status.completed {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.receipt-status.confirmed,
+.receipt-status.checked_in {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.receipt-status.failed,
+.receipt-status.cancelled,
+.receipt-status.no_show {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.receipt-status.refund_pending,
+.receipt-status.partially_refunded,
+.receipt-status.refunded {
+  color: #6b21a8;
+  background: #f3e8ff;
+}
+
+/* =========================================
+   RECEIPT SECTIONS
+========================================= */
+
+.receipt-section {
+  padding: 25px 0;
+  border-bottom: 1px solid #e7eef2;
+}
+
+.receipt-section h2 {
+  margin: 0 0 16px;
+  color: #071827;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* =========================================
+   PROPERTY DETAILS
+========================================= */
+
+.receipt-property {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.receipt-property img {
+  width: 115px;
+  height: 82px;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 11px;
+  object-fit: cover;
+}
+
+.receipt-property h3 {
+  margin: 0 0 6px;
+  color: #102235;
+  font-size: 18px;
+}
+
+.receipt-property p {
+  margin: 3px 0;
+  color: #718294;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   TWO COLUMN INFORMATION
+========================================= */
+
+.receipt-two-columns {
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    minmax(0, 1fr)
+  );
+  gap: 35px;
+}
+
+.receipt-detail-list,
+.receipt-payment-details {
+  margin: 0;
+  display: grid;
+  gap: 11px;
+}
+
+.receipt-detail-list > div,
+.receipt-payment-details > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.receipt-detail-list dt,
+.receipt-payment-details dt {
+  color: #8292a2;
+  font-size: 10px;
+}
+
+.receipt-detail-list dd,
+.receipt-payment-details dd {
+  min-width: 0;
+  margin: 0;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 750;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   PRICE BREAKDOWN
+========================================= */
+
+.receipt-price-table {
+  width: min(430px, 100%);
+  margin-left: auto;
+  display: grid;
+  gap: 11px;
+}
+
+.receipt-price-table > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.receipt-price-table span {
+  color: #718294;
+  font-size: 11px;
+}
+
+.receipt-price-table strong {
+  color: #334155;
+  font-size: 11px;
+}
+
+.receipt-discount {
+  color: #16a34a !important;
+}
+
+.receipt-grand-total {
+  padding-top: 13px;
+  border-top: 2px solid #d8eef2;
+}
+
+.receipt-grand-total span,
+.receipt-grand-total strong {
+  color: #071827;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.receipt-refunded-total strong {
+  color: #7e22ce;
+}
+
+/* =========================================
+   REFUND HISTORY
+========================================= */
+
+.receipt-refund-table {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8ec;
+  border-radius: 11px;
+}
+
+.receipt-refund-header,
+.receipt-refund-row {
+  min-width: 620px;
+  padding: 11px 13px;
+  display: grid;
+  grid-template-columns:
+    2fr 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.receipt-refund-header {
+  color: #64748b;
+  background: #f8fafc;
+  font-size: 9px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.receipt-refund-row {
+  border-top: 1px solid #edf1f4;
+  color: #40576a;
+  font-size: 9px;
+}
+
+.receipt-refund-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   SPECIAL REQUEST
+========================================= */
+
+.receipt-special-request {
+  margin: 0;
+  padding: 13px;
+  border-radius: 10px;
+  color: #53697a;
+  background: #f8fafc;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   RECEIPT FOOTER
+========================================= */
+
+.receipt-footer {
+  padding-top: 28px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
+}
+
+.receipt-footer p {
+  margin: 0 0 6px;
+  color: #0e7490;
+  font-weight: 850;
+}
+
+.receipt-footer small {
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+/* =========================================
+   LOADING AND ERROR STATES
+========================================= */
+
+.booking-receipt-state {
+  min-height: 100vh;
+  padding: 25px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.booking-receipt-state > span {
+  font-size: 55px;
+}
+
+.booking-receipt-state h1 {
+  margin-bottom: 0;
+  color: #071827;
+}
+
+.booking-receipt-state p {
+  color: #718294;
+}
+
+.booking-receipt-state a {
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #0891b2;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.booking-receipt-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #cffafe;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation:
+    receipt-spin 0.75s
+    linear infinite;
+}
+
+@keyframes receipt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 750px) {
+  .booking-receipt-document {
+    padding: 30px 22px;
+  }
+
+  .receipt-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .receipt-reference {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+  .booking-receipt-page {
+    padding: 105px 12px 45px;
+  }
+
+  .booking-receipt-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .booking-receipt-actions button {
+    width: 100%;
+  }
+
+  .booking-receipt-document {
+    padding: 25px 17px;
+    border-radius: 15px;
+  }
+
+  .receipt-brand {
+    align-items: flex-start;
+  }
+
+  .receipt-logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 13px;
+    font-size: 18px;
+  }
+
+  .receipt-brand h1 {
+    font-size: 19px;
+  }
+
+  .receipt-status-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .receipt-two-columns {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .receipt-property {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .receipt-property img {
+    width: 100%;
+    height: 170px;
+  }
+
+  .receipt-detail-list > div,
+  .receipt-payment-details > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .receipt-detail-list dd,
+  .receipt-payment-details dd {
+    text-align: left;
+  }
+}
+
+/* =========================================
+   PRINT PAGE CONFIGURATION
+========================================= */
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+/* =========================================
+   PRINT STYLES
+========================================= */
+
+@media print {
+  html,
+  body {
+    width: 100%;
+    min-height: auto;
+    color: #000000;
+    background: #ffffff !important;
+  }
+
+  .navbar,
+  .footer,
+  .booking-receipt-actions {
+    display: none !important;
+  }
+
+  .booking-receipt-page {
+    min-height: auto;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .booking-receipt-document {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .receipt-header,
+  .receipt-status-row,
+  .receipt-section,
+  .receipt-footer {
+    break-inside: avoid;
+  }
+
+  .receipt-refund-table {
+    overflow: visible;
+  }
+
+  .receipt-logo,
+  .receipt-status {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

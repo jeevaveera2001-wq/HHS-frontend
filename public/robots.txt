@@ -1,0 +1,30 @@
+User-agent: *
+
+Allow: /
+Allow: /explore
+Allow: /property/
+Allow: /about
+Allow: /contact
+Allow: /terms-and-conditions
+Allow: /privacy-policy
+Allow: /cancellation-refund-policy
+Allow: /service-delivery-policy
+
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /bookings
+Disallow: /saved-properties
+Disallow: /support-tickets
+Disallow: /owner
+Disallow: /manager
+Disallow: /property-admin
+Disallow: /booking-admin
+Disallow: /finance
+Disallow: /support
+Disallow: /super-admin
+Disallow: /add-property
+
+# Add the sitemap URL after the live domain is connected.
+# Sitemap: https://yourdomain.com/sitemap.xml

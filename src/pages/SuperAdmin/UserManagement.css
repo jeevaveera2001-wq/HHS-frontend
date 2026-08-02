@@ -1,0 +1,366 @@
+.user-management-page {
+  min-height: 100vh;
+  padding: 42px;
+  color: #102235;
+  background:
+    radial-gradient(circle at 5% 5%, #dbeafe, transparent 28rem),
+    #f4f8fb;
+}
+
+.user-management-header {
+  max-width: 1450px;
+  margin: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.user-management-back {
+  display: block;
+  margin-bottom: 22px;
+  color: #0e7490;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.user-management-header div > span {
+  color: #0891b2;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.user-management-header h1 {
+  margin: 7px 0;
+  color: #071827;
+  font-size: clamp(34px, 5vw, 48px);
+  letter-spacing: -1.5px;
+}
+
+.user-management-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.user-management-header > button {
+  min-height: 47px;
+  padding: 0 19px;
+  border: 1px solid #b8dce3;
+  border-radius: 11px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.user-management-header > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.user-summary-grid {
+  max-width: 1450px;
+  margin: 30px auto 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.user-summary-grid article {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0eaf0;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(15, 35, 50, 0.05);
+}
+
+.user-summary-grid span {
+  color: #718294;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.user-summary-grid strong {
+  margin-top: 6px;
+  color: #071827;
+  font-size: 28px;
+}
+
+.user-management-panel {
+  max-width: 1450px;
+  margin: 19px auto 0;
+  overflow: hidden;
+  border: 1px solid #e0eaf0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 14px 38px rgba(15, 35, 50, 0.06);
+}
+
+.user-filter-bar {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) repeat(3, 190px);
+  gap: 14px;
+  border-bottom: 1px solid #e8eef2;
+}
+
+.user-filter-bar label {
+  display: block;
+  margin: 0 0 7px 2px;
+  color: #53697a;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.user-filter-bar input,
+.user-filter-bar select {
+  width: 100%;
+  height: 47px;
+  padding: 0 13px;
+  border: 1px solid #d8e3ea;
+  border-radius: 11px;
+  outline: none;
+  background: #f9fbfc;
+  font: inherit;
+}
+
+.user-filter-bar input:focus,
+.user-filter-bar select:focus {
+  border-color: #0891b2;
+  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+}
+
+.users-table-wrapper {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf1f4;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.users-table th {
+  color: #718294;
+  background: #f8fafc;
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.users-table td {
+  color: #40576a;
+  font-size: 12px;
+}
+
+.managed-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.managed-user-avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0e7490, #22d3ee);
+  font-weight: 900;
+}
+
+.managed-user > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.managed-user strong {
+  color: #102235;
+}
+
+.managed-user span {
+  margin-top: 3px;
+  color: #8292a2;
+  font-size: 10px;
+}
+
+.managed-role,
+.managed-verification,
+.managed-status {
+  display: inline-flex;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.managed-role.customer {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.managed-role.owner {
+  color: #0e7490;
+  background: #cffafe;
+}
+
+.managed-verification.verified,
+.managed-status.active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.managed-verification.unverified {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.managed-status.suspended {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.managed-user-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.managed-user-actions button {
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.managed-user-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.role-action {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.verify-action {
+  color: #0e7490;
+  background: #cffafe;
+}
+
+.suspend-action {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.activate-action {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.users-loading,
+.users-empty {
+  min-height: 330px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.users-loading > div {
+  width: 46px;
+  height: 46px;
+  border: 4px solid #cffafe;
+  border-top-color: #0891b2;
+  border-radius: 50%;
+  animation: users-spin 0.75s linear infinite;
+}
+
+.users-loading p,
+.users-empty p {
+  color: #718294;
+}
+
+.users-empty > span {
+  font-size: 48px;
+}
+
+.users-empty h2 {
+  margin-bottom: 0;
+}
+
+.users-pagination {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+}
+
+.users-pagination button {
+  padding: 10px 17px;
+  border: 1px solid #cde2e7;
+  border-radius: 9px;
+  color: #0e7490;
+  background: #ffffff;
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.users-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+@keyframes users-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1150px) {
+  .user-summary-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .user-filter-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .user-management-page {
+    padding: 25px 14px;
+  }
+
+  .user-management-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .user-management-header > button {
+    width: 100%;
+  }
+
+  .user-summary-grid,
+  .user-filter-bar {
+    grid-template-columns: 1fr;
+  }
+}

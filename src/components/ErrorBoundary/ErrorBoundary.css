@@ -1,0 +1,153 @@
+.hhs-error-boundary {
+  min-height: 100vh;
+  padding: 25px;
+  display: grid;
+  place-items: center;
+  color: #102235;
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      #cffafe,
+      transparent 27rem
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      #dbeafe,
+      transparent 25rem
+    ),
+    #f4f8fb;
+}
+
+.hhs-error-card {
+  width: min(520px, 100%);
+  padding: 43px 36px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid #dce8ee;
+  border-radius: 27px;
+  background:
+    rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 25px 65px
+    rgba(15, 35, 50, 0.13);
+  text-align: center;
+}
+
+.hhs-error-logo {
+  width: 125px;
+  display: inline-flex;
+}
+
+.hhs-error-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.hhs-error-eyebrow {
+  margin-top: 22px;
+  color: #0891b2;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.hhs-error-card h1 {
+  margin: 9px 0;
+  color: #071827;
+  font-size:
+    clamp(
+      30px,
+      7vw,
+      42px
+    );
+}
+
+.hhs-error-card > p {
+  max-width: 410px;
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.hhs-error-actions {
+  width: 100%;
+  margin-top: 27px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hhs-error-actions button {
+  min-height: 47px;
+  padding: 0 21px;
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #06b6d4
+    );
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hhs-error-actions button:hover {
+  transform:
+    translateY(-2px);
+  box-shadow:
+    0 12px 25px
+    rgba(8, 145, 178, 0.22);
+}
+
+.hhs-error-actions button.secondary {
+  border: 1px solid #cde2e7;
+  color: #0e7490;
+  background: #ffffff;
+}
+
+.hhs-error-card small {
+  margin-top: 24px;
+  color: #8292a2;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.hhs-error-card small a {
+  color: #0891b2;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .hhs-error-boundary {
+    padding: 15px;
+  }
+
+  .hhs-error-card {
+    padding: 34px 20px;
+    border-radius: 21px;
+  }
+
+  .hhs-error-logo {
+    width: 105px;
+  }
+
+  .hhs-error-actions {
+    flex-direction: column;
+  }
+
+  .hhs-error-actions button {
+    width: 100%;
+  }
+}
