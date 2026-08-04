@@ -66,7 +66,7 @@ function OwnerProperties() {
 
         const data =
           await getMyProperties();
-
+         console.log("Fetched properties:", data);
         setProperties(
           data.properties || []
         );
@@ -165,20 +165,20 @@ function OwnerProperties() {
     );
   }, [properties]);
 
-  const getCoverImage = (property) => {
-    const images =
-      property.images || [];
+  // const getCoverImage = (property) => {
+  //   const images =
+  //     property.images || [];
 
-    const coverImage = images.find(
-      (image) => image.isCover
-    );
+  //   const coverImage = images.find(
+  //     (image) => image.isCover
+  //   );
 
-    return (
-      coverImage?.url ||
-      images[0]?.url ||
-      null
-    );
-  };
+  //   return (
+  //     coverImage?.url ||
+  //     images[0]?.url ||
+  //     null
+  //   );
+  // };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat(
@@ -232,6 +232,10 @@ function OwnerProperties() {
       setActionId(null);
     }
   };
+
+  const BASE_URL = import.meta.env.PROD
+  ? "https://hhs-backend-cwzx.onrender.com"
+  : "http://localhost:5000";
 
   return (
     <main className="owner-properties-page">
@@ -390,9 +394,6 @@ function OwnerProperties() {
           <div className="owner-properties-grid">
             {filteredProperties.map(
               (property) => {
-                const coverImage =
-                  getCoverImage(property);
-
                 const updating =
                   actionId === property._id;
 
@@ -402,9 +403,9 @@ function OwnerProperties() {
                     key={property._id}
                   >
                     <div className="owner-managed-image">
-                      {coverImage ? (
+                      {property.images[0].url ? (
                         <img
-                          src={coverImage}
+                          src={property.images[0].url ? `${BASE_URL}${property.images[0].url}` : "/images/no-image.png"}
                           alt={property.title}
                         />
                       ) : (

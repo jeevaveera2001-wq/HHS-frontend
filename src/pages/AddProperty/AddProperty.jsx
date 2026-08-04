@@ -23,7 +23,7 @@ const initialForm = {
   availableRooms: "",
   amenities: "",
   rules: "",
-  imageUrls: "",
+   images: [],
   checkInTime: "12:00 PM",
   checkOutTime: "11:00 AM",
 };
@@ -43,6 +43,13 @@ function AddProperty() {
     }));
   };
 
+  const handleImageChange = (e) => {
+  setForm((prev) => ({
+    ...prev,
+    images: Array.from(e.target.files),
+  }));
+};
+
   const splitValues = (value) => {
     return value
       .split(",")
@@ -50,16 +57,9 @@ function AddProperty() {
       .filter(Boolean);
   };
 
-  const createImages = () => {
-    return splitValues(form.imageUrls).map((url, index) => ({
-      url,
-      isCover: index === 0,
-    }));
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (
       !form.title.trim() ||
       !form.description.trim() ||
@@ -88,40 +88,49 @@ function AddProperty() {
     try {
       setSubmitting(true);
 
-      const propertyData = {
-        title: form.title.trim(),
-        description: form.description.trim(),
-        propertyType: form.propertyType,
+      const formData = new FormData();
 
-        location: {
-          address: form.address.trim(),
-          city: form.city.trim(),
-          district: form.district.trim(),
-          state: form.state.trim(),
-          pincode: form.pincode.trim(),
-        },
+formData.append("title", form.title.trim());
+formData.append("description", form.description.trim());
+formData.append("propertyType", form.propertyType);
 
-        pricePerNight: Number(form.pricePerNight),
+formData.append(
+  "location",
+  JSON.stringify({
+    address: form.address.trim(),
+    city: form.city.trim(),
+    district: form.district.trim(),
+    state: form.state.trim(),
+    pincode: form.pincode.trim(),
+  })
+);
 
-        originalPrice: form.originalPrice
-          ? Number(form.originalPrice)
-          : null,
+formData.append("pricePerNight", form.pricePerNight);
+formData.append("originalPrice", form.originalPrice);
+formData.append("maxGuests", form.maxGuests);
+formData.append("bedrooms", form.bedrooms);
+formData.append("bathrooms", form.bathrooms);
+formData.append("totalRooms", form.totalRooms);
+formData.append("availableRooms", form.availableRooms);
 
-        maxGuests: Number(form.maxGuests),
-        bedrooms: Number(form.bedrooms),
-        bathrooms: Number(form.bathrooms),
-        totalRooms: Number(form.totalRooms),
-        availableRooms: Number(form.availableRooms),
+formData.append(
+  "amenities",
+  JSON.stringify(splitValues(form.amenities))
+);
 
-        amenities: splitValues(form.amenities),
-        rules: splitValues(form.rules),
-        images: createImages(),
+formData.append(
+  "rules",
+  JSON.stringify(splitValues(form.rules))
+);
 
-        checkInTime: form.checkInTime,
-        checkOutTime: form.checkOutTime,
-      };
+formData.append("checkInTime", form.checkInTime);
+formData.append("checkOutTime", form.checkOutTime);
 
-      const data = await createProperty(propertyData);
+form.images.forEach((image) => {
+  formData.append("images", image);
+});
+  console.log("FormData entries before submission:", Array.from(formData.entries()),form);
+const data = await createProperty(formData);
 
       toast.success(data.message);
       navigate("/my-properties");
@@ -441,15 +450,24 @@ function AddProperty() {
                   Image URLs
                 </label>
 
-                <textarea
-                  id="imageUrls"
-                  name="imageUrls"
-                  value={form.imageUrls}
-                  onChange={handleChange}
-                  rows="4"
-                  placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                />
+               <div className="property-form-field form-full">
+  <label htmlFor="images">
+    Property Images
+  </label>
 
+  <input
+    id="images"
+    type="file"
+    name="images"
+    multiple
+    accept="image/*"
+    onChange={handleImageChange}
+  />
+
+  <small>
+    You can upload multiple images.
+  </small>
+</div>
                 <small>
                   The first image will be used as the cover.
                 </small>

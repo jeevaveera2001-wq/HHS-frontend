@@ -1,5 +1,5 @@
 const API_URL = (
-  import.meta.env.VITE_API_URL ||
+   import.meta.env.VITE_API_URL ||
   "https://hogenakkalhomestays.com/api"
 ).replace(/\/+$/, "");
 
@@ -185,7 +185,6 @@ const handleResponse = async (
 /* =====================================
    Request helper
 ===================================== */
-
 const request = async (
   path,
   {
@@ -195,52 +194,41 @@ const request = async (
   } = {}
 ) => {
   try {
-    const hasBody =
-      body !== undefined &&
-      body !== null;
+    const hasBody = body !== undefined && body !== null;
+    const isFormData = body instanceof FormData;
 
     const options = {
       method,
-
       credentials: "include",
-
       headers: createHeaders({
         includeAuth,
-        includeJson: hasBody,
+        includeJson: hasBody && !isFormData,
       }),
     };
 
     if (hasBody) {
-      options.body =
-        JSON.stringify(body);
+      options.body = isFormData
+        ? body
+        : JSON.stringify(body);
     }
 
-    const response =
-      await fetch(
-        `${API_URL}${path}`,
-        options
-      );
-
-    return await handleResponse(
-      response
+    const response = await fetch(
+      `${API_URL}${path}`,
+      options
     );
+
+    return await handleResponse(response);
   } catch (error) {
-    if (
-      error?.status !==
-      undefined
-    ) {
+    if (error?.status !== undefined) {
       throw error;
     }
 
-    const networkError =
-      new Error(
-        "Unable to connect to the server. Please check whether the backend is running."
-      );
+    const networkError = new Error(
+      "Unable to connect to the server. Please check whether the backend is running."
+    );
 
     networkError.status = 0;
-
-    networkError.originalError =
-      error;
+    networkError.originalError = error;
 
     throw networkError;
   }
@@ -310,19 +298,19 @@ export const getManagedPropertyById =
     );
   };
 
-export const createProperty =
-  async (propertyData) => {
-    return request(
-      "/properties",
-      {
-        method: "POST",
+  export const createProperty =
+    async (propertyData) => {
+      return request(
+        "/properties",
+        {
+          method: "POST",
 
-        includeAuth: true,
+          includeAuth: true,
 
-        body: propertyData,
-      }
-    );
-  };
+          body: propertyData,
+        }
+      );
+    };
 
 export const updateProperty =
   async (

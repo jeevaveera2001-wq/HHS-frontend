@@ -151,6 +151,12 @@ const AddProperty = lazy(() =>
   )
 );
 
+const PropertySubmittedModal = lazy(() =>
+  import(
+    "../pages/propertySuccess/PropertySubmittedModal"
+  )
+);
+
 /* =====================================
    Owner pages
 ===================================== */
@@ -685,6 +691,20 @@ function AppRoutes() {
             }
           />
         </Route>
+        <Route
+            path="/my-properties"
+            element={
+              createRoleElement(
+                PropertySubmittedModal,
+                [
+                  "owner",
+                  "operations_manager",
+                  "super_admin",
+                ]
+              )
+            }
+          />
+      
 
         {/* =================================
             Account recovery routes
