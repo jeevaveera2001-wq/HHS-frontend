@@ -1,6 +1,7 @@
 const API_URL = (
-   import.meta.env.VITE_API_URL ||
-  "https://hogenakkalhomestays.com/api"
+  import.meta.env.PROD
+    ? "https://hhs-backend-cwzx.onrender.com/api" // Or "https://hogenakkalhomestays.com/api"
+    : "http://localhost:5000/api"
 ).replace(/\/+$/, "");
 
 /* =====================================
