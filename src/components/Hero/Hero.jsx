@@ -53,7 +53,7 @@ import "./Hero.css";
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              <button className="btn-primary">
+              <button className="btn-primary" onClick={()=>navigate("/explore")}>
                 Book Now
               </button>
 
