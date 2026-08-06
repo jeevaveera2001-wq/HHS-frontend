@@ -1,7 +1,9 @@
-  import "./Hero.css";
+  import { useNavigate } from "react-router-dom";
+import "./Hero.css";
   import { motion } from "framer-motion";
 
   function Hero() {
+    const navigate=useNavigate();
     return (
       <section
         className="hero"
@@ -55,7 +57,7 @@
                 Book Now
               </button>
 
-              <button className="btn-secondary">
+              <button className="btn-secondary" onClick={()=>navigate("/explore")}>
                 Explore Stays
               </button>
             </motion.div>
