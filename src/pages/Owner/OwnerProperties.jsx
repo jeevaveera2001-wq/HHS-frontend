@@ -405,7 +405,7 @@ function OwnerProperties() {
                     <div className="owner-managed-image">
                       {property.images[0].url ? (
                         <img
-                          src={property.images[0].url ? `${BASE_URL}${property.images[0].url}` : "/images/no-image.png"}
+                          src={property.images[0].url ? `${property.images[0].url}` : "/images/no-image.png"}
                           alt={property.title}
                         />
                       ) : (
