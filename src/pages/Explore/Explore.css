@@ -338,12 +338,12 @@
 .search-button {
   border: 0;
   color: #ffffff;
-  background:
+  /* background:
     linear-gradient(
       135deg,
       var(--primary),
       #06b6d4
-    );
+    ); */
   box-shadow:
     0 10px 22px
       rgba(

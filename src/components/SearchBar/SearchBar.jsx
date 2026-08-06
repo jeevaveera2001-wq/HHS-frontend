@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 import {
   FaMapMarkerAlt,
@@ -8,7 +9,7 @@ import {
 } from "react-icons/fa";
 
 function SearchBar() {
-
+  const navigate=useNavigate();
   return (
     <section className="search-section">
 
@@ -79,7 +80,7 @@ function SearchBar() {
         </div>
 
 
-        <button className="search-button">
+        <button className="search-button" onClick={()=>navigate("/explore")}>
 
           <FaSearch/>
 
