@@ -16,7 +16,7 @@ import RoleRoute from "./RoleRoute";
 import BrandLogo from "../components/BrandLogo/BrandLogo";
 
 /* =====================================
-   Lazy-loaded layout
+   Layout
 ===================================== */
 
 const MainLayout = lazy(() =>
@@ -239,7 +239,7 @@ const PayoutAccountManagement =
   );
 
 /* =====================================
-   Review and support management
+   Review and support pages
 ===================================== */
 
 const ReviewManagement = lazy(() =>
@@ -255,7 +255,7 @@ const SupportManagement = lazy(() =>
 );
 
 /* =====================================
-   Route loading screen
+   Route-loading screen
 ===================================== */
 
 function RouteLoading() {
@@ -280,8 +280,7 @@ function RouteLoading() {
           height: "48px",
           border:
             "4px solid #cffafe",
-          borderTopColor:
-            "#0891b2",
+          borderTopColor: "#0891b2",
           borderRadius: "50%",
           animation:
             "hhs-route-spin 0.75s linear infinite",
@@ -314,7 +313,7 @@ function RouteLoading() {
 }
 
 /* =====================================
-   Protected route helpers
+   Protected-route helpers
 ===================================== */
 
 const createProtectedElement = (
@@ -333,9 +332,7 @@ const createRoleElement = (
 ) => {
   return (
     <RoleRoute
-      allowedRoles={
-        allowedRoles
-      }
+      allowedRoles={allowedRoles}
     >
       <Component />
     </RoleRoute>
@@ -343,7 +340,7 @@ const createRoleElement = (
 };
 
 /* =====================================
-   Not Found page
+   Not-found page
 ===================================== */
 
 function NotFoundPage() {
@@ -388,17 +385,14 @@ function NotFoundPage() {
 
       <p
         style={{
-          maxWidth:
-            "450px",
+          maxWidth: "450px",
           margin: 0,
-          color:
-            "#64748b",
-          lineHeight:
-            1.7,
+          color: "#64748b",
+          lineHeight: 1.7,
         }}
       >
         The page you are looking for
-        does not exist, has been moved
+        does not exist, has been moved,
         or you may not have permission
         to access it.
       </p>
@@ -406,22 +400,16 @@ function NotFoundPage() {
       <Link
         to="/"
         style={{
-          marginTop:
-            "10px",
-          padding:
-            "13px 25px",
-          borderRadius:
-            "12px",
-          color:
-            "#ffffff",
+          marginTop: "10px",
+          padding: "13px 25px",
+          borderRadius: "12px",
+          color: "#ffffff",
           background:
             "linear-gradient(135deg, #0e7490, #06b6d4)",
           boxShadow:
             "0 10px 25px rgba(8, 145, 178, 0.25)",
-          textDecoration:
-            "none",
-          fontWeight:
-            800,
+          textDecoration: "none",
+          fontWeight: 800,
         }}
       >
         Return Home
@@ -453,32 +441,20 @@ function NotFoundPage() {
 function AppRoutes() {
   return (
     <Suspense
-      fallback={
-        <RouteLoading />
-      }
+      fallback={<RouteLoading />}
     >
       <Routes>
-        {/* =================================
-            Public website layout
-        ================================= */}
+        {/* Public website layout */}
 
-        <Route
-          element={
-            <MainLayout />
-          }
-        >
+        <Route element={<MainLayout />}>
           <Route
             path="/"
-            element={
-              <Home />
-            }
+            element={<Home />}
           />
 
           <Route
             path="/explore"
-            element={
-              <Explore />
-            }
+            element={<Explore />}
           />
 
           <Route
@@ -490,30 +466,22 @@ function AppRoutes() {
 
           <Route
             path="/about"
-            element={
-              <About />
-            }
+            element={<About />}
           />
 
           <Route
             path="/contact"
-            element={
-              <Contact />
-            }
+            element={<Contact />}
           />
 
           <Route
             path="/login"
-            element={
-              <Login />
-            }
+            element={<Login />}
           />
 
           <Route
             path="/register"
-            element={
-              <Register />
-            }
+            element={<Register />}
           />
 
           {/* Legal pages */}
@@ -602,121 +570,93 @@ function AppRoutes() {
 
           <Route
             path="/dashboard"
-            element={
-              createRoleElement(
-                Dashboard,
-                [
-                  "customer",
-                ]
-              )
-            }
+            element={createRoleElement(
+              Dashboard,
+              ["customer"]
+            )}
           />
-
-          {/* Profile */}
 
           <Route
             path="/profile"
-            element={
-              createProtectedElement(
-                Profile
-              )
-            }
+            element={createProtectedElement(
+              Profile
+            )}
           />
-
-          {/* Customer bookings */}
 
           <Route
             path="/bookings"
-            element={
-              createRoleElement(
-                MyBookings,
-                [
-                  "customer",
-                  "owner",
-                ]
-              )
-            }
+            element={createRoleElement(
+              MyBookings,
+              [
+                "customer",
+                "owner",
+              ]
+            )}
           />
-
-          {/* Saved properties */}
 
           <Route
             path="/saved-properties"
-            element={
-              createRoleElement(
-                SavedProperties,
-                [
-                  "customer",
-                  "owner",
-                ]
-              )
-            }
+            element={createRoleElement(
+              SavedProperties,
+              [
+                "customer",
+                "owner",
+              ]
+            )}
           />
 
-          {/* Support tickets */}
+          {/* Customer support tickets */}
 
           <Route
             path="/support-tickets"
-            element={
-              createRoleElement(
-                SupportTickets,
-                [
-                  "customer",
-                  "owner",
-                ]
-              )
-            }
+            element={createRoleElement(
+              SupportTickets,
+              [
+                "customer",
+                "owner",
+              ]
+            )}
           />
 
           <Route
             path="/support-tickets/:ticketId"
-            element={
-              createRoleElement(
-                SupportTicketDetails,
-                [
-                  "customer",
-                  "owner",
-                ]
-              )
-            }
+            element={createRoleElement(
+              SupportTicketDetails,
+              [
+                "customer",
+                "owner",
+              ]
+            )}
           />
-
-
-
-          {/* Add property */}
 
           <Route
             path="/add-property"
-            element={
-              createRoleElement(
-                AddProperty,
-                [
-                  "owner",
-                  "operations_manager",
-                  "super_admin",
-                ]
-              )
-            }
+            element={createRoleElement(
+              AddProperty,
+              [
+                "owner",
+                "operations_manager",
+                "super_admin",
+              ]
+            )}
           />
         </Route>
-        <Route
-            path="/my-properties"
-            element={
-              createRoleElement(
-                PropertySubmittedModal,
-                [
-                  "owner",
-                  "operations_manager",
-                  "super_admin",
-                ]
-              )
-            }
-          />
-      
 
-        {/* =================================
-            Account recovery routes
-        ================================= */}
+        {/* Property-submission page */}
+
+        <Route
+          path="/my-properties"
+          element={createRoleElement(
+            PropertySubmittedModal,
+            [
+              "owner",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
+        />
+
+        {/* Account recovery */}
 
         <Route
           path="/forgot-password"
@@ -734,348 +674,249 @@ function AppRoutes() {
 
         <Route
           path="/verify-email"
-          element={
-            <VerifyEmail />
-          }
+          element={<VerifyEmail />}
         />
 
         <Route
           path="/verify-email/:token"
-          element={
-            <VerifyEmail />
-          }
+          element={<VerifyEmail />}
         />
 
-        {/* =================================
-            Super Admin routes
-        ================================= */}
+        {/* Super Admin */}
 
         <Route
           path="/super-admin"
-          element={
-            createRoleElement(
-              SuperAdminDashboard,
-              [
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            SuperAdminDashboard,
+            ["super_admin"]
+          )}
         />
 
         <Route
           path="/super-admin/staff"
-          element={
-            createRoleElement(
-              StaffManagement,
-              [
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            StaffManagement,
+            ["super_admin"]
+          )}
         />
 
         <Route
           path="/super-admin/users"
-          element={
-            createRoleElement(
-              UserManagement,
-              [
-                "super_admin",
-                "operations_manager",
-                "property_admin",
-                "support",
-              ]
-            )
-          }
+          element={createRoleElement(
+            UserManagement,
+            [
+              "super_admin",
+              "operations_manager",
+              "property_admin",
+              "support",
+            ]
+          )}
         />
 
         <Route
           path="/super-admin/owners"
-          element={
-            createRoleElement(
-              UserManagement,
-              [
-                "super_admin",
-                "operations_manager",
-                "property_admin",
-                "support",
-              ]
-            )
-          }
+          element={createRoleElement(
+            UserManagement,
+            [
+              "super_admin",
+              "operations_manager",
+              "property_admin",
+              "support",
+            ]
+          )}
         />
 
         <Route
           path="/super-admin/properties"
-          element={
-            createRoleElement(
-              PropertyAdmin,
-              [
-                "super_admin",
-                "operations_manager",
-                "property_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            PropertyAdmin,
+            [
+              "super_admin",
+              "operations_manager",
+              "property_admin",
+            ]
+          )}
         />
 
         <Route
           path="/super-admin/bookings"
-          element={
-            createRoleElement(
-              BookingManagement,
-              [
-                "super_admin",
-                "operations_manager",
-                "booking_manager",
-              ]
-            )
-          }
+          element={createRoleElement(
+            BookingManagement,
+            [
+              "super_admin",
+              "operations_manager",
+              "booking_manager",
+            ]
+          )}
         />
 
         <Route
           path="/super-admin/reviews"
-          element={
-            createRoleElement(
-              ReviewManagement,
-              [
-                "super_admin",
-                "operations_manager",
-              ]
-            )
-          }
+          element={createRoleElement(
+            ReviewManagement,
+            [
+              "super_admin",
+              "operations_manager",
+            ]
+          )}
         />
 
         <Route
           path="/super-admin/support"
-          element={
-            createRoleElement(
-              SupportManagement,
-              [
-                "support",
-                "operations_manager",
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            SupportManagement,
+            [
+              "support",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
         />
+
+        {/* Super Admin enquiries */}
+
         <Route
-  path="/super-admin/support"
-  element={
-    createRoleElement(
-      SupportManagement,
-      [
-        "support",
-        "operations_manager",
-        "super_admin",
-      ]
-    )
-  }
-/>
-
-<Route
-  path="/super-admin/enquiries"
-  element={
-    createRoleElement(
-      EnquiryManagement,
-      [
-        "super_admin",
-      ]
-    )
-  }
-/>
-
-<Route
-  path="/super-admin/finance"
-  element={
-    createRoleElement(
-      FinanceDashboard,
-      [
-        "finance_manager",
-        "operations_manager",
-        "super_admin",
-      ]
-    )
-  }
-/>
+          path="/super-admin/enquiries"
+          element={createRoleElement(
+            EnquiryManagement,
+            ["super_admin"]
+          )}
+        />
 
         <Route
           path="/super-admin/finance"
-          element={
-            createRoleElement(
-              FinanceDashboard,
-              [
-                "finance_manager",
-                "operations_manager",
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            FinanceDashboard,
+            [
+              "finance_manager",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
         />
 
-        {/* =================================
-            Staff routes
-        ================================= */}
+        {/* Staff routes */}
 
         <Route
           path="/support"
-          element={
-            createRoleElement(
-              SupportManagement,
-              [
-                "support",
-                "property_admin",
-                "booking_manager",
-                "finance_manager",
-                "operations_manager",
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            SupportManagement,
+            [
+              "support",
+              "property_admin",
+              "booking_manager",
+              "finance_manager",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
         />
 
         <Route
           path="/manager"
-          element={
-            createRoleElement(
-              Dashboard,
-              [
-                "operations_manager",
-              ]
-            )
-          }
+          element={createRoleElement(
+            Dashboard,
+            [
+              "operations_manager",
+            ]
+          )}
         />
 
         <Route
           path="/property-admin"
-          element={
-            createRoleElement(
-              PropertyAdmin,
-              [
-                "super_admin",
-                "operations_manager",
-                "property_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            PropertyAdmin,
+            [
+              "super_admin",
+              "operations_manager",
+              "property_admin",
+            ]
+          )}
         />
 
         <Route
           path="/booking-admin"
-          element={
-            createRoleElement(
-              BookingManagement,
-              [
-                "booking_manager",
-              ]
-            )
-          }
+          element={createRoleElement(
+            BookingManagement,
+            [
+              "booking_manager",
+            ]
+          )}
         />
 
-        {/* =================================
-            Finance routes
-        ================================= */}
+        {/* Finance */}
 
         <Route
           path="/finance"
-          element={
-            createRoleElement(
-              FinanceDashboard,
-              [
-                "finance_manager",
-                "booking_manager",
-                "operations_manager",
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            FinanceDashboard,
+            [
+              "finance_manager",
+              "booking_manager",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
         />
 
         <Route
           path="/finance/payout-accounts"
-          element={
-            createRoleElement(
-              PayoutAccountManagement,
-              [
-                "finance_manager",
-                "super_admin",
-              ]
-            )
-          }
+          element={createRoleElement(
+            PayoutAccountManagement,
+            [
+              "finance_manager",
+              "super_admin",
+            ]
+          )}
         />
 
-        {/* =================================
-            Owner routes
-        ================================= */}
+        {/* Owner */}
 
         <Route
           path="/owner"
-          element={
-            createRoleElement(
-              OwnerDashboard,
-              [
-                "owner",
-              ]
-            )
-          }
+          element={createRoleElement(
+            OwnerDashboard,
+            ["owner"]
+          )}
         />
 
         <Route
           path="/owner/properties"
-          element={
-            createRoleElement(
-              OwnerProperties,
-              [
-                "owner",
-              ]
-            )
-          }
+          element={createRoleElement(
+            OwnerProperties,
+            ["owner"]
+          )}
         />
 
         <Route
           path="/owner/bookings"
-          element={
-            createRoleElement(
-              OwnerBookings,
-              [
-                "owner",
-              ]
-            )
-          }
+          element={createRoleElement(
+            OwnerBookings,
+            ["owner"]
+          )}
         />
 
         <Route
           path="/owner/reviews"
-          element={
-            createRoleElement(
-              ReviewManagement,
-              [
-                "owner",
-              ]
-            )
-          }
+          element={createRoleElement(
+            ReviewManagement,
+            ["owner"]
+          )}
         />
 
         <Route
           path="/owner/payout-settings"
-          element={
-            createRoleElement(
-              OwnerPayoutSettings,
-              [
-                "owner",
-              ]
-            )
-          }
+          element={createRoleElement(
+            OwnerPayoutSettings,
+            ["owner"]
+          )}
         />
 
-        {/* =================================
-            404
-        ================================= */}
+        {/* 404 */}
 
         <Route
           path="*"
-          element={
-            <NotFoundPage />
-          }
+          element={<NotFoundPage />}
         />
       </Routes>
     </Suspense>
