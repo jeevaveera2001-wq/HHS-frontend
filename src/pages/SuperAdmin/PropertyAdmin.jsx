@@ -15,6 +15,8 @@ import {
   updatePropertyFeaturedStatus,
 } from "../../services/propertyService";
 
+import usePropertyRealtime from "../../hooks/usePropertyRealtime";
+
 import "./PropertyAdmin.css";
 
 const DEFAULT_FILTERS = {
@@ -50,9 +52,7 @@ const PROPERTY_TYPES = [
   "Guest House",
 ];
 
-const formatCurrency = (
-  value
-) => {
+const formatCurrency = (value) => {
   return new Intl.NumberFormat(
     "en-IN",
     {
@@ -68,6 +68,16 @@ const formatDate = (value) => {
     return "Not available";
   }
 
+  const date = new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return "Not available";
+  }
+
   return new Intl.DateTimeFormat(
     "en-IN",
     {
@@ -77,12 +87,10 @@ const formatDate = (value) => {
       hour: "2-digit",
       minute: "2-digit",
     }
-  ).format(new Date(value));
+  ).format(date);
 };
 
-const getCoverImage = (
-  property
-) => {
+const getCoverImage = (property) => {
   const images = Array.isArray(
     property?.images
   )
@@ -118,20 +126,32 @@ function PropertyAdmin() {
     DEFAULT_PAGINATION
   );
 
-  const [filters, setFilters] =
-    useState(DEFAULT_FILTERS);
+  const [
+    filters,
+    setFilters,
+  ] = useState(
+    DEFAULT_FILTERS
+  );
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [actionId, setActionId] =
-    useState("");
+  const [
+    actionId,
+    setActionId,
+  ] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [notice, setNotice] =
-    useState("");
+  const [
+    notice,
+    setNotice,
+  ] = useState("");
 
   const [
     selectedProperty,
@@ -187,22 +207,26 @@ function PropertyAdmin() {
 
         try {
           const response =
-            await getAdminProperties(
-              {
-                ...queryFilters,
-                page,
-                limit:
-                  pagination.pageSize,
-              }
-            );
+            await getAdminProperties({
+              ...queryFilters,
+
+              page,
+
+              limit:
+                pagination.pageSize,
+            });
 
           setProperties(
-            response?.properties ||
-              []
+            Array.isArray(
+              response?.properties
+            )
+              ? response.properties
+              : []
           );
 
           setStatistics({
             ...DEFAULT_STATISTICS,
+
             ...(response?.statistics ||
               {}),
           });
@@ -210,6 +234,7 @@ function PropertyAdmin() {
           setPagination(
             (current) => ({
               ...current,
+
               ...(response?.pagination ||
                 {}),
 
@@ -229,7 +254,9 @@ function PropertyAdmin() {
             )
           );
         } finally {
-          setLoading(false);
+          if (showLoader) {
+            setLoading(false);
+          }
         }
       },
       [
@@ -238,16 +265,32 @@ function PropertyAdmin() {
       ]
     );
 
+  const handleRealtimePropertyChange =
+    useCallback(() => {
+      loadProperties(
+        pagination.currentPage,
+        false
+      );
+    }, [
+      loadProperties,
+      pagination.currentPage,
+    ]);
+
+  usePropertyRealtime(
+    handleRealtimePropertyChange
+  );
+
   useEffect(() => {
     const timeoutId =
       window.setTimeout(() => {
         loadProperties(1);
       }, 350);
 
-    return () =>
+    return () => {
       window.clearTimeout(
         timeoutId
       );
+    };
   }, [loadProperties]);
 
   useEffect(() => {
@@ -260,28 +303,35 @@ function PropertyAdmin() {
         setNotice("");
       }, 3500);
 
-    return () =>
+    return () => {
       window.clearTimeout(
         timeoutId
       );
+    };
   }, [notice]);
 
   const updateFilter = (
     event
   ) => {
-    const { name, value } =
-      event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFilters((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setFilters(
+      (current) => ({
+        ...current,
+
+        [name]:
+          value,
+      })
+    );
   };
 
   const resetFilters = () => {
-    setFilters(
-      DEFAULT_FILTERS
-    );
+    setFilters({
+      ...DEFAULT_FILTERS,
+    });
   };
 
   const refreshAfterAction =
@@ -348,21 +398,28 @@ function PropertyAdmin() {
     setError("");
   };
 
-  const closeRejectModal =
-    () => {
-      if (actionId) {
-        return;
-      }
+  const closeRejectModal = () => {
+    if (actionId) {
+      return;
+    }
 
-      setRejectTarget(null);
-      setRejectionReason("");
-      setRejectionNote("");
-    };
+    setRejectTarget(null);
+    setRejectionReason("");
+    setRejectionNote("");
+  };
 
   const handleReject = async (
     event
   ) => {
     event.preventDefault();
+
+    if (!rejectTarget?._id) {
+      setError(
+        "Unable to identify the property."
+      );
+
+      return;
+    }
 
     if (
       !rejectionReason.trim()
@@ -573,7 +630,9 @@ function PropertyAdmin() {
           aria-label="Property statistics"
         >
           <article>
-            <span>Total</span>
+            <span>
+              Total
+            </span>
 
             <strong>
               {statistics.total}
@@ -581,7 +640,9 @@ function PropertyAdmin() {
           </article>
 
           <article className="is-pending">
-            <span>Pending</span>
+            <span>
+              Pending
+            </span>
 
             <strong>
               {statistics.pending}
@@ -589,7 +650,9 @@ function PropertyAdmin() {
           </article>
 
           <article className="is-approved">
-            <span>Approved</span>
+            <span>
+              Approved
+            </span>
 
             <strong>
               {statistics.approved}
@@ -597,7 +660,9 @@ function PropertyAdmin() {
           </article>
 
           <article className="is-rejected">
-            <span>Rejected</span>
+            <span>
+              Rejected
+            </span>
 
             <strong>
               {statistics.rejected}
@@ -605,7 +670,9 @@ function PropertyAdmin() {
           </article>
 
           <article className="is-active">
-            <span>Active</span>
+            <span>
+              Active
+            </span>
 
             <strong>
               {statistics.active}
@@ -613,7 +680,9 @@ function PropertyAdmin() {
           </article>
 
           <article className="is-featured">
-            <span>Featured</span>
+            <span>
+              Featured
+            </span>
 
             <strong>
               {statistics.featured}
@@ -623,7 +692,9 @@ function PropertyAdmin() {
 
         <section className="property-admin-filters">
           <label className="property-admin-search">
-            <span>Search</span>
+            <span>
+              Search
+            </span>
 
             <input
               type="search"
@@ -773,13 +844,16 @@ function PropertyAdmin() {
             className="property-admin-alert is-error"
             role="alert"
           >
-            <span>{error}</span>
+            <span>
+              {error}
+            </span>
 
             <button
               type="button"
               onClick={() =>
                 setError("")
               }
+              aria-label="Close error"
             >
               ×
             </button>
@@ -800,6 +874,7 @@ function PropertyAdmin() {
               onClick={() =>
                 setNotice("")
               }
+              aria-label="Close notification"
             >
               ×
             </button>
@@ -876,6 +951,7 @@ function PropertyAdmin() {
                             alt={
                               property.title
                             }
+                            loading="lazy"
                           />
                         ) : (
                           <div className="property-admin-image-placeholder">
@@ -922,17 +998,16 @@ function PropertyAdmin() {
                         </div>
 
                         <p className="property-admin-location">
-                          {
-                            property
-                              .location
-                              ?.address
-                          }
-                          ,{" "}
-                          {
-                            property
-                              .location
-                              ?.city
-                          }
+                          {property
+                            .location
+                            ?.address ||
+                            "Address not provided"}
+
+                          {property
+                            .location
+                            ?.city
+                            ? `, ${property.location.city}`
+                            : ""}
                         </p>
 
                         <div className="property-admin-meta">
@@ -1176,9 +1251,9 @@ function PropertyAdmin() {
             aria-labelledby="property-details-title"
             onMouseDown={(
               event
-            ) =>
-              event.stopPropagation()
-            }
+            ) => {
+              event.stopPropagation();
+            }}
           >
             <button
               type="button"
@@ -1229,7 +1304,8 @@ function PropertyAdmin() {
 
                 <strong>
                   {formatDate(
-                    selectedProperty.submittedAt
+                    selectedProperty.submittedAt ||
+                      selectedProperty.createdAt
                   )}
                 </strong>
               </div>
@@ -1240,9 +1316,9 @@ function PropertyAdmin() {
                 </span>
 
                 <strong>
-                  {
-                    selectedProperty.checkInTime
-                  }
+                  {selectedProperty
+                    .checkInTime ||
+                    "Not specified"}
                 </strong>
               </div>
 
@@ -1252,9 +1328,9 @@ function PropertyAdmin() {
                 </span>
 
                 <strong>
-                  {
-                    selectedProperty.checkOutTime
-                  }
+                  {selectedProperty
+                    .checkOutTime ||
+                    "Not specified"}
                 </strong>
               </div>
             </div>
@@ -1264,34 +1340,43 @@ function PropertyAdmin() {
                 Amenities
               </h3>
 
-              <div className="property-admin-tags">
-                {(
-                  selectedProperty.amenities ||
-                  []
-                ).map(
-                  (amenity) => (
-                    <span
-                      key={
-                        amenity
-                      }
-                    >
-                      {amenity}
-                    </span>
-                  )
-                )}
-              </div>
+              {Array.isArray(
+                selectedProperty.amenities
+              ) &&
+              selectedProperty
+                .amenities.length >
+                0 ? (
+                <div className="property-admin-tags">
+                  {selectedProperty
+                    .amenities.map(
+                      (amenity) => (
+                        <span
+                          key={
+                            amenity
+                          }
+                        >
+                          {amenity}
+                        </span>
+                      )
+                    )}
+                </div>
+              ) : (
+                <p>
+                  No amenities provided.
+                </p>
+              )}
             </div>
 
             <div className="property-admin-detail-section">
               <h3>
-                Approval
-                information
+                Approval information
               </h3>
 
               <p>
                 <strong>
                   Status:
                 </strong>{" "}
+
                 {
                   selectedProperty.approvalStatus
                 }
@@ -1302,6 +1387,7 @@ function PropertyAdmin() {
                   <strong>
                     Note:
                   </strong>{" "}
+
                   {
                     selectedProperty.approvalNote
                   }
@@ -1311,9 +1397,9 @@ function PropertyAdmin() {
               {selectedProperty.rejectionReason && (
                 <p>
                   <strong>
-                    Rejection
-                    reason:
+                    Rejection reason:
                   </strong>{" "}
+
                   {
                     selectedProperty.rejectionReason
                   }
@@ -1339,9 +1425,9 @@ function PropertyAdmin() {
             }
             onMouseDown={(
               event
-            ) =>
-              event.stopPropagation()
-            }
+            ) => {
+              event.stopPropagation();
+            }}
           >
             <button
               type="button"
@@ -1384,8 +1470,7 @@ function PropertyAdmin() {
                   event
                 ) =>
                   setRejectionReason(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 placeholder="Explain what must be corrected before approval"
@@ -1408,8 +1493,7 @@ function PropertyAdmin() {
                   event
                 ) =>
                   setRejectionNote(
-                    event.target
-                      .value
+                    event.target.value
                   )
                 }
                 placeholder="Optional administrator note"

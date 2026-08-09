@@ -1,174 +1,600 @@
 import "./FeaturedProperties.css";
-import { FaStar, FaHeart, FaMapMarkerAlt } from "react-icons/fa";
 
-const properties = [
-  {
-    id:1,
-    name:"River View Luxury Cottage",
-    location:"Near Hogenakkal Falls",
-    price:"₹3500",
-    rating:"4.9",
-    image:
-    "https://images.unsplash.com/photo-1601918774946-25832a4be0d6?w=800"
-  },
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
-  {
-    id:2,
-    name:"Nature Resort Stay",
-    location:"Pennagaram Road",
-    price:"₹4500",
-    rating:"4.8",
-    image:
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"
-  },
+import {
+  Link,
+} from "react-router-dom";
 
-  {
-    id:3,
-    name:"Family Homestay",
-    location:"Hogenakkal Village",
-    price:"₹2500",
-    rating:"4.7",
-    image:
-    "https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800"
-  },
+import {
+  FaArrowRight,
+  FaMapMarkerAlt,
+  FaStar,
+  FaUsers,
+} from "react-icons/fa";
 
-  {
-    id:4,
-    name:"Premium Riverside Villa",
-    location:"Cauvery River Side",
-    price:"₹6000",
-    rating:"5.0",
-    image:
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"
+import {
+  getFeaturedProperties,
+  getPropertyApiErrorMessage,
+} from "../../services/propertyService";
+
+import usePropertyRealtime from "../../hooks/usePropertyRealtime";
+
+/* =====================================
+   Get property cover image
+===================================== */
+
+const getCoverImage = (
+  property
+) => {
+  const images = Array.isArray(
+    property?.images
+  )
+    ? property.images
+    : [];
+
+  if (images.length === 0) {
+    return "";
   }
-];
 
+  return (
+    images.find(
+      (image) =>
+        image?.isCover &&
+        image?.url
+    )?.url ||
+    images.find(
+      (image) => image?.url
+    )?.url ||
+    ""
+  );
+};
 
-function FeaturedProperties(){
+/* =====================================
+   Format property price
+===================================== */
 
-return(
+const formatPrice = (
+  price
+) => {
+  return new Intl.NumberFormat(
+    "en-IN",
+    {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }
+  ).format(
+    Number(price) || 0
+  );
+};
 
-<section className="featured-section">
+/* =====================================
+   Format property rating
+===================================== */
 
+const formatRating = (
+  rating
+) => {
+  const numericRating =
+    Number(rating);
 
-<div className="featured-container">
+  if (
+    !Number.isFinite(
+      numericRating
+    ) ||
+    numericRating <= 0
+  ) {
+    return "New";
+  }
 
+  return numericRating.toFixed(1);
+};
 
-<div className="section-heading">
+/* =====================================
+   Get property location
+===================================== */
 
-<h2>
-Featured Homestays
-</h2>
+const getPropertyLocation = (
+  property
+) => {
+  const location =
+    property?.location;
 
-<p>
-Discover handpicked stays for your perfect vacation
-</p>
+  if (
+    typeof location === "string"
+  ) {
+    return location;
+  }
 
-</div>
+  const locationParts = [
+    location?.city,
+    location?.district,
+  ].filter(Boolean);
 
+  return (
+    locationParts.join(", ") ||
+    "Hogenakkal, Tamil Nadu"
+  );
+};
 
+/* =====================================
+   Extract properties from API response
+===================================== */
 
-<div className="property-grid">
+const extractProperties = (
+  response
+) => {
+  const propertyList =
+    response?.properties ||
+    response?.data?.properties ||
+    response?.data ||
+    [];
 
+  return Array.isArray(
+    propertyList
+  )
+    ? propertyList
+    : [];
+};
 
-{
-properties.map((property)=>(
+/* =====================================
+   Featured Properties component
+===================================== */
 
+function FeaturedProperties() {
+  const [
+    properties,
+    setProperties,
+  ] = useState([]);
 
-<div 
-className="property-card"
-key={property.id}
->
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
+  const [
+    refreshing,
+    setRefreshing,
+  ] = useState(false);
 
-<div className="image-box">
+  const [
+    error,
+    setError,
+  ] = useState("");
 
+  /* =====================================
+     Load featured properties
+  ===================================== */
 
-<img 
-src={property.image}
-alt={property.name}
-/>
+  const loadFeaturedProperties =
+    useCallback(
+      async (
+        showMainLoader = true
+      ) => {
+        try {
+          if (showMainLoader) {
+            setLoading(true);
+          } else {
+            setRefreshing(true);
+          }
 
+          setError("");
 
-<button className="wishlist">
+          const response =
+            await getFeaturedProperties(
+              6
+            );
 
-<FaHeart/>
+          const propertyList =
+            extractProperties(
+              response
+            );
 
-</button>
+          /*
+           * Additional frontend safety:
+           * only display approved, active
+           * and featured properties.
+           */
+          const validProperties =
+            propertyList.filter(
+              (property) => {
+                const approved =
+                  !property
+                    ?.approvalStatus ||
+                  property
+                    .approvalStatus ===
+                    "approved";
 
+                const active =
+                  property?.isActive !==
+                    false &&
+                  property?.status !==
+                    "inactive";
 
-</div>
+                const featured =
+                  property
+                    ?.isFeatured !==
+                  false;
 
+                return (
+                  approved &&
+                  active &&
+                  featured
+                );
+              }
+            );
 
+          setProperties(
+            validProperties
+          );
+        } catch (
+          requestError
+        ) {
+          const message =
+            getPropertyApiErrorMessage(
+              requestError,
+              "Unable to load featured properties."
+            );
 
-<div className="property-content">
+          console.error(
+            "Load featured properties error:",
+            requestError
+          );
 
+          setError(message);
+        } finally {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      },
+      []
+    );
 
-<div className="rating">
+  /* =====================================
+     Initial API request
+  ===================================== */
 
-<FaStar/>
+  useEffect(() => {
+    loadFeaturedProperties();
+  }, [
+    loadFeaturedProperties,
+  ]);
 
-<span>
-{property.rating}
-</span>
+  /* =====================================
+     Realtime property updates
+  ===================================== */
 
-</div>
+  usePropertyRealtime(
+    useCallback(
+      (eventData) => {
+        console.log(
+          "Featured property realtime update:",
+          eventData
+        );
 
+        /*
+         * Refetching is safer than manually
+         * modifying state because the backend
+         * decides which properties are public
+         * and featured.
+         */
+        loadFeaturedProperties(
+          false
+        );
+      },
+      [
+        loadFeaturedProperties,
+      ]
+    )
+  );
 
-<h3>
-{property.name}
-</h3>
+  /* =====================================
+     Loading state
+  ===================================== */
 
+  if (loading) {
+    return (
+      <section className="featured-section">
+        <div className="featured-container">
+          <header className="featured-heading">
+            <span>
+              FEATURED STAYS
+            </span>
 
-<p className="location">
+            <h2>
+              Recommended Properties
+            </h2>
 
-<FaMapMarkerAlt/>
+            <p>
+              Loading verified stays near
+              Hogenakkal Falls.
+            </p>
+          </header>
 
-{property.location}
+          <div className="featured-loading-grid">
+            {Array.from({
+              length: 3,
+            }).map(
+              (_, index) => (
+                <div
+                  className="featured-skeleton"
+                  key={index}
+                >
+                  <div className="featured-skeleton-image" />
 
-</p>
+                  <div className="featured-skeleton-content">
+                    <span />
+                    <strong />
+                    <p />
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
+  /* =====================================
+     Error state
+  ===================================== */
 
-<div className="bottom">
+  if (
+    error &&
+    properties.length === 0
+  ) {
+    return (
+      <section className="featured-section">
+        <div className="featured-container">
+          <header className="featured-heading">
+            <span>
+              FEATURED STAYS
+            </span>
 
+            <h2>
+              Recommended Properties
+            </h2>
+          </header>
 
-<h4>
-{property.price}
-<span>
- / night
-</span>
-</h4>
+          <div className="featured-state-card">
+            <h3>
+              Featured stays are
+              temporarily unavailable
+            </h3>
 
+            <p>
+              {error}
+            </p>
 
-<button>
-View Details
-</button>
+            <button
+              type="button"
+              onClick={() =>
+                loadFeaturedProperties()
+              }
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
+  /* =====================================
+     Empty state
+  ===================================== */
 
-</div>
+  if (
+    properties.length === 0
+  ) {
+    return null;
+  }
 
+  return (
+    <section
+      className="featured-section"
+      aria-labelledby="featured-properties-title"
+    >
+      <div className="featured-container">
+        {/* Section heading */}
 
-</div>
+        <header className="featured-heading">
+          <div>
+            <span>
+              FEATURED STAYS
+            </span>
 
+            <h2 id="featured-properties-title">
+              Recommended Properties
+            </h2>
+          </div>
 
-</div>
+          <div className="featured-heading-action">
+            {refreshing && (
+              <small>
+                Updating stays...
+              </small>
+            )}
 
+            <Link to="/explore">
+              View All Stays
 
-))
+              <FaArrowRight
+                aria-hidden="true"
+              />
+            </Link>
+          </div>
+        </header>
+
+        {/* Property cards */}
+
+        <div className="featured-grid">
+          {properties.map(
+            (property) => {
+              const coverImage =
+                getCoverImage(
+                  property
+                );
+
+              const rating =
+                formatRating(
+                  property
+                    ?.averageRating
+                );
+
+              return (
+                <article
+                  className="featured-card"
+                  key={property._id}
+                >
+                  <Link
+                    className="featured-card-image"
+                    to={`/property/${property._id}`}
+                    aria-label={`View ${property.title}`}
+                  >
+                    {coverImage ? (
+                      <img
+                        src={coverImage}
+                        alt={
+                          property.title
+                        }
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="featured-image-placeholder">
+                        <strong>
+                          HHS
+                        </strong>
+
+                        <span>
+                          Property image
+                          coming soon
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="featured-image-overlay" />
+
+                    <span className="featured-property-type">
+                      {property
+                        .propertyType ||
+                        "Stay"}
+                    </span>
+
+                    <span className="featured-badge">
+                      Featured
+                    </span>
+                  </Link>
+
+                  <div className="featured-card-content">
+                    <div className="featured-location">
+                      <FaMapMarkerAlt
+                        aria-hidden="true"
+                      />
+
+                      <span>
+                        {getPropertyLocation(
+                          property
+                        )}
+                      </span>
+                    </div>
+
+                    <Link
+                      className="featured-title-link"
+                      to={`/property/${property._id}`}
+                    >
+                      <h3>
+                        {property.title}
+                      </h3>
+                    </Link>
+
+                    {property.description && (
+                      <p className="featured-description">
+                        {
+                          property.description
+                        }
+                      </p>
+                    )}
+
+                    <div className="featured-card-meta">
+                      <div className="featured-guests">
+                        <FaUsers
+                          aria-hidden="true"
+                        />
+
+                        <span>
+                          Up to{" "}
+                          {Number(
+                            property.maxGuests
+                          ) || 1}{" "}
+                          guests
+                        </span>
+                      </div>
+
+                      <div className="featured-rating">
+                        <FaStar
+                          aria-hidden="true"
+                        />
+
+                        <span>
+                          {rating}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="featured-card-footer">
+                      <div className="featured-price">
+                        <strong>
+                          {formatPrice(
+                            property
+                              .pricePerNight
+                          )}
+                        </strong>
+
+                        <span>
+                          / night
+                        </span>
+                      </div>
+
+                      <Link
+                        className="featured-view-button"
+                        to={`/property/${property._id}`}
+                      >
+                        View Stay
+
+                        <FaArrowRight
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              );
+            }
+          )}
+        </div>
+
+        {/* Mobile view-all button */}
+
+        <div className="featured-mobile-action">
+          <Link to="/explore">
+            Explore All Properties
+
+            <FaArrowRight
+              aria-hidden="true"
+            />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
 }
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-)
-
-}
-
 
 export default FeaturedProperties;

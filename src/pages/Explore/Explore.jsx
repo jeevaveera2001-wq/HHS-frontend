@@ -17,6 +17,8 @@ import {
   getPropertyApiErrorMessage,
 } from "../../services/propertyService";
 
+import usePropertyRealtime from "../../hooks/usePropertyRealtime";
+
 import "./Explore.css";
 
 const INITIAL_FILTERS = {
@@ -41,23 +43,17 @@ const PROPERTY_TYPES = [
 
 const PAGE_SIZE = 9;
 
-const getCoverImage = (
-  property
-) => {
+const getCoverImage = (property) => {
   if (
-    !Array.isArray(
-      property?.images
-    ) ||
-    property.images.length ===
-      0
+    !Array.isArray(property?.images) ||
+    property.images.length === 0
   ) {
     return "";
   }
 
   const coverImage =
     property.images.find(
-      (image) =>
-        image.isCover
+      (image) => image.isCover
     );
 
   return (
@@ -67,9 +63,7 @@ const getCoverImage = (
   );
 };
 
-const formatPrice = (
-  price
-) => {
+const formatPrice = (price) => {
   return new Intl.NumberFormat(
     "en-IN",
     {
@@ -77,14 +71,10 @@ const formatPrice = (
       currency: "INR",
       maximumFractionDigits: 0,
     }
-  ).format(
-    Number(price) || 0
-  );
+  ).format(Number(price) || 0);
 };
 
-const formatRating = (
-  rating
-) => {
+const formatRating = (rating) => {
   const numericRating =
     Number(rating);
 
@@ -141,86 +131,120 @@ function Explore() {
   ] = useState(0);
 
   const loadProperties =
-    useCallback(async () => {
-      try {
-        setLoading(true);
-        setError("");
+    useCallback(
+      async (
+        showLoader = true
+      ) => {
+        try {
+          if (showLoader) {
+            setLoading(true);
+          }
 
-        const data =
-          await getProperties({
-            ...appliedFilters,
+          setError("");
 
-            page:
-              currentPage,
+          const data =
+            await getProperties({
+              ...appliedFilters,
 
-            limit:
-              PAGE_SIZE,
-          });
+              page:
+                currentPage,
 
-        const responsePagination =
-          data?.pagination ||
-          {};
+              limit:
+                PAGE_SIZE,
+            });
 
-        const responseTotalPages =
-          Number(
-            responsePagination.totalPages ??
+          const responsePagination =
+            data?.pagination ||
+            {};
+
+          const responseTotalPages =
+            Number(
+              responsePagination
+                .totalPages ??
               data?.totalPages ??
               0
-          );
+            );
 
-        const responseTotalProperties =
-          Number(
-            responsePagination.totalProperties ??
+          const responseTotalProperties =
+            Number(
+              responsePagination
+                .totalProperties ??
               data?.totalProperties ??
               data?.count ??
               0
+            );
+
+          setProperties(
+            Array.isArray(
+              data?.properties
+            )
+              ? data.properties
+              : []
           );
 
-        setProperties(
-          Array.isArray(
-            data?.properties
-          )
-            ? data.properties
-            : []
-        );
-
-        setTotalPages(
-          Math.max(
-            responseTotalPages,
-            1
-          )
-        );
-
-        setTotalProperties(
-          responseTotalProperties
-        );
-      } catch (
-        requestError
-      ) {
-        const message =
-          getPropertyApiErrorMessage(
-            requestError,
-            "Unable to load properties."
+          setTotalPages(
+            Math.max(
+              responseTotalPages,
+              1
+            )
           );
 
-        setError(message);
+          setTotalProperties(
+            responseTotalProperties
+          );
+        } catch (
+          requestError
+        ) {
+          const message =
+            getPropertyApiErrorMessage(
+              requestError,
+              "Unable to load properties."
+            );
 
-        setProperties([]);
+          setError(message);
 
-        setTotalPages(1);
+          setProperties([]);
 
-        setTotalProperties(
-          0
-        );
+          setTotalPages(1);
 
-        toast.error(message);
-      } finally {
-        setLoading(false);
-      }
-    }, [
-      appliedFilters,
-      currentPage,
-    ]);
+          setTotalProperties(0);
+
+          toast.error(message);
+        } finally {
+          if (showLoader) {
+            setLoading(false);
+          }
+        }
+      },
+      [
+        appliedFilters,
+        currentPage,
+      ]
+    );
+
+  /*
+   * Refresh approved properties whenever
+   * the backend broadcasts a property
+   * create, update, approval or deletion.
+   *
+   * false prevents the complete loading
+   * screen from appearing during a
+   * background real-time refresh.
+   */
+
+  const handleRealtimePropertyChange =
+    useCallback(() => {
+      loadProperties(false);
+    }, [loadProperties]);
+
+  usePropertyRealtime(
+    handleRealtimePropertyChange
+  );
+
+  /*
+   * Initial loading and loading whenever
+   * filters or pagination changes.
+   */
 
   useEffect(() => {
     loadProperties();
@@ -237,7 +261,6 @@ function Explore() {
     setFilters(
       (previous) => ({
         ...previous,
-
         [name]: value,
       })
     );
@@ -295,17 +318,13 @@ function Explore() {
   ) => {
     if (
       nextPage < 1 ||
-      nextPage >
-        totalPages ||
-      nextPage ===
-        currentPage
+      nextPage > totalPages ||
+      nextPage === currentPage
     ) {
       return;
     }
 
-    setCurrentPage(
-      nextPage
-    );
+    setCurrentPage(nextPage);
 
     window.requestAnimationFrame(
       () => {
@@ -329,13 +348,12 @@ function Explore() {
       <section className="explore-hero">
         <div>
           <span className="explore-badge">
-            Stay near
-            Hogenakkal Falls
+            Stay near Hogenakkal
+            Falls
           </span>
 
           <h1>
-            Find your perfect
-            stay
+            Find your perfect stay
           </h1>
 
           <p>
@@ -536,13 +554,11 @@ function Explore() {
               </option>
 
               <option value="priceLow">
-                Price: low to
-                high
+                Price: low to high
               </option>
 
               <option value="priceHigh">
-                Price: high to
-                low
+                Price: high to low
               </option>
 
               <option value="rating">
@@ -581,8 +597,7 @@ function Explore() {
             </span>
 
             <h2>
-              Available
-              properties
+              Available properties
             </h2>
 
             <p>
@@ -635,8 +650,8 @@ function Explore() {
 
             <button
               type="button"
-              onClick={
-                loadProperties
+              onClick={() =>
+                loadProperties()
               }
             >
               Try again
@@ -650,14 +665,13 @@ function Explore() {
             </div>
 
             <h2>
-              No properties
-              found
+              No properties found
             </h2>
 
             <p>
               Try changing your
-              search, price or
-              guest filters.
+              search, price or guest
+              filters.
             </p>
 
             <button
@@ -729,10 +743,12 @@ function Explore() {
                           >
                             ⌖
                           </span>{" "}
+
                           {property
                             .location
                             ?.city ||
                             "Hogenakkal"}
+
                           {property
                             .location
                             ?.district
@@ -781,8 +797,7 @@ function Explore() {
                           {
                             property.totalRooms
                           }{" "}
-                          rooms
-                          available
+                          rooms available
                         </div>
 
                         <div className="property-card-footer">
@@ -817,8 +832,10 @@ function Explore() {
                             >
                               ★
                             </span>{" "}
+
                             {formatRating(
-                              property.rating
+                              property.rating ??
+                                property.averageRating
                             )}
                           </div>
                         </div>
@@ -827,8 +844,7 @@ function Explore() {
                           className="view-property-button"
                           to={`/property/${property._id}`}
                         >
-                          View
-                          property
+                          View property
                         </Link>
                       </div>
                     </article>
