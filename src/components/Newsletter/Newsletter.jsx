@@ -8,7 +8,7 @@ import {
   FaHotel,
   FaKey,
   FaRegBuilding,
-  FaUserTie,
+  FaRegHandshake,
 } from "react-icons/fa";
 
 import {
@@ -57,15 +57,15 @@ const propertyTypes = [
 function Newsletter() {
   return (
     <section
-      className="partner-section"
+      className="newsletter-section"
       aria-labelledby="partner-title"
     >
-      <div className="partner-container">
+      <div className="newsletter-container">
         {/* Main content */}
 
-        <div className="partner-content">
-          <span className="partner-eyebrow">
-            <FaUserTie
+        <div className="newsletter-content">
+          <span className="newsletter-eyebrow">
+            <FaRegHandshake
               aria-hidden="true"
             />
 
@@ -79,7 +79,7 @@ function Newsletter() {
             </span>
           </h2>
 
-          <p className="partner-description">
+          <p className="newsletter-description">
             Join Hogenakkal Home Stays and
             connect with travellers searching
             for homestays, cottages, resorts,
@@ -87,11 +87,11 @@ function Newsletter() {
             Hogenakkal Falls.
           </p>
 
-          <div className="partner-benefits">
+          <div className="newsletter-benefits">
             {ownerBenefits.map(
               (benefit) => (
                 <div
-                  className="partner-benefit"
+                  className="newsletter-benefit"
                   key={benefit}
                 >
                   <FaCheckCircle
@@ -106,10 +106,10 @@ function Newsletter() {
             )}
           </div>
 
-          <div className="partner-actions">
+          <div className="newsletter-actions">
             <Link
               to="/add-property"
-              className="partner-primary-button"
+              className="newsletter-primary-button"
             >
               <FaKey
                 aria-hidden="true"
@@ -120,21 +120,20 @@ function Newsletter() {
               </span>
 
               <FaArrowRight
-                className="partner-arrow"
                 aria-hidden="true"
               />
             </Link>
 
             <Link
               to="/contact"
-              className="partner-secondary-button"
+              className="newsletter-secondary-button"
             >
-              Learn How It Works
+              Talk to Our Team
             </Link>
           </div>
 
-          <p className="partner-login-note">
-            Already registered as an owner?{" "}
+          <p className="newsletter-owner-login">
+            Already registered as an owner?
 
             <Link to="/owner">
               Go to Owner Dashboard
@@ -144,96 +143,80 @@ function Newsletter() {
 
         {/* Partnership card */}
 
-        <div className="partner-visual">
-          <div className="partner-card">
-            <header className="partner-card-header">
-              <div className="partner-logo">
-                <img
-                  src={hhsLogo}
-                  alt="Hogenakkal Home Stays logo"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-
-              <div>
-                <span>
-                  HOGENAKKAL HOME STAYS
-                </span>
-
-                <h3>
-                  Grow With HHS
-                </h3>
-              </div>
-            </header>
-
-            <p className="partner-card-description">
-              We welcome eligible accommodation
-              providers serving travellers around
-              Hogenakkal and Dharmapuri.
-            </p>
-
-            <div className="partner-property-types">
-              {propertyTypes.map(
-                ({
-                  icon: PropertyIcon,
-                  title,
-                }) => (
-                  <article
-                    className="partner-property-type"
-                    key={title}
-                  >
-                    <div>
-                      <PropertyIcon
-                        aria-hidden="true"
-                      />
-                    </div>
-
-                    <strong>
-                      {title}
-                    </strong>
-                  </article>
-                )
-              )}
+        <div className="newsletter-partner-card">
+          <header className="newsletter-card-header">
+            <div className="newsletter-logo">
+              <img
+                src={hhsLogo}
+                alt="Hogenakkal Home Stays logo"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
-            <div className="partner-card-footer">
-              <div>
-                <span className="partner-status-dot" />
+            <div>
+              <span>
+                HOGENAKKAL HOME STAYS
+              </span>
 
-                <span>
-                  Owner registrations open
-                </span>
-              </div>
+              <h3>
+                Grow With HHS
+              </h3>
 
-              <Link to="/add-property">
+              <p>
+                List and manage your
+                accommodation on one trusted
+                local platform.
+              </p>
+            </div>
+          </header>
+
+          <div className="newsletter-property-types">
+            {propertyTypes.map(
+              ({
+                icon: PropertyIcon,
+                title,
+              }) => (
+                <article
+                  className="newsletter-property-type"
+                  key={title}
+                >
+                  <div>
+                    <PropertyIcon
+                      aria-hidden="true"
+                    />
+                  </div>
+
+                  <span>
+                    {title}
+                  </span>
+                </article>
+              )
+            )}
+          </div>
+
+          <footer className="newsletter-card-footer">
+            <div>
+              <span
+                className="newsletter-status-dot"
+                aria-hidden="true"
+              />
+
+              <span>
+                Owner registrations open
+              </span>
+            </div>
+
+            <Link to="/add-property">
+              <span>
                 Get Started
-                <FaArrowRight
-                  aria-hidden="true"
-                />
-              </Link>
-            </div>
-          </div>
+              </span>
 
-          <div className="partner-floating-card partner-floating-card-one">
-            <strong>
-              Verified Listings
-            </strong>
-
-            <span>
-              Build traveller confidence
-            </span>
-          </div>
-
-          <div className="partner-floating-card partner-floating-card-two">
-            <strong>
-              Local Platform
-            </strong>
-
-            <span>
-              Focused on Hogenakkal
-            </span>
-          </div>
+              <FaArrowRight
+                aria-hidden="true"
+              />
+            </Link>
+          </footer>
         </div>
       </div>
     </section>
