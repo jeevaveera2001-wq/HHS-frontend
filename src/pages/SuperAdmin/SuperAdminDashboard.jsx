@@ -70,6 +70,14 @@ const panelItems = [
     path: "/support",
   },
   {
+  icon: "📨",
+  title: "Enquiries",
+  description:
+    "View and manage website contact enquiries.",
+  path:
+    "/super-admin/enquiries",
+},
+  {
     icon: "💳",
     title: "Finance",
     description:

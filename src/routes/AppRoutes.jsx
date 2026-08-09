@@ -675,6 +675,14 @@ function AppRoutes() {
             }
           />
 
+          <Route
+  path="/super-admin/enquiries"
+  element={createRoleElement(
+    EnquiryManagement,
+    ["super_admin"]
+  )}
+/>
+
           {/* Add property */}
 
           <Route
