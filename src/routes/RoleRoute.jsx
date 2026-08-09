@@ -10,17 +10,25 @@ import getDashboardPath, {
 } from "../utils/getDashboardPath";
 
 /* =====================================
+   Read stored token
+===================================== */
+
+const getStoredToken = () => {
+  return (
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    ""
+  );
+};
+
+/* =====================================
    Safely read stored user
 ===================================== */
 
 const getStoredUser = () => {
   const storedValue =
-    localStorage.getItem(
-      "user"
-    ) ||
-    sessionStorage.getItem(
-      "user"
-    );
+    localStorage.getItem("user") ||
+    sessionStorage.getItem("user");
 
   if (!storedValue) {
     return null;
@@ -28,25 +36,20 @@ const getStoredUser = () => {
 
   try {
     const parsedUser =
-      JSON.parse(
-        storedValue
-      );
+      JSON.parse(storedValue);
 
     if (
       !parsedUser ||
-      typeof parsedUser !==
-        "object"
+      typeof parsedUser !== "object"
     ) {
       return null;
     }
 
     return {
       ...parsedUser,
-
-      role:
-        normalizeRole(
-          parsedUser.role
-        ),
+      role: normalizeRole(
+        parsedUser.role
+      ),
     };
   } catch (error) {
     console.error(
@@ -54,40 +57,78 @@ const getStoredUser = () => {
       error
     );
 
-    localStorage.removeItem(
-      "token"
-    );
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-    localStorage.removeItem(
-      "user"
-    );
-
-    sessionStorage.removeItem(
-      "token"
-    );
-
-    sessionStorage.removeItem(
-      "user"
-    );
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
 
     return null;
   }
 };
 
 /* =====================================
-   Read stored token
+   Loading screen
 ===================================== */
 
-const getStoredToken = () => {
+function AuthenticationLoading() {
   return (
-    localStorage.getItem(
-      "token"
-    ) ||
-    sessionStorage.getItem(
-      "token"
-    )
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        padding: "24px",
+        background:
+          "linear-gradient(135deg, #f8fafc, #ecfeff)",
+      }}
+    >
+      <section
+        style={{
+          display: "grid",
+          justifyItems: "center",
+          gap: "14px",
+          color: "#0f172a",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "44px",
+            height: "44px",
+            border:
+              "4px solid #cffafe",
+            borderTopColor: "#0891b2",
+            borderRadius: "50%",
+            animation:
+              "role-route-spin 0.75s linear infinite",
+          }}
+        />
+
+        <style>
+          {`
+            @keyframes role-route-spin {
+              to {
+                transform: rotate(360deg);
+              }
+            }
+          `}
+        </style>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#475569",
+            fontSize: "14px",
+            fontWeight: 700,
+          }}
+        >
+          Checking your account...
+        </p>
+      </section>
+    </main>
   );
-};
+}
 
 /* =====================================
    Role-protected route
@@ -97,31 +138,30 @@ function RoleRoute({
   children,
   allowedRoles = [],
 }) {
-  const location =
-    useLocation();
-
-  const authContext =
-    useAuth();
-
-  const contextUser =
-    authContext?.user ||
-    null;
-
-  const contextToken =
-    authContext?.token ||
-    null;
+  const location = useLocation();
+  const authContext = useAuth();
 
   const authLoading =
-    authContext?.authLoading ===
-    true;
+    authContext?.authLoading === true;
 
   /*
-   * AuthContext state updates asynchronously.
-   * Login writes authentication to storage
-   * synchronously, so storage is used as a
-   * temporary fallback during navigation.
+   * Never redirect while AuthContext is
+   * still restoring authentication.
    */
+  if (authLoading) {
+    return <AuthenticationLoading />;
+  }
 
+  const contextToken =
+    authContext?.token || "";
+
+  const contextUser =
+    authContext?.user || null;
+
+  /*
+   * Storage fallback supports page refresh
+   * and direct protected-route navigation.
+   */
   const token =
     contextToken ||
     getStoredToken();
@@ -130,21 +170,7 @@ function RoleRoute({
     contextUser ||
     getStoredUser();
 
-  if (
-    authLoading &&
-    !token
-  ) {
-    return (
-      <main className="route-loading">
-        Loading...
-      </main>
-    );
-  }
-
-  if (
-    !token ||
-    !user
-  ) {
+  if (!token || !user) {
     return (
       <Navigate
         to="/login"
@@ -159,20 +185,17 @@ function RoleRoute({
   }
 
   const normalizedRole =
-    normalizeRole(
-      user.role
-    );
+    normalizeRole(user.role);
 
   const normalizedAllowedRoles =
-    allowedRoles.map(
-      (role) => {
-        return normalizeRole(
-          role
-        );
-      }
-    );
+    allowedRoles
+      .map((role) =>
+        normalizeRole(role)
+      )
+      .filter(Boolean);
 
   if (
+    normalizedAllowedRoles.length > 0 &&
     !normalizedAllowedRoles.includes(
       normalizedRole
     )
