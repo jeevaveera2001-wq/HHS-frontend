@@ -15,6 +15,7 @@ import RoleRoute from "./RoleRoute";
 
 import BrandLogo from "../components/BrandLogo/BrandLogo";
 
+
 /* =====================================
    Layout
 ===================================== */
@@ -81,10 +82,9 @@ const VerifyEmail = lazy(() =>
 
 const RequestOwnerAccess = lazy(() =>
   import(
-    "../pages/RequestOwnerAccess/RequestOwnerAccess"
+    "../pages/RequestOwnerAccess/RequestOwnerAccess.jsx"
   )
 );
-
 /* =====================================
    Legal pages
 ===================================== */
