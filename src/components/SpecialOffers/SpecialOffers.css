@@ -1,437 +1,469 @@
 /* =========================================
-   OWNER PARTNERSHIP SECTION
+   SPECIAL OFFERS SECTION
 ========================================= */
 
-.newsletter-section {
-  padding: 95px 24px;
+.offers-section {
+  --offer-dark: #071827;
+  --offer-text: #102235;
+  --offer-muted: #64748b;
+
+  padding: 115px 24px;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
-  color: #ffffff;
   background:
     radial-gradient(
-      circle at 10% 10%,
-      rgba(34, 211, 238, 0.2),
-      transparent 26rem
+      circle at 8% 12%,
+      rgba(34, 211, 238, 0.12),
+      transparent 27rem
     ),
     radial-gradient(
-      circle at 95% 95%,
-      rgba(45, 212, 191, 0.16),
+      circle at 92% 88%,
+      rgba(167, 139, 250, 0.1),
       transparent 28rem
     ),
     linear-gradient(
-      135deg,
-      #062f3d 0%,
-      #087f8c 52%,
-      #0284c7 100%
+      180deg,
+      #ffffff 0%,
+      #f5f9fc 100%
     );
 }
 
-.newsletter-section::before {
+/* Decorative background pattern */
+
+.offers-section::before {
   content: "";
-  width: 380px;
-  height: 380px;
   position: absolute;
-  top: -240px;
-  right: -100px;
-  border: 1px solid
-    rgba(255, 255, 255, 0.12);
-  border-radius: 50%;
+  inset: 0;
+  z-index: -2;
+  opacity: 0.22;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      rgba(8, 145, 178, 0.1)
+        1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(8, 145, 178, 0.1)
+        1px,
+      transparent 1px
+    );
+  background-size: 58px 58px;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 18%,
+      black 82%,
+      transparent
+    );
 }
 
-.newsletter-section::after {
+.offers-section::after {
+  content: "";
+  width: 420px;
+  height: 420px;
+  position: absolute;
+  top: -280px;
+  right: -130px;
+  z-index: -1;
+  border: 1px solid
+    rgba(8, 145, 178, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 70px
+      rgba(8, 145, 178, 0.025),
+    0 0 0 140px
+      rgba(8, 145, 178, 0.018);
+}
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.offers-container {
+  width: min(1400px, 100%);
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================
+   SECTION HEADING
+========================================= */
+
+.offers-heading {
+  max-width: 760px;
+  margin: 0 auto 60px;
+  text-align: center;
+}
+
+.offers-heading::before {
+  content: "LIMITED-TIME BENEFITS";
+  width: fit-content;
+  min-height: 35px;
+  margin: 0 auto 15px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid
+    rgba(8, 145, 178, 0.15);
+  border-radius: 999px;
+  color: #0891b2;
+  background: #ecfeff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+}
+
+.offers-heading h2 {
+  margin: 0;
+  color: var(--offer-dark);
+  font-size: clamp(
+    40px,
+    5vw,
+    58px
+  );
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -2.2px;
+  text-wrap: balance;
+}
+
+.offers-heading p {
+  max-width: 650px;
+  margin: 17px auto 0;
+  color: var(--offer-muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* =========================================
+   OFFERS GRID
+========================================= */
+
+.offers-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  perspective: 1400px;
+}
+
+/* =========================================
+   3D OFFER CARD
+========================================= */
+
+.offer-card {
+  min-width: 0;
+  min-height: 375px;
+  padding: 38px 32px 31px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid
+    rgba(255, 255, 255, 0.28);
+  border-radius: 28px;
+  color: #ffffff;
+  box-shadow:
+    0 25px 55px
+      rgba(15, 23, 42, 0.18),
+    0 8px 20px
+      rgba(15, 23, 42, 0.12),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.25);
+  transform-style: preserve-3d;
+  transform:
+    perspective(1100px)
+    rotateX(0deg)
+    rotateY(0deg)
+    translateY(0);
+  transition:
+    transform 0.45s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    box-shadow 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.offer-card:hover {
+  z-index: 3;
+  border-color:
+    rgba(255, 255, 255, 0.5);
+  transform:
+    perspective(1100px)
+    rotateX(2deg)
+    rotateY(-2deg)
+    translateY(-14px)
+    scale(1.025);
+  box-shadow:
+    22px 35px 75px
+      rgba(15, 23, 42, 0.26),
+    0 15px 30px
+      rgba(15, 23, 42, 0.16),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.35);
+}
+
+/* Glass highlight */
+
+.offer-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.22)
+        0%,
+      rgba(255, 255, 255, 0.04)
+        32%,
+      transparent 55%
+    );
+}
+
+/* Large decorative sphere */
+
+.offer-card::after {
   content: "";
   width: 230px;
   height: 230px;
   position: absolute;
-  bottom: -150px;
-  left: -70px;
+  top: -95px;
+  right: -80px;
+  z-index: -1;
   border: 1px solid
-    rgba(255, 255, 255, 0.12);
+    rgba(255, 255, 255, 0.25);
   border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 35% 35%,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.06)
+        46%,
+      transparent 70%
+    );
+  box-shadow:
+    inset -20px -20px 45px
+      rgba(0, 0, 0, 0.08),
+    0 15px 35px
+      rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.6s ease;
 }
 
-.newsletter-container {
-  width: min(1300px, 100%);
-  margin: auto;
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns:
-    minmax(0, 1.1fr)
-    minmax(390px, 0.9fr);
-  align-items: center;
-  gap: 75px;
+.offer-card:hover::after {
+  transform:
+    translate(-12px, 15px)
+    scale(1.08);
 }
 
 /* =========================================
-   CONTENT
+   CARD COLOURS
 ========================================= */
 
-.newsletter-content {
-  min-width: 0;
+.offer-card.blue {
+  background:
+    radial-gradient(
+      circle at 90% 8%,
+      rgba(125, 211, 252, 0.4),
+      transparent 16rem
+    ),
+    linear-gradient(
+      145deg,
+      #075985 0%,
+      #0284c7 48%,
+      #06b6d4 100%
+    );
 }
 
-.newsletter-eyebrow {
+.offer-card.green {
+  background:
+    radial-gradient(
+      circle at 90% 8%,
+      rgba(167, 243, 208, 0.35),
+      transparent 16rem
+    ),
+    linear-gradient(
+      145deg,
+      #065f46 0%,
+      #059669 48%,
+      #14b8a6 100%
+    );
+}
+
+.offer-card.purple {
+  background:
+    radial-gradient(
+      circle at 90% 8%,
+      rgba(216, 180, 254, 0.4),
+      transparent 16rem
+    ),
+    linear-gradient(
+      145deg,
+      #581c87 0%,
+      #7c3aed 48%,
+      #c026d3 100%
+    );
+}
+
+/* =========================================
+   DISCOUNT BADGE
+========================================= */
+
+.discount {
   width: fit-content;
-  min-height: 39px;
-  padding: 8px 15px;
+  min-height: 42px;
+  margin-bottom: 29px;
+  padding: 9px 14px;
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 9px;
   border: 1px solid
-    rgba(255, 255, 255, 0.23);
+    rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  color: #ecfeff;
-  background:
-    rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter:
-    blur(12px);
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.4px;
-}
-
-.newsletter-eyebrow svg {
-  color: #99f6e4;
-  font-size: 16px;
-}
-
-.newsletter-content h2 {
-  max-width: 720px;
-  margin: 23px 0 0;
   color: #ffffff;
-  font-size: clamp(
-    43px,
-    5vw,
-    66px
-  );
+  background:
+    rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter:
+    blur(13px);
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.2),
+    0 10px 25px
+      rgba(2, 12, 22, 0.1);
+  font-size: 13px;
   font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -2.5px;
+  transform:
+    translateZ(28px);
 }
 
-.newsletter-content h2 span {
-  display: block;
-  color: #a5f3fc;
-}
-
-.newsletter-description {
-  max-width: 650px;
-  margin: 23px 0 0;
-  color: rgba(
-    255,
-    255,
-    255,
-    0.82
-  );
-  font-size: 16px;
-  line-height: 1.85;
-}
-
-/* =========================================
-   BENEFITS
-========================================= */
-
-.newsletter-benefits {
-  margin-top: 30px;
-  display: grid;
-  gap: 15px;
-}
-
-.newsletter-benefit {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  color: #f0fdfa;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.55;
-}
-
-.newsletter-benefit svg {
-  margin-top: 2px;
-  flex-shrink: 0;
-  color: #99f6e4;
+.discount svg {
+  color: #fef3c7;
   font-size: 18px;
 }
 
 /* =========================================
-   ACTIONS
+   CARD CONTENT
 ========================================= */
 
-.newsletter-actions {
-  margin-top: 34px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 13px;
+.offer-card h3 {
+  max-width: 310px;
+  margin: 0 0 14px;
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  font-size: clamp(
+    27px,
+    2.2vw,
+    34px
+  );
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  transform:
+    translateZ(34px);
 }
 
-.newsletter-primary-button,
-.newsletter-secondary-button {
-  min-height: 52px;
-  padding: 0 21px;
+.offer-card p {
+  max-width: 330px;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.83
+  );
+  font-size: 14px;
+  line-height: 1.75;
+  transform:
+    translateZ(22px);
+}
+
+/* =========================================
+   CARD BUTTON
+========================================= */
+
+.offer-card button,
+.offer-card a {
+  width: fit-content;
+  min-height: 48px;
+  margin-top: auto;
+  padding: 0 19px;
+  position: relative;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  border: 1px solid transparent;
-  border-radius: 14px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.7);
+  border-radius: 13px;
+  color: #0f2538;
+  background:
+    rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 13px 30px
+      rgba(2, 12, 22, 0.17),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 900;
+  transform:
+    translateZ(40px);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
     background 0.25s ease;
 }
 
-.newsletter-primary-button {
-  color: #083344;
+.offer-card button:hover,
+.offer-card a:hover {
+  transform:
+    translateZ(40px)
+    translateY(-3px);
   background: #ffffff;
   box-shadow:
-    0 15px 35px
-      rgba(2, 12, 22, 0.2);
+    0 18px 38px
+      rgba(2, 12, 22, 0.23);
 }
 
-.newsletter-secondary-button {
-  color: #ffffff;
-  border-color:
-    rgba(255, 255, 255, 0.32);
-  background:
-    rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter:
-    blur(12px);
-}
-
-.newsletter-primary-button:hover,
-.newsletter-secondary-button:hover {
-  transform: translateY(-3px);
-}
-
-.newsletter-primary-button:hover {
-  box-shadow:
-    0 20px 45px
-      rgba(2, 12, 22, 0.27);
-}
-
-.newsletter-secondary-button:hover {
-  background:
-    rgba(255, 255, 255, 0.17);
-}
-
-.newsletter-primary-button:focus-visible,
-.newsletter-secondary-button:focus-visible,
-.newsletter-owner-login a:focus-visible,
-.newsletter-card-footer a:focus-visible {
-  outline: 3px solid
-    rgba(165, 243, 252, 0.65);
-  outline-offset: 4px;
-}
-
-.newsletter-owner-login {
-  margin: 24px 0 0;
-  color: rgba(
-    255,
-    255,
-    255,
-    0.72
-  );
-  font-size: 12px;
-}
-
-.newsletter-owner-login a {
-  margin-left: 6px;
-  color: #a5f3fc;
-  text-decoration: none;
-  font-weight: 900;
-}
-
-/* =========================================
-   PARTNER CARD
-========================================= */
-
-.newsletter-partner-card {
-  overflow: hidden;
-  border: 1px solid
-    rgba(255, 255, 255, 0.5);
-  border-radius: 28px;
-  color: #102235;
-  background:
-    rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter:
-    blur(22px);
-  box-shadow:
-    0 30px 80px
-      rgba(2, 12, 22, 0.27);
-}
-
-.newsletter-card-header {
-  padding: 27px;
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  border-bottom: 1px solid
-    rgba(148, 163, 184, 0.18);
-}
-
-.newsletter-logo {
-  width: 78px;
-  height: 78px;
-  padding: 7px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: 20px;
-  background:
-    linear-gradient(
-      135deg,
-      #ecfeff,
-      #f0fdfa
-    );
-  box-shadow:
-    0 12px 30px
-      rgba(8, 145, 178, 0.17);
-}
-
-.newsletter-logo img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: contain;
-}
-
-.newsletter-card-header span {
-  color: #0891b2;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-
-.newsletter-card-header h3 {
-  margin: 4px 0 0;
-  color: #071827;
-  font-size: 25px;
-  letter-spacing: -0.6px;
-}
-
-.newsletter-card-header p {
-  margin: 6px 0 0;
-  color: #64748b;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* =========================================
-   PROPERTY TYPES
-========================================= */
-
-.newsletter-property-types {
-  padding: 23px;
-  display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.newsletter-property-type {
-  min-width: 0;
-  min-height: 98px;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid
-    rgba(148, 163, 184, 0.17);
-  border-radius: 15px;
-  background:
-    linear-gradient(
-      135deg,
-      #f8fafc,
-      #ecfeff
-    );
+.offer-card button svg,
+.offer-card a svg {
   transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.25s ease;
 }
 
-.newsletter-property-type:hover {
-  transform: translateY(-4px);
-  border-color:
-    rgba(8, 145, 178, 0.3);
-  box-shadow:
-    0 12px 28px
-      rgba(15, 23, 42, 0.08);
+.offer-card button:hover svg,
+.offer-card a:hover svg {
+  transform:
+    translateX(4px);
 }
 
-.newsletter-property-type div {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  border-radius: 12px;
-  color: #0e7490;
-  background: #cffafe;
-}
-
-.newsletter-property-type svg {
-  font-size: 18px;
-}
-
-.newsletter-property-type span {
-  color: #102235;
-  font-size: 12px;
-  font-weight: 850;
-  line-height: 1.35;
-}
-
-/* =========================================
-   CARD FOOTER
-========================================= */
-
-.newsletter-card-footer {
-  min-height: 65px;
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  background: #f0fdfa;
-}
-
-.newsletter-card-footer > div {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #0f766e;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.newsletter-status-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow:
-    0 0 0 4px
-      rgba(34, 197, 94, 0.14);
-}
-
-.newsletter-card-footer > a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #0e7490;
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 900;
+.offer-card button:focus-visible,
+.offer-card a:focus-visible {
+  outline: 3px solid
+    rgba(255, 255, 255, 0.65);
+  outline-offset: 4px;
 }
 
 /* =========================================
@@ -439,21 +471,19 @@
 ========================================= */
 
 @media (max-width: 1050px) {
-  .newsletter-section {
-    padding: 85px 22px;
+  .offers-section {
+    padding: 90px 22px;
   }
 
-  .newsletter-container {
-    grid-template-columns: 1fr;
-    gap: 55px;
+  .offers-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
-  .newsletter-content {
-    max-width: 780px;
-  }
-
-  .newsletter-partner-card {
-    width: min(650px, 100%);
+  .offer-card:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 14px);
+    justify-self: center;
   }
 }
 
@@ -461,57 +491,61 @@
    MOBILE
 ========================================= */
 
-@media (max-width: 650px) {
-  .newsletter-section {
-    padding: 70px 16px;
+@media (max-width: 720px) {
+  .offers-section {
+    padding: 72px 16px;
   }
 
-  .newsletter-content h2 {
+  .offers-heading {
+    margin-bottom: 38px;
+  }
+
+  .offers-heading h2 {
     font-size:
-      clamp(38px, 12vw, 50px);
-    letter-spacing: -1.8px;
+      clamp(34px, 11vw, 45px);
+    letter-spacing: -1.5px;
   }
 
-  .newsletter-description {
+  .offers-heading p {
     font-size: 14px;
   }
 
-  .newsletter-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .newsletter-primary-button,
-  .newsletter-secondary-button {
-    width: 100%;
-  }
-
-  .newsletter-card-header {
-    align-items: flex-start;
-    padding: 21px;
-  }
-
-  .newsletter-logo {
-    width: 62px;
-    height: 62px;
-  }
-
-  .newsletter-card-header h3 {
-    font-size: 21px;
-  }
-
-  .newsletter-property-types {
-    padding: 18px;
+  .offers-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
+    perspective: none;
   }
 
-  .newsletter-property-type {
-    min-height: 76px;
+  .offer-card,
+  .offer-card:last-child {
+    width: 100%;
+    min-height: 350px;
+    grid-column: auto;
   }
 
-  .newsletter-card-footer {
-    align-items: flex-start;
-    flex-direction: column;
+  .offer-card:hover {
+    transform:
+      translateY(-7px);
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 430px) {
+  .offer-card {
+    min-height: 340px;
+    padding: 31px 24px 25px;
+    border-radius: 23px;
+  }
+
+  .offer-card h3 {
+    font-size: 27px;
+  }
+
+  .discount {
+    margin-bottom: 24px;
   }
 }
 
@@ -523,15 +557,19 @@
   prefers-reduced-motion:
     reduce
 ) {
-  .newsletter-primary-button,
-  .newsletter-secondary-button,
-  .newsletter-property-type {
+  .offer-card,
+  .offer-card::after,
+  .offer-card button,
+  .offer-card a,
+  .offer-card button svg,
+  .offer-card a svg {
     transition: none;
   }
 
-  .newsletter-primary-button:hover,
-  .newsletter-secondary-button:hover,
-  .newsletter-property-type:hover {
+  .offer-card:hover,
+  .offer-card:hover::after,
+  .offer-card button:hover,
+  .offer-card a:hover {
     transform: none;
   }
 }
