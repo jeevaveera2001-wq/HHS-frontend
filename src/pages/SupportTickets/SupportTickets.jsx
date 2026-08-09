@@ -1,11 +1,15 @@
 import "./SupportTickets.css";
-import { useNavigate } from "react-router-dom";
+
 import {
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import { toast } from "react-toastify";
 
@@ -15,6 +19,10 @@ import {
   getSupportTicketErrorMessage,
 } from "../../services/supportTicketService";
 
+/* =====================================
+   Form defaults
+===================================== */
+
 const initialFormData = {
   subject: "",
   category: "general",
@@ -22,10 +30,18 @@ const initialFormData = {
   description: "",
 };
 
+/* =====================================
+   Ticket labels
+===================================== */
+
 const statusLabels = {
   open: "Open",
-  in_progress: "In Progress",
-  waiting_for_customer: "Waiting for You",
+  assigned: "Assigned",
+  waiting_for_customer:
+    "Waiting for You",
+  waiting_for_owner:
+    "Waiting for Owner",
+  escalated: "Escalated",
   resolved: "Resolved",
   closed: "Closed",
 };
@@ -37,10 +53,10 @@ const categoryLabels = {
   payment: "Payment issue",
   refund: "Refund request",
   property: "Property issue",
-  owner_verification: "Owner verification",
+  owner_verification:
+    "Owner verification",
   technical: "Technical issue",
   complaint: "Complaint",
-  other: "Other",
 };
 
 const priorityLabels = {
@@ -50,54 +66,71 @@ const priorityLabels = {
   urgent: "Urgent",
 };
 
+/* =====================================
+   Support tickets page
+===================================== */
+
 function SupportTickets() {
-  const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const [tickets, setTickets] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
   const [submitting, setSubmitting] =
     useState(false);
 
   const [showForm, setShowForm] =
     useState(false);
 
-  const [selectedStatus, setSelectedStatus] =
-    useState("all");
+  const [
+    selectedStatus,
+    setSelectedStatus,
+  ] = useState("all");
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] =
+    useState("");
 
-  const [formData, setFormData] = useState(
-    initialFormData
-  );
+  const [formData, setFormData] =
+    useState(initialFormData);
 
   /* =====================================
      Load logged-in user's tickets
   ===================================== */
 
-  const loadTickets = useCallback(async () => {
-    try {
-      setLoading(true);
+  const loadTickets =
+    useCallback(async () => {
+      try {
+        setLoading(true);
 
-      const data =
-        await getMySupportTickets();
+        const data =
+          await getMySupportTickets();
 
-      const ticketList =
-        data.tickets ||
-        data.data?.tickets ||
-        data.data ||
-        [];
+        const ticketList =
+          data?.tickets ||
+          data?.data?.tickets ||
+          data?.data ||
+          [];
 
-      setTickets(
-        Array.isArray(ticketList)
-          ? ticketList
-          : []
-      );
-    } catch (error) {
-      toast.error(
-        getSupportTicketErrorMessage(error)
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        setTickets(
+          Array.isArray(ticketList)
+            ? ticketList
+            : []
+        );
+      } catch (error) {
+        toast.error(
+          getSupportTicketErrorMessage(
+            error
+          )
+        );
+
+        setTickets([]);
+      } finally {
+        setLoading(false);
+      }
+    }, []);
 
   useEffect(() => {
     loadTickets();
@@ -108,18 +141,30 @@ function SupportTickets() {
   ===================================== */
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } =
+      event.target;
 
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }));
+    setFormData(
+      (previousData) => ({
+        ...previousData,
+        [name]: value,
+      })
+    );
   };
 
-  const handleSubmit = async (event) => {
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setShowForm(false);
+  };
+
+  const handleSubmit = async (
+    event
+  ) => {
     event.preventDefault();
 
-    const subject = formData.subject.trim();
+    const subject =
+      formData.subject.trim();
+
     const description =
       formData.description.trim();
 
@@ -139,9 +184,25 @@ function SupportTickets() {
       return;
     }
 
+    if (subject.length > 200) {
+      toast.error(
+        "Subject cannot exceed 200 characters."
+      );
+
+      return;
+    }
+
     if (description.length < 10) {
       toast.error(
         "Description must contain at least 10 characters."
+      );
+
+      return;
+    }
+
+    if (description.length > 5000) {
+      toast.error(
+        "Description cannot exceed 5000 characters."
       );
 
       return;
@@ -153,21 +214,24 @@ function SupportTickets() {
       await createSupportTicket({
         subject,
         description,
-        category: formData.category,
-        priority: formData.priority,
+        category:
+          formData.category,
+        priority:
+          formData.priority,
       });
 
       toast.success(
         "Support ticket created successfully."
       );
 
-      setFormData(initialFormData);
-      setShowForm(false);
+      resetForm();
 
       await loadTickets();
     } catch (error) {
       toast.error(
-        getSupportTicketErrorMessage(error)
+        getSupportTicketErrorMessage(
+          error
+        )
       );
     } finally {
       setSubmitting(false);
@@ -175,76 +239,116 @@ function SupportTickets() {
   };
 
   /* =====================================
-     Filter tickets
+     Ticket filters
   ===================================== */
 
-  const filteredTickets = useMemo(() => {
-    const normalizedSearch = search
-      .trim()
-      .toLowerCase();
+  const filteredTickets =
+    useMemo(() => {
+      const normalizedSearch =
+        search
+          .trim()
+          .toLowerCase();
 
-    return tickets.filter((ticket) => {
-      const matchesStatus =
-        selectedStatus === "all" ||
-        ticket.status === selectedStatus;
+      return tickets.filter(
+        (ticket) => {
+          const matchesStatus =
+            selectedStatus ===
+              "all" ||
+            ticket.status ===
+              selectedStatus;
 
-      const searchableText = [
-        ticket.ticketNumber,
-        ticket.subject,
-        ticket.category,
-        ticket.description,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+          const searchableText = [
+            ticket.ticketReference,
+            ticket.ticketNumber,
+            ticket.subject,
+            ticket.category,
+            ticket.priority,
+            ticket.status,
+            ticket.description,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
 
-      const matchesSearch =
-        !normalizedSearch ||
-        searchableText.includes(
-          normalizedSearch
-        );
+          const matchesSearch =
+            !normalizedSearch ||
+            searchableText.includes(
+              normalizedSearch
+            );
 
-      return matchesStatus && matchesSearch;
-    });
-  }, [
-    tickets,
-    selectedStatus,
-    search,
-  ]);
+          return (
+            matchesStatus &&
+            matchesSearch
+          );
+        }
+      );
+    }, [
+      tickets,
+      selectedStatus,
+      search,
+    ]);
 
   /* =====================================
      Ticket statistics
   ===================================== */
 
-  const statistics = useMemo(() => {
-    return {
-      total: tickets.length,
+  const statistics =
+    useMemo(() => {
+      const activeStatuses = [
+        "assigned",
+        "waiting_for_customer",
+        "waiting_for_owner",
+        "escalated",
+      ];
 
-      open: tickets.filter(
-        (ticket) => ticket.status === "open"
-      ).length,
+      return {
+        total: tickets.length,
 
-      active: tickets.filter((ticket) =>
-        [
-          "in_progress",
-          "waiting_for_customer",
-        ].includes(ticket.status)
-      ).length,
+        open: tickets.filter(
+          (ticket) =>
+            ticket.status ===
+            "open"
+        ).length,
 
-      completed: tickets.filter((ticket) =>
-        ["resolved", "closed"].includes(
-          ticket.status
-        )
-      ).length,
-    };
-  }, [tickets]);
+        active: tickets.filter(
+          (ticket) =>
+            activeStatuses.includes(
+              ticket.status
+            )
+        ).length,
+
+        completed:
+          tickets.filter(
+            (ticket) =>
+              [
+                "resolved",
+                "closed",
+              ].includes(
+                ticket.status
+              )
+          ).length,
+      };
+    }, [tickets]);
 
   /* =====================================
      Date formatter
   ===================================== */
 
-  const formatDate = (dateValue) => {
+  const formatDate = (
+    dateValue
+  ) => {
     if (!dateValue) {
+      return "Not available";
+    }
+
+    const date =
+      new Date(dateValue);
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
       return "Not available";
     }
 
@@ -254,7 +358,27 @@ function SupportTickets() {
         dateStyle: "medium",
         timeStyle: "short",
       }
-    ).format(new Date(dateValue));
+    ).format(date);
+  };
+
+  /* =====================================
+     Open conversation
+  ===================================== */
+
+  const handleViewConversation = (
+    ticket
+  ) => {
+    if (!ticket?._id) {
+      toast.error(
+        "Unable to open this support ticket."
+      );
+
+      return;
+    }
+
+    navigate(
+      `/support-tickets/${ticket._id}`
+    );
   };
 
   return (
@@ -268,11 +392,14 @@ function SupportTickets() {
               HHS HELP CENTRE
             </span>
 
-            <h1>Support Tickets</h1>
+            <h1>
+              Support Tickets
+            </h1>
 
             <p>
-              Contact the Hogenakkal Home Stay
-              support team and track your requests.
+              Contact the Hogenakkal
+              Home Stay support team
+              and track your requests.
             </p>
           </div>
 
@@ -280,7 +407,10 @@ function SupportTickets() {
             type="button"
             className="support-create-button"
             onClick={() =>
-              setShowForm((current) => !current)
+              setShowForm(
+                (currentValue) =>
+                  !currentValue
+              )
             }
           >
             {showForm
@@ -293,7 +423,10 @@ function SupportTickets() {
 
         <section className="support-statistics">
           <article>
-            <span>Total Tickets</span>
+            <span>
+              Total Tickets
+            </span>
+
             <strong>
               {statistics.total}
             </strong>
@@ -301,13 +434,17 @@ function SupportTickets() {
 
           <article>
             <span>Open</span>
+
             <strong>
               {statistics.open}
             </strong>
           </article>
 
           <article>
-            <span>Being Handled</span>
+            <span>
+              Being Handled
+            </span>
+
             <strong>
               {statistics.active}
             </strong>
@@ -315,30 +452,37 @@ function SupportTickets() {
 
           <article>
             <span>Completed</span>
+
             <strong>
               {statistics.completed}
             </strong>
           </article>
         </section>
 
-        {/* Create ticket form */}
+        {/* Create-ticket form */}
 
         {showForm && (
           <section className="support-form-section">
             <div className="support-form-heading">
               <div>
-                <h2>Create a Support Ticket</h2>
+                <h2>
+                  Create a Support
+                  Ticket
+                </h2>
 
                 <p>
-                  Provide clear details so our team
-                  can assist you quickly.
+                  Provide clear details
+                  so our team can assist
+                  you quickly.
                 </p>
               </div>
             </div>
 
             <form
               className="support-form"
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
             >
               <div className="support-field support-field-full">
                 <label htmlFor="subject">
@@ -349,11 +493,19 @@ function SupportTickets() {
                   id="subject"
                   type="text"
                   name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
+                  value={
+                    formData.subject
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Briefly describe your issue"
+                  minLength={5}
                   maxLength={200}
-                  disabled={submitting}
+                  required
+                  disabled={
+                    submitting
+                  }
                 />
               </div>
 
@@ -365,20 +517,33 @@ function SupportTickets() {
                 <select
                   id="category"
                   name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  disabled={submitting}
+                  value={
+                    formData.category
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  disabled={
+                    submitting
+                  }
                 >
                   {Object.entries(
                     categoryLabels
-                  ).map(([value, label]) => (
-                    <option
-                      key={value}
-                      value={value}
-                    >
-                      {label}
-                    </option>
-                  ))}
+                  ).map(
+                    ([
+                      value,
+                      label,
+                    ]) => (
+                      <option
+                        key={value}
+                        value={
+                          value
+                        }
+                      >
+                        {label}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
@@ -390,20 +555,33 @@ function SupportTickets() {
                 <select
                   id="priority"
                   name="priority"
-                  value={formData.priority}
-                  onChange={handleChange}
-                  disabled={submitting}
+                  value={
+                    formData.priority
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  disabled={
+                    submitting
+                  }
                 >
                   {Object.entries(
                     priorityLabels
-                  ).map(([value, label]) => (
-                    <option
-                      key={value}
-                      value={value}
-                    >
-                      {label}
-                    </option>
-                  ))}
+                  ).map(
+                    ([
+                      value,
+                      label,
+                    ]) => (
+                      <option
+                        key={value}
+                        value={
+                          value
+                        }
+                      >
+                        {label}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
@@ -415,16 +593,28 @@ function SupportTickets() {
                 <textarea
                   id="description"
                   name="description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  value={
+                    formData.description
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Explain what happened and include any important booking or payment information..."
                   rows={7}
+                  minLength={10}
                   maxLength={5000}
-                  disabled={submitting}
+                  required
+                  disabled={
+                    submitting
+                  }
                 />
 
                 <small>
-                  {formData.description.length}
+                  {
+                    formData
+                      .description
+                      .length
+                  }
                   /5000 characters
                 </small>
               </div>
@@ -433,11 +623,12 @@ function SupportTickets() {
                 <button
                   type="button"
                   className="support-cancel-button"
-                  disabled={submitting}
-                  onClick={() => {
-                    setFormData(initialFormData);
-                    setShowForm(false);
-                  }}
+                  disabled={
+                    submitting
+                  }
+                  onClick={
+                    resetForm
+                  }
                 >
                   Cancel
                 </button>
@@ -445,7 +636,9 @@ function SupportTickets() {
                 <button
                   type="submit"
                   className="support-submit-button"
-                  disabled={submitting}
+                  disabled={
+                    submitting
+                  }
                 >
                   {submitting
                     ? "Creating Ticket..."
@@ -456,7 +649,7 @@ function SupportTickets() {
           </section>
         )}
 
-        {/* Filters */}
+        {/* Search and filter */}
 
         <section className="support-toolbar">
           <div className="support-search">
@@ -468,8 +661,13 @@ function SupportTickets() {
               id="ticket-search"
               type="search"
               value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
+              onChange={(
+                event
+              ) =>
+                setSearch(
+                  event.target
+                    .value
+                )
               }
               placeholder="Search by ticket number or subject"
             />
@@ -482,10 +680,15 @@ function SupportTickets() {
 
             <select
               id="status-filter"
-              value={selectedStatus}
-              onChange={(event) =>
+              value={
+                selectedStatus
+              }
+              onChange={(
+                event
+              ) =>
                 setSelectedStatus(
-                  event.target.value
+                  event.target
+                    .value
                 )
               }
             >
@@ -495,14 +698,19 @@ function SupportTickets() {
 
               {Object.entries(
                 statusLabels
-              ).map(([value, label]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {label}
-                </option>
-              ))}
+              ).map(
+                ([
+                  value,
+                  label,
+                ]) => (
+                  <option
+                    key={value}
+                    value={value}
+                  >
+                    {label}
+                  </option>
+                )
+              )}
             </select>
           </div>
         </section>
@@ -513,14 +721,18 @@ function SupportTickets() {
           <section className="support-state-card">
             <div className="support-loader" />
 
-            <h2>Loading your tickets</h2>
+            <h2>
+              Loading your tickets
+            </h2>
 
             <p>
-              Please wait while we retrieve your
-              support requests.
+              Please wait while we
+              retrieve your support
+              requests.
             </p>
           </section>
-        ) : filteredTickets.length === 0 ? (
+        ) : filteredTickets.length ===
+          0 ? (
           <section className="support-state-card">
             <div className="support-state-icon">
               🎫
@@ -538,97 +750,123 @@ function SupportTickets() {
                 : "Try changing the search text or status filter."}
             </p>
 
-            {tickets.length === 0 && (
+            {tickets.length ===
+              0 && (
               <button
                 type="button"
                 onClick={() =>
-                  setShowForm(true)
+                  setShowForm(
+                    true
+                  )
                 }
               >
-                Create Your First Ticket
+                Create Your First
+                Ticket
               </button>
             )}
           </section>
         ) : (
           <section className="support-ticket-list">
-            {filteredTickets.map((ticket) => (
-              <article
-                className="support-ticket-card"
-                key={ticket._id}
-              >
-                <div className="support-ticket-top">
-                  <div>
-                    <span className="support-ticket-number">
-                      {ticket.ticketNumber ||
-                        "HHS Ticket"}
+            {filteredTickets.map(
+              (ticket) => (
+                <article
+                  className="support-ticket-card"
+                  key={
+                    ticket._id
+                  }
+                >
+                  <div className="support-ticket-top">
+                    <div>
+                      <span className="support-ticket-number">
+                        {ticket.ticketReference ||
+                          ticket.ticketNumber ||
+                          "HHS Ticket"}
+                      </span>
+
+                      <h2>
+                        {
+                          ticket.subject
+                        }
+                      </h2>
+                    </div>
+
+                    <span
+                      className={`support-status support-status-${ticket.status}`}
+                    >
+                      {statusLabels[
+                        ticket
+                          .status
+                      ] ||
+                        ticket.status}
+                    </span>
+                  </div>
+
+                  <p className="support-ticket-description">
+                    {
+                      ticket.description
+                    }
+                  </p>
+
+                  <div className="support-ticket-tags">
+                    <span>
+                      {categoryLabels[
+                        ticket
+                          .category
+                      ] ||
+                        ticket.category}
                     </span>
 
-                    <h2>{ticket.subject}</h2>
+                    <span
+                      className={`support-priority support-priority-${ticket.priority}`}
+                    >
+                      {priorityLabels[
+                        ticket
+                          .priority
+                      ] ||
+                        ticket.priority}
+                    </span>
                   </div>
 
-                  <span
-                    className={`support-status support-status-${ticket.status}`}
-                  >
-                    {statusLabels[
-                      ticket.status
-                    ] || ticket.status}
-                  </span>
-                </div>
+                  <div className="support-ticket-footer">
+                    <div>
+                      <span>
+                        Created
+                      </span>
 
-                <p className="support-ticket-description">
-                  {ticket.description}
-                </p>
+                      <strong>
+                        {formatDate(
+                          ticket.createdAt
+                        )}
+                      </strong>
+                    </div>
 
-                <div className="support-ticket-tags">
-                  <span>
-                    {categoryLabels[
-                      ticket.category
-                    ] || ticket.category}
-                  </span>
+                    <div>
+                      <span>
+                        Last updated
+                      </span>
 
-                  <span
-                    className={`support-priority support-priority-${ticket.priority}`}
-                  >
-                    {priorityLabels[
-                      ticket.priority
-                    ] || ticket.priority}
-                  </span>
-                </div>
+                      <strong>
+                        {formatDate(
+                          ticket.updatedAt ||
+                            ticket.lastActivityAt
+                        )}
+                      </strong>
+                    </div>
 
-                <div className="support-ticket-footer">
-                  <div>
-                    <span>Created</span>
-
-                    <strong>
-                      {formatDate(
-                        ticket.createdAt
-                      )}
-                    </strong>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleViewConversation(
+                          ticket
+                        )
+                      }
+                    >
+                      View Conversation
+                    </button>
                   </div>
-
-                  <div>
-                    <span>Last updated</span>
-
-                    <strong>
-                      {formatDate(
-                        ticket.updatedAt
-                      )}
-                    </strong>
-                  </div>
-
-               <button
-  type="button"
-  onClick={() =>
-    navigate(
-      `/support-tickets/${ticket._id}`
-    )
-  }
->
-  View Conversation
-</button>
-                </div>
-              </article>
-            ))}
+                </article>
+              )
+            )}
           </section>
         )}
       </section>
