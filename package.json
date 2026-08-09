@@ -19,6 +19,7 @@
     "react-router-dom": "^7.18.1",
     "react-toastify": "^11.1.0",
     "resend": "^6.18.1",
+    "socket.io-client": "^4.8.3",
     "swiper": "^14.0.6",
     "tailwindcss": "^4.3.3"
   },
