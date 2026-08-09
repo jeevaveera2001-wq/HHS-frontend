@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+} from "react-router-dom";
 
 import {
   FaEnvelope,
@@ -13,20 +15,97 @@ import BrandLogo from "../BrandLogo/BrandLogo";
 
 import "./Footer.css";
 
+/* =====================================
+   Social URL helper
+===================================== */
+
+const normalizeSocialUrl = (
+  environmentUrl,
+  fallbackUrl
+) => {
+  if (
+    typeof environmentUrl !==
+      "string" ||
+    !environmentUrl.trim()
+  ) {
+    return fallbackUrl;
+  }
+
+  const trimmedUrl =
+    environmentUrl.trim();
+
+  /*
+   * Handle accidentally pasted Markdown:
+   * [https://example.com](https://example.com)
+   */
+
+  const markdownMatch =
+    trimmedUrl.match(
+      /^\[.*?\]\((https?:\/\/[^)]+)\)$/
+    );
+
+  const socialUrl =
+    markdownMatch?.[1] ||
+    trimmedUrl;
+
+  try {
+    const parsedUrl =
+      new URL(socialUrl);
+
+    if (
+      parsedUrl.protocol !==
+        "https:" &&
+      parsedUrl.protocol !==
+        "http:"
+    ) {
+      return fallbackUrl;
+    }
+
+    return parsedUrl.toString();
+  } catch {
+    return fallbackUrl;
+  }
+};
+
+/* =====================================
+   Social media links
+===================================== */
+
 const socialLinks = [
   {
     label: "Facebook",
-    url: import.meta.env.VITE_FACEBOOK_URL,
+
+    url: normalizeSocialUrl(
+      import.meta.env
+        .VITE_FACEBOOK_URL,
+
+      "https://www.facebook.com/share/1PSxDUPCUa/"
+    ),
+
     Icon: FaFacebookF,
   },
   {
     label: "Instagram",
-    url: import.meta.env.VITE_INSTAGRAM_URL,
+
+    url: normalizeSocialUrl(
+      import.meta.env
+        .VITE_INSTAGRAM_URL,
+
+      "https://www.instagram.com/hogenakkalhomestays?igsh=MWFuOXRzd3I4cHN4aA=="
+    ),
+
     Icon: FaInstagram,
   },
   {
     label: "YouTube",
-    url: import.meta.env.VITE_YOUTUBE_URL,
+
+    url: normalizeSocialUrl(
+      import.meta.env
+        .VITE_YOUTUBE_URL,
+
+      "https://youtube.com/@hogenakkalhomestays?si=z3hdFt3tR4x0Lue7"
+    ),
+
     Icon: FaYoutube,
   },
 ];
@@ -44,22 +123,22 @@ function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer-glow footer-glow-left" />
-      <div className="footer-glow footer-glow-right" />
-
       <div className="footer-container">
         <section className="footer-brand">
           <BrandLogo
             className="footer-brand-logo"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           />
 
           <p>
             Discover trusted homestays,
             cottages and resorts near
-            Hogenakkal Falls. Book peaceful
-            stays with comfort, confidence
-            and secure support.
+            Hogenakkal Falls. Book
+            peaceful stays with comfort,
+            confidence and secure
+            support.
           </p>
 
           <div className="footer-social-icons">
@@ -68,139 +147,166 @@ function Footer() {
                 label,
                 url,
                 Icon,
-              }) =>
-                url ? (
-                  <a
-                    key={label}
-                    href={url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Visit Hogenakkal Home Stays on ${label}`}
-                    title={label}
-                  >
-                    <Icon />
-                  </a>
-                ) : (
-                  <span
-                    key={label}
-                    className="footer-social-disabled"
-                    aria-label={`${label} page coming soon`}
-                    title={`${label} page coming soon`}
-                  >
-                    <Icon />
-                  </span>
-                )
+              }) => (
+                <a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit Hogenakkal Home Stays on ${label}`}
+                  title={label}
+                >
+                  <Icon
+                    aria-hidden="true"
+                  />
+                </a>
+              )
             )}
           </div>
         </section>
 
         <section className="footer-links">
-          <h3>Quick Links</h3>
+          <h3>
+            Quick Links
+          </h3>
 
           <Link
             to="/"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Home
           </Link>
 
           <Link
             to="/explore"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Explore Stays
           </Link>
 
           <Link
             to="/about"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             About Us
           </Link>
 
           <Link
             to="/contact"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Contact Us
           </Link>
         </section>
 
         <section className="footer-links">
-          <h3>Services</h3>
+          <h3>
+            Services
+          </h3>
 
           <Link
             to="/explore"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Homestays
           </Link>
 
           <Link
             to="/explore?propertyType=Resort"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Resorts
           </Link>
 
           <Link
             to="/add-property"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             List Your Property
           </Link>
 
           <Link
             to="/owner"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Owner Centre
           </Link>
         </section>
 
         <section className="footer-links">
-          <h3>Customer Support</h3>
+          <h3>
+            Customer Support
+          </h3>
 
           <Link
             to="/bookings"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             My Bookings
           </Link>
 
           <Link
             to="/saved-properties"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Saved Properties
           </Link>
 
           <Link
             to="/support-tickets"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Support Tickets
           </Link>
 
           <Link
             to="/contact"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Help and Contact
           </Link>
         </section>
 
         <section className="footer-contact">
-          <h3>Contact</h3>
+          <h3>
+            Contact
+          </h3>
 
           <div className="footer-contact-item">
             <span className="footer-contact-icon">
-              <FaMapMarkerAlt />
+              <FaMapMarkerAlt
+                aria-hidden="true"
+              />
             </span>
 
             <span>
-              Hogenakkal, Dharmapuri District,
-              Tamil Nadu, India
+              Hogenakkal, Dharmapuri
+              District, Tamil Nadu,
+              India
             </span>
           </div>
 
@@ -209,7 +315,9 @@ function Footer() {
             href="tel:+917871779134"
           >
             <span className="footer-contact-icon">
-              <FaPhoneAlt />
+              <FaPhoneAlt
+                aria-hidden="true"
+              />
             </span>
 
             <span>
@@ -222,7 +330,9 @@ function Footer() {
             href="mailto:hogenakkalhomestays@gmail.com"
           >
             <span className="footer-contact-icon">
-              <FaEnvelope />
+              <FaEnvelope
+                aria-hidden="true"
+              />
             </span>
 
             <span>
@@ -234,8 +344,9 @@ function Footer() {
 
       <div className="footer-bottom">
         <p>
-          © {currentYear} Hogenakkal Home
-          Stays. All rights reserved.
+          © {currentYear} Hogenakkal
+          Home Stays. All rights
+          reserved.
         </p>
 
         <p className="footer-operator">
@@ -248,28 +359,36 @@ function Footer() {
         >
           <Link
             to="/terms-and-conditions"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Terms & Conditions
           </Link>
 
           <Link
             to="/privacy-policy"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Privacy Policy
           </Link>
 
           <Link
             to="/cancellation-refund-policy"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Cancellation & Refund
           </Link>
 
           <Link
             to="/service-delivery-policy"
-            onClick={handleNavigation}
+            onClick={
+              handleNavigation
+            }
           >
             Service Delivery
           </Link>
