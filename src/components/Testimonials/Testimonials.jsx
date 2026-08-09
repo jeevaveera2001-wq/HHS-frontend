@@ -1,153 +1,232 @@
 import "./Testimonials.css";
 
 import {
+  FaMapMarkerAlt,
+  FaQuoteLeft,
   FaStar,
-  FaQuoteLeft
 } from "react-icons/fa";
 
-
 const reviews = [
-
-{
-name:"Arun Kumar",
-location:"Chennai",
-image:
-"https://randomuser.me/api/portraits/men/32.jpg",
-review:
-"Amazing experience! The homestay was clean, peaceful and the location near Hogenakkal Falls was beautiful.",
-rating:"5"
-},
-
-
-{
-name:"Priya Sharma",
-location:"Bangalore",
-image:
-"https://randomuser.me/api/portraits/women/44.jpg",
-review:
-"Perfect weekend getaway with family. Great hospitality and comfortable rooms.",
-rating:"5"
-},
-
-
-{
-name:"Rahul Raj",
-location:"Coimbatore",
-image:
-"https://randomuser.me/api/portraits/men/75.jpg",
-review:
-"The booking process was very easy. Highly recommended for nature lovers.",
-rating:"4.8"
-}
-
+  {
+    name: "Arun Kumar",
+    location: "Chennai",
+    review:
+      "Amazing experience! The homestay was clean, peaceful and the location near Hogenakkal Falls was beautiful.",
+    rating: 5,
+  },
+  {
+    name: "Priya Sharma",
+    location: "Bangalore",
+    review:
+      "Perfect weekend getaway with family. Great hospitality and comfortable rooms.",
+    rating: 5,
+  },
+  {
+    name: "Rahul Raj",
+    location: "Coimbatore",
+    review:
+      "The booking process was very easy. Highly recommended for nature lovers.",
+    rating: 4.8,
+  },
+  {
+    name: "Karthik Rajan",
+    location: "Salem",
+    review:
+      "A calm and refreshing stay close to Hogenakkal Falls. The rooms were comfortable and the service was excellent.",
+    rating: 4.9,
+  },
+  {
+    name: "Divya Prakash",
+    location: "Dharmapuri",
+    review:
+      "A wonderful place for a family vacation. Everything was properly arranged and the surroundings were beautiful.",
+    rating: 5,
+  },
 ];
 
+const renderStars = (rating) => {
+  const roundedRating =
+    Math.round(
+      Number(rating)
+    );
 
-function Testimonials(){
+  return Array.from(
+    {
+      length: 5,
+    },
+    (_, index) => (
+      <FaStar
+        key={index}
+        className={
+          index <
+          roundedRating
+            ? "testimonial-star is-active"
+            : "testimonial-star"
+        }
+        aria-hidden="true"
+      />
+    )
+  );
+};
 
-return(
+function ReviewCard({
+  item,
+}) {
+  return (
+    <article className="testimonial-card">
+      <div className="testimonial-card-glow" />
 
-<section className="testimonial-section">
+      <header className="testimonial-card-header">
+        <div className="testimonial-quote-icon">
+          <FaQuoteLeft
+            aria-hidden="true"
+          />
+        </div>
 
+        <div
+          className="testimonial-rating"
+          aria-label={`${item.rating} out of 5 stars`}
+        >
+          <div className="testimonial-stars">
+            {renderStars(
+              item.rating
+            )}
+          </div>
 
-<div className="testimonial-container">
+          <strong>
+            {Number(
+              item.rating
+            ).toFixed(1)}
+          </strong>
+        </div>
+      </header>
 
+      <blockquote>
+        “{item.review}”
+      </blockquote>
 
-<div className="testimonial-heading">
+      <footer className="testimonial-reviewer">
+        <div className="testimonial-initial">
+          {item.name
+            .charAt(0)
+            .toUpperCase()}
+        </div>
 
-<h2>
-What Our Guests Say
-</h2>
+        <div className="testimonial-person">
+          <strong>
+            {item.name}
+          </strong>
 
-<p>
-Thousands of travelers trust HogenakkalHomeStay
-</p>
+          <span>
+            <FaMapMarkerAlt
+              aria-hidden="true"
+            />
 
-</div>
+            {item.location}
+          </span>
+        </div>
 
+        <div className="verified-stay">
+          <span />
 
-
-<div className="testimonial-grid">
-
-
-{
-reviews.map((item,index)=>(
-
-
-<div 
-className="testimonial-card"
-key={index}
->
-
-
-<FaQuoteLeft className="quote-icon"/>
-
-
-
-<div className="user-info">
-
-
-<img 
-src={item.image}
-alt={item.name}
-/>
-
-
-<div>
-
-<h3>
-{item.name}
-</h3>
-
-<p>
-{item.location}
-</p>
-
-</div>
-
-
-</div>
-
-
-
-<div className="stars">
-
-{
-[1,2,3,4,5].map((star)=>(
-<FaStar key={star}/>
-))
+          Verified Stay
+        </div>
+      </footer>
+    </article>
+  );
 }
 
-</div>
+function Testimonials() {
+  return (
+    <section
+      className="testimonials-section"
+      aria-labelledby="testimonials-title"
+    >
+      <div className="testimonials-background-orb testimonial-orb-one" />
+      <div className="testimonials-background-orb testimonial-orb-two" />
 
+      <div className="testimonials-heading">
+        <span className="testimonials-eyebrow">
+          Guest Experiences
+        </span>
 
+        <h2 id="testimonials-title">
+          Loved by travellers
+        </h2>
 
-<p className="review-text">
+        <p>
+          Genuine experiences shared by
+          guests who discovered memorable
+          stays near Hogenakkal Falls.
+        </p>
+      </div>
 
-"{item.review}"
+      <div className="testimonials-slider">
+        <div className="testimonials-track">
+          <div className="testimonials-group">
+            {reviews.map(
+              (item) => (
+                <ReviewCard
+                  item={item}
+                  key={`original-${item.name}`}
+                />
+              )
+            )}
+          </div>
 
-</p>
+          <div
+            className="testimonials-group"
+            aria-hidden="true"
+          >
+            {reviews.map(
+              (item) => (
+                <ReviewCard
+                  item={item}
+                  key={`duplicate-${item.name}`}
+                />
+              )
+            )}
+          </div>
+        </div>
+      </div>
 
+      <div className="testimonials-trust-row">
+        <div>
+          <strong>
+            4.9
+          </strong>
 
+          <span>
+            Average guest rating
+          </span>
+        </div>
 
-</div>
+        <span className="trust-divider" />
 
+        <div>
+          <strong>
+            100%
+          </strong>
 
-))
+          <span>
+            Verified experiences
+          </span>
+        </div>
+
+        <span className="trust-divider" />
+
+        <div>
+          <strong>
+            HHS
+          </strong>
+
+          <span>
+            Trusted local stays
+          </span>
+        </div>
+      </div>
+    </section>
+  );
 }
-
-
-</div>
-
-
-</div>
-
-
-</section>
-
-)
-
-}
-
 
 export default Testimonials;
