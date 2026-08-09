@@ -195,6 +195,12 @@ const SuperAdminDashboard = lazy(() =>
   )
 );
 
+const EnquiryManagement = lazy(() =>
+  import(
+    "../pages/SuperAdmin/EnquiryManagement"
+  )
+);
+
 const StaffManagement = lazy(() =>
   import(
     "../pages/SuperAdmin/StaffManagement"
@@ -675,13 +681,7 @@ function AppRoutes() {
             }
           />
 
-          <Route
-  path="/super-admin/enquiries"
-  element={createRoleElement(
-    EnquiryManagement,
-    ["super_admin"]
-  )}
-/>
+
 
           {/* Add property */}
 
@@ -858,6 +858,45 @@ function AppRoutes() {
             )
           }
         />
+        <Route
+  path="/super-admin/support"
+  element={
+    createRoleElement(
+      SupportManagement,
+      [
+        "support",
+        "operations_manager",
+        "super_admin",
+      ]
+    )
+  }
+/>
+
+<Route
+  path="/super-admin/enquiries"
+  element={
+    createRoleElement(
+      EnquiryManagement,
+      [
+        "super_admin",
+      ]
+    )
+  }
+/>
+
+<Route
+  path="/super-admin/finance"
+  element={
+    createRoleElement(
+      FinanceDashboard,
+      [
+        "finance_manager",
+        "operations_manager",
+        "super_admin",
+      ]
+    )
+  }
+/>
 
         <Route
           path="/super-admin/finance"
