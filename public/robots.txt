@@ -27,4 +27,4 @@ Disallow: /super-admin
 Disallow: /add-property
 
 # Add the sitemap URL after the live domain is connected.
-# Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://hogenakkalhomestays.com/sitemap.xml
