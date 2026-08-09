@@ -76,6 +76,16 @@ const VerifyEmail = lazy(() =>
 );
 
 /* =====================================
+   Owner-access request page
+===================================== */
+
+const RequestOwnerAccess = lazy(() =>
+  import(
+    "../pages/RequestOwnerAccess/RequestOwnerAccess"
+  )
+);
+
+/* =====================================
    Legal pages
 ===================================== */
 
@@ -192,6 +202,12 @@ const OwnerPayoutSettings = lazy(() =>
 const SuperAdminDashboard = lazy(() =>
   import(
     "../pages/SuperAdmin/SuperAdminDashboard"
+  )
+);
+
+const OwnerRequests = lazy(() =>
+  import(
+    "../pages/SuperAdmin/OwnerRequests/OwnerRequests"
   )
 );
 
@@ -484,6 +500,16 @@ function AppRoutes() {
             element={<Register />}
           />
 
+          {/* Owner-access request */}
+
+          <Route
+            path="/request-owner-access"
+            element={createRoleElement(
+              RequestOwnerAccess,
+              ["customer"]
+            )}
+          />
+
           {/* Legal pages */}
 
           <Route
@@ -629,6 +655,8 @@ function AppRoutes() {
             )}
           />
 
+          {/* Add property */}
+
           <Route
             path="/add-property"
             element={createRoleElement(
@@ -682,7 +710,7 @@ function AppRoutes() {
           element={<VerifyEmail />}
         />
 
-        {/* Super Admin */}
+        {/* Super Admin Dashboard */}
 
         <Route
           path="/super-admin"
@@ -692,6 +720,35 @@ function AppRoutes() {
           )}
         />
 
+        {/* Owner requests */}
+
+        <Route
+          path="/super-admin/owner-requests"
+          element={createRoleElement(
+            OwnerRequests,
+            [
+              "admin",
+              "property_admin",
+              "operations_manager",
+              "super_admin",
+            ]
+          )}
+        />
+
+        {/* Admin owner-request alias */}
+
+        <Route
+          path="/admin/owner-requests"
+          element={
+            <Navigate
+              to="/super-admin/owner-requests"
+              replace
+            />
+          }
+        />
+
+        {/* Staff management */}
+
         <Route
           path="/super-admin/staff"
           element={createRoleElement(
@@ -700,11 +757,14 @@ function AppRoutes() {
           )}
         />
 
+        {/* User management */}
+
         <Route
           path="/super-admin/users"
           element={createRoleElement(
             UserManagement,
             [
+              "admin",
               "super_admin",
               "operations_manager",
               "property_admin",
@@ -718,6 +778,7 @@ function AppRoutes() {
           element={createRoleElement(
             UserManagement,
             [
+              "admin",
               "super_admin",
               "operations_manager",
               "property_admin",
@@ -726,11 +787,14 @@ function AppRoutes() {
           )}
         />
 
+        {/* Property administration */}
+
         <Route
           path="/super-admin/properties"
           element={createRoleElement(
             PropertyAdmin,
             [
+              "admin",
               "super_admin",
               "operations_manager",
               "property_admin",
@@ -738,11 +802,14 @@ function AppRoutes() {
           )}
         />
 
+        {/* Booking administration */}
+
         <Route
           path="/super-admin/bookings"
           element={createRoleElement(
             BookingManagement,
             [
+              "admin",
               "super_admin",
               "operations_manager",
               "booking_manager",
@@ -750,22 +817,28 @@ function AppRoutes() {
           )}
         />
 
+        {/* Review management */}
+
         <Route
           path="/super-admin/reviews"
           element={createRoleElement(
             ReviewManagement,
             [
+              "admin",
               "super_admin",
               "operations_manager",
             ]
           )}
         />
 
+        {/* Support management */}
+
         <Route
           path="/super-admin/support"
           element={createRoleElement(
             SupportManagement,
             [
+              "admin",
               "support",
               "operations_manager",
               "super_admin",
@@ -773,21 +846,27 @@ function AppRoutes() {
           )}
         />
 
-        {/* Super Admin enquiries */}
+        {/* Enquiry management */}
 
         <Route
           path="/super-admin/enquiries"
           element={createRoleElement(
             EnquiryManagement,
-            ["super_admin"]
+            [
+              "admin",
+              "super_admin",
+            ]
           )}
         />
+
+        {/* Finance management */}
 
         <Route
           path="/super-admin/finance"
           element={createRoleElement(
             FinanceDashboard,
             [
+              "admin",
               "finance_manager",
               "operations_manager",
               "super_admin",
@@ -802,6 +881,7 @@ function AppRoutes() {
           element={createRoleElement(
             SupportManagement,
             [
+              "admin",
               "support",
               "property_admin",
               "booking_manager",
@@ -827,6 +907,7 @@ function AppRoutes() {
           element={createRoleElement(
             PropertyAdmin,
             [
+              "admin",
               "super_admin",
               "operations_manager",
               "property_admin",
@@ -851,6 +932,7 @@ function AppRoutes() {
           element={createRoleElement(
             FinanceDashboard,
             [
+              "admin",
               "finance_manager",
               "booking_manager",
               "operations_manager",
@@ -864,6 +946,7 @@ function AppRoutes() {
           element={createRoleElement(
             PayoutAccountManagement,
             [
+              "admin",
               "finance_manager",
               "super_admin",
             ]

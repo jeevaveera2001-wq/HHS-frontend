@@ -1,5 +1,3 @@
-import "./Newsletter.css";
-
 import {
   FaArrowRight,
   FaBuilding,
@@ -11,11 +9,11 @@ import {
   FaRegHandshake,
 } from "react-icons/fa";
 
-import {
-  Link,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import hhsLogo from "../../assets/images/hhs-logo-optimized.webp";
+
+import "./Newsletter.css";
 
 /* =====================================
    Owner benefits
@@ -35,18 +33,22 @@ const propertyTypes = [
   {
     icon: FaHome,
     title: "Homestays",
+    value: "homestay",
   },
   {
     icon: FaHotel,
     title: "Hotels",
+    value: "hotel",
   },
   {
     icon: FaBuilding,
     title: "Resorts",
+    value: "resort",
   },
   {
     icon: FaRegBuilding,
     title: "Guest Houses",
+    value: "guest-house",
   },
 ];
 
@@ -55,9 +57,16 @@ const propertyTypes = [
 ===================================== */
 
 function Newsletter() {
+  const handleNavigation = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section
-      className="newsletter-section"
+      className="newsletter"
       aria-labelledby="partner-title"
     >
       <div className="newsletter-container">
@@ -65,68 +74,52 @@ function Newsletter() {
 
         <div className="newsletter-content">
           <span className="newsletter-eyebrow">
-            <FaRegHandshake
-              aria-hidden="true"
-            />
+            <FaRegHandshake aria-hidden="true" />
 
-            PARTNER WITH HHS
+            <span>PARTNER WITH HHS</span>
           </span>
 
           <h2 id="partner-title">
             Own a Stay Near
-            <span>
-              Hogenakkal?
-            </span>
+            <span> Hogenakkal?</span>
           </h2>
 
           <p className="newsletter-description">
-            Join Hogenakkal Home Stays and
-            connect with travellers searching
-            for homestays, cottages, resorts,
-            hotels and guest houses near
-            Hogenakkal Falls.
+            Join Hogenakkal Home Stays and connect with travellers
+            searching for homestays, cottages, resorts, hotels and
+            guest houses near Hogenakkal Falls.
           </p>
 
           <div className="newsletter-benefits">
-            {ownerBenefits.map(
-              (benefit) => (
-                <div
-                  className="newsletter-benefit"
-                  key={benefit}
-                >
-                  <FaCheckCircle
-                    aria-hidden="true"
-                  />
+            {ownerBenefits.map((benefit) => (
+              <div
+                className="newsletter-benefit"
+                key={benefit}
+              >
+                <FaCheckCircle aria-hidden="true" />
 
-                  <span>
-                    {benefit}
-                  </span>
-                </div>
-              )
-            )}
+                <span>{benefit}</span>
+              </div>
+            ))}
           </div>
 
           <div className="newsletter-actions">
             <Link
-              to="/add-property"
+              to="/request-owner-access"
               className="newsletter-primary-button"
+              onClick={handleNavigation}
             >
-              <FaKey
-                aria-hidden="true"
-              />
+              <FaKey aria-hidden="true" />
 
-              <span>
-                List Your Property
-              </span>
+              <span>Request Owner Access</span>
 
-              <FaArrowRight
-                aria-hidden="true"
-              />
+              <FaArrowRight aria-hidden="true" />
             </Link>
 
             <Link
               to="/contact"
               className="newsletter-secondary-button"
+              onClick={handleNavigation}
             >
               Talk to Our Team
             </Link>
@@ -135,7 +128,10 @@ function Newsletter() {
           <p className="newsletter-owner-login">
             Already registered as an owner?
 
-            <Link to="/owner">
+            <Link
+              to="/owner"
+              onClick={handleNavigation}
+            >
               Go to Owner Dashboard
             </Link>
           </p>
@@ -155,17 +151,12 @@ function Newsletter() {
             </div>
 
             <div>
-              <span>
-                HOGENAKKAL HOME STAYS
-              </span>
+              <span>HOGENAKKAL HOME STAYS</span>
 
-              <h3>
-                Grow With HHS
-              </h3>
+              <h3>Grow With HHS</h3>
 
               <p>
-                List and manage your
-                accommodation on one trusted
+                List and manage your accommodation on one trusted
                 local platform.
               </p>
             </div>
@@ -176,21 +167,21 @@ function Newsletter() {
               ({
                 icon: PropertyIcon,
                 title,
+                value,
               }) => (
-                <article
+                <Link
+                  to={`/request-owner-access?propertyType=${value}`}
                   className="newsletter-property-type"
                   key={title}
+                  onClick={handleNavigation}
+                  aria-label={`Request owner access for ${title}`}
                 >
                   <div>
-                    <PropertyIcon
-                      aria-hidden="true"
-                    />
+                    <PropertyIcon aria-hidden="true" />
                   </div>
 
-                  <span>
-                    {title}
-                  </span>
-                </article>
+                  <span>{title}</span>
+                </Link>
               )
             )}
           </div>
@@ -202,19 +193,16 @@ function Newsletter() {
                 aria-hidden="true"
               />
 
-              <span>
-                Owner registrations open
-              </span>
+              <span>Owner registrations open</span>
             </div>
 
-            <Link to="/add-property">
-              <span>
-                Get Started
-              </span>
+            <Link
+              to="/request-owner-access"
+              onClick={handleNavigation}
+            >
+              <span>Get Started</span>
 
-              <FaArrowRight
-                aria-hidden="true"
-              />
+              <FaArrowRight aria-hidden="true" />
             </Link>
           </footer>
         </div>
