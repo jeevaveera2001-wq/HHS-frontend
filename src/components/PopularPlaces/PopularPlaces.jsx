@@ -2,10 +2,15 @@ import "./PopularPlaces.css";
 
 import {
   FaMapMarkerAlt,
+  FaRoute,
 } from "react-icons/fa";
 
+import hogenakkalFallsImage from "../../assets/images/hogenakkal-falls.jpg";
+import coracleRideImage from "../../assets/images/Coracleride.jpg";
+import metturDamImage from "../../assets/images/metturdam.jpg";
+
 /* =====================================
-   Genuine nearby-place information
+   Nearby attractions
 ===================================== */
 
 const places = [
@@ -18,20 +23,20 @@ const places = [
     location:
       "Dharmapuri, Tamil Nadu",
 
+    distance:
+      "Near Hogenakkal",
+
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogenakkal%20Waterfalls%2001.jpg?width=1200",
+      hogenakkalFallsImage,
 
     imageAlt:
-      "Genuine view of Hogenakkal Falls in Dharmapuri district, Tamil Nadu",
+      "Real view of Hogenakkal Falls in Dharmapuri district, Tamil Nadu",
 
     description:
-      "Experience the dramatic waterfalls, rocky landscape and natural beauty of the Cauvery River at Hogenakkal.",
+      "Experience the powerful waterfalls, rocky landscapes and breathtaking natural beauty of the Cauvery River.",
 
-    imageCredit:
-      "Aksheyaa Akilan / Wikimedia Commons",
-
-    creditUrl:
-      "https://commons.wikimedia.org/wiki/File:Hogenakkal_Waterfalls_01.jpg",
+    mapUrl:
+      "https://www.google.com/maps/search/?api=1&query=Hogenakkal+Falls+Tamil+Nadu",
   },
 
   {
@@ -43,20 +48,20 @@ const places = [
     location:
       "Cauvery River, Hogenakkal",
 
+    distance:
+      "At Hogenakkal Falls",
+
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Hogenakkal%20Falls%20and%20Coracle%20Ride.jpg?width=1200",
+      coracleRideImage,
 
     imageAlt:
-      "Traditional coracle boat ride at Hogenakkal Falls on the Cauvery River",
+      "Traditional coracle boat ride on the Cauvery River at Hogenakkal Falls",
 
     description:
-      "Enjoy a traditional coracle ride through the Cauvery River and experience Hogenakkal from the water.",
+      "Enjoy a traditional coracle ride and discover the spectacular river, cliffs and waterfalls from the water.",
 
-    imageCredit:
-      "Ezhuttukari / Wikimedia Commons",
-
-    creditUrl:
-      "https://commons.wikimedia.org/wiki/File:Hogenakkal_Falls_and_Coracle_Ride.jpg",
+    mapUrl:
+      "https://www.google.com/maps/search/?api=1&query=Hogenakkal+Coracle+Boat+Ride",
   },
 
   {
@@ -68,53 +73,58 @@ const places = [
     location:
       "Mettur, Salem District",
 
+    distance:
+      "Popular day trip",
+
     image:
-      "https://commons.wikimedia.org/wiki/Special:FilePath/Mettur%20Dam%202.jpg?width=1200",
+      metturDamImage,
 
     imageAlt:
-      "Genuine panoramic view of Mettur Dam and Stanley Reservoir in Tamil Nadu",
+      "Real view of Mettur Dam and Stanley Reservoir in Tamil Nadu",
 
     description:
-      "Visit the historic Mettur Dam and enjoy expansive views of the Stanley Reservoir and surrounding landscape.",
+      "Visit the historic Mettur Dam and enjoy expansive views of Stanley Reservoir and the surrounding scenery.",
 
-    imageCredit:
-      "Wikimedia Commons contributor",
-
-    creditUrl:
-      "https://commons.wikimedia.org/wiki/File:Mettur_Dam_2.jpg",
+    mapUrl:
+      "https://www.google.com/maps/search/?api=1&query=Mettur+Dam+Tamil+Nadu",
   },
 ];
 
 /* =====================================
-   Popular places component
+   Popular Places component
 ===================================== */
 
 function PopularPlaces() {
   return (
-    <section className="popular-places">
+    <section
+      className="popular-places"
+      aria-labelledby="popular-places-title"
+    >
       <div className="popular-places-container">
         {/* Section heading */}
 
         <header className="popular-places-header">
-          <span className="popular-places-eyebrow">
-            PLACES TO VISIT
-          </span>
+          <div className="popular-places-heading">
+            <span className="popular-places-eyebrow">
+              EXPLORE HOGENAKKAL
+            </span>
 
-          <h2>
-            Explore Nearby Attractions
-          </h2>
+            <h2 id="popular-places-title">
+              Nearby Attractions
+            </h2>
+          </div>
 
           <p>
-            Discover genuine attractions and
-            memorable experiences around
-            Hogenakkal.
+            Discover iconic places, authentic
+            experiences and beautiful destinations
+            around Hogenakkal.
           </p>
         </header>
 
-        {/* Place cards */}
+        {/* Attraction cards */}
 
         <div className="places-grid">
-          {places.map((place) => (
+          {places.map((place, index) => (
             <article
               className="place-card"
               key={place.id}
@@ -125,8 +135,18 @@ function PopularPlaces() {
                   alt={place.imageAlt}
                   loading="lazy"
                   decoding="async"
-                  referrerPolicy="no-referrer"
+                  width="900"
+                  height="650"
                 />
+
+                <div className="place-image-overlay" />
+
+                <span className="place-number">
+                  {String(index + 1).padStart(
+                    2,
+                    "0"
+                  )}
+                </span>
 
                 <div className="place-location">
                   <FaMapMarkerAlt
@@ -140,22 +160,41 @@ function PopularPlaces() {
               </div>
 
               <div className="place-content">
-                <h3>
-                  {place.title}
-                </h3>
+                <div className="place-title-row">
+                  <h3>
+                    {place.title}
+                  </h3>
+
+                  <span className="place-distance">
+                    {place.distance}
+                  </span>
+                </div>
 
                 <p>
                   {place.description}
                 </p>
 
                 <a
-                  className="place-image-credit"
-                  href={place.creditUrl}
+                  className="place-map-link"
+                  href={place.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`View photo source for ${place.title}`}
+                  aria-label={`View ${place.title} on Google Maps`}
                 >
-                  Photo: {place.imageCredit}
+                  <FaRoute
+                    aria-hidden="true"
+                  />
+
+                  <span>
+                    View on Google Maps
+                  </span>
+
+                  <span
+                    className="place-link-arrow"
+                    aria-hidden="true"
+                  >
+                    →
+                  </span>
                 </a>
               </div>
             </article>
