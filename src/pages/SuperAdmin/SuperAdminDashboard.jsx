@@ -23,6 +23,63 @@ import {
 
 import "./SuperAdminDashboard.css";
 
+/* =====================================
+   Owner request API
+===================================== */
+
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000/api";
+
+const getAuthenticationToken = () => {
+  return (
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    ""
+  );
+};
+
+const getPendingOwnerRequests =
+  async () => {
+    const response = await fetch(
+      `${API_URL}/owner-requests?status=pending&page=1&limit=5`,
+      {
+        method: "GET",
+
+        headers: {
+          Authorization:
+            `Bearer ${getAuthenticationToken()}`,
+        },
+      }
+    );
+
+    const result = await response
+      .json()
+      .catch(() => ({}));
+
+    if (!response.ok) {
+      const requestError =
+        new Error(
+          result.message ||
+            "Unable to load owner requests."
+        );
+
+      requestError.status =
+        response.status;
+
+      requestError.data =
+        result;
+
+      throw requestError;
+    }
+
+    return result;
+  };
+
+/* =====================================
+   Management panels
+===================================== */
+
 const panelItems = [
   {
     icon: "👥",
@@ -37,6 +94,14 @@ const panelItems = [
     description:
       "Review owners and verification.",
     path: "/super-admin/owners",
+  },
+  {
+    icon: "📋",
+    title: "Owner Requests",
+    description:
+      "Review and approve property-owner applications.",
+    path:
+      "/super-admin/owner-requests",
   },
   {
     icon: "🏨",
@@ -70,13 +135,13 @@ const panelItems = [
     path: "/support",
   },
   {
-  icon: "📨",
-  title: "Enquiries",
-  description:
-    "View and manage website contact enquiries.",
-  path:
-    "/super-admin/enquiries",
-},
+    icon: "📨",
+    title: "Enquiries",
+    description:
+      "View and manage website contact enquiries.",
+    path:
+      "/super-admin/enquiries",
+  },
   {
     icon: "💳",
     title: "Finance",
@@ -101,6 +166,10 @@ const panelItems = [
       "/super-admin/staff",
   },
 ];
+
+/* =====================================
+   Initial statistics
+===================================== */
 
 const initialStatistics = {
   users: {
@@ -147,6 +216,10 @@ const initialStatistics = {
   },
 };
 
+/* =====================================
+   Error helpers
+===================================== */
+
 const getErrorStatus = (error) => {
   return (
     error?.status ||
@@ -166,6 +239,10 @@ const getErrorMessage = (
     fallbackMessage
   );
 };
+
+/* =====================================
+   Super Admin Dashboard
+===================================== */
 
 function SuperAdminDashboard() {
   const navigate = useNavigate();
@@ -203,6 +280,16 @@ function SuperAdminDashboard() {
   ] = useState([]);
 
   const [
+    pendingOwnerRequests,
+    setPendingOwnerRequests,
+  ] = useState(0);
+
+  const [
+    recentOwnerRequests,
+    setRecentOwnerRequests,
+  ] = useState([]);
+
+  const [
     loading,
     setLoading,
   ] = useState(true);
@@ -217,6 +304,10 @@ function SuperAdminDashboard() {
     setError,
   ] = useState("");
 
+  /* =====================================
+     Logout
+  ===================================== */
+
   const handleLogout =
     useCallback(() => {
       logout();
@@ -228,6 +319,10 @@ function SuperAdminDashboard() {
       logout,
       navigate,
     ]);
+
+  /* =====================================
+     Load dashboard information
+  ===================================== */
 
   const loadStatistics =
     useCallback(
@@ -246,6 +341,7 @@ function SuperAdminDashboard() {
           const [
             dashboardResult,
             reviewResult,
+            ownerRequestResult,
           ] =
             await Promise.allSettled([
               getDashboardStatistics(),
@@ -255,12 +351,17 @@ function SuperAdminDashboard() {
                 limit: 5,
                 sort: "newest",
               }),
+
+              getPendingOwnerRequests(),
             ]);
+
+          /* Authentication check */
 
           const unauthorizedResult =
             [
               dashboardResult,
               reviewResult,
+              ownerRequestResult,
             ].find((result) => {
               return (
                 result.status ===
@@ -271,9 +372,7 @@ function SuperAdminDashboard() {
               );
             });
 
-          if (
-            unauthorizedResult
-          ) {
+          if (unauthorizedResult) {
             toast.error(
               "Your session has expired."
             );
@@ -282,10 +381,13 @@ function SuperAdminDashboard() {
             return;
           }
 
+          /* Permission check */
+
           const forbiddenResult =
             [
               dashboardResult,
               reviewResult,
+              ownerRequestResult,
             ].find((result) => {
               return (
                 result.status ===
@@ -331,6 +433,8 @@ function SuperAdminDashboard() {
               ...initialStatistics.reviews,
             },
           };
+
+          /* Main dashboard statistics */
 
           if (
             dashboardResult.status ===
@@ -419,6 +523,8 @@ function SuperAdminDashboard() {
             );
           }
 
+          /* Review statistics */
+
           if (
             reviewResult.status ===
             "fulfilled"
@@ -458,12 +564,47 @@ function SuperAdminDashboard() {
             );
           }
 
+          /* Owner requests */
+
+          if (
+            ownerRequestResult.status ===
+            "fulfilled"
+          ) {
+            const ownerRequestData =
+              ownerRequestResult.value ||
+              {};
+
+            setPendingOwnerRequests(
+              Number(
+                ownerRequestData.total ??
+                  ownerRequestData.count ??
+                  0
+              )
+            );
+
+            setRecentOwnerRequests(
+              Array.isArray(
+                ownerRequestData.requests
+              )
+                ? ownerRequestData.requests
+                : []
+            );
+          } else {
+            setPendingOwnerRequests(0);
+            setRecentOwnerRequests([]);
+
+            toast.error(
+              getErrorMessage(
+                ownerRequestResult.reason,
+                "Unable to load pending owner requests."
+              )
+            );
+          }
+
           setStatistics(
             nextStatistics
           );
-        } catch (
-          requestError
-        ) {
+        } catch (requestError) {
           if (
             getErrorStatus(
               requestError
@@ -516,6 +657,10 @@ function SuperAdminDashboard() {
     loadStatistics(true);
   }, [loadStatistics]);
 
+  /* =====================================
+     Formatting helpers
+  ===================================== */
+
   const formatDate = (date) => {
     if (!date) {
       return "—";
@@ -532,14 +677,15 @@ function SuperAdminDashboard() {
       return "—";
     }
 
-    return parsedDate.toLocaleDateString(
-      "en-IN",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }
-    );
+    return parsedDate
+      .toLocaleDateString(
+        "en-IN",
+        {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }
+      );
   };
 
   const formatNumber = (value) => {
@@ -576,8 +722,7 @@ function SuperAdminDashboard() {
       Math.min(
         Math.max(
           Math.round(
-            Number(rating) ||
-              0
+            Number(rating) || 0
           ),
           0
         ),
@@ -596,6 +741,8 @@ function SuperAdminDashboard() {
 
   return (
     <main className="super-admin-page">
+      {/* Sidebar */}
+
       <aside className="admin-sidebar">
         <Link
           className="admin-brand"
@@ -623,35 +770,40 @@ function SuperAdminDashboard() {
             Dashboard
           </Link>
 
-          {panelItems.map(
-            (item) => (
-              <Link
-                className="admin-nav-link"
-                to={item.path}
-                key={item.path}
-              >
-                <span>
-                  {item.icon}
-                </span>
+          {panelItems.map((item) => (
+            <Link
+              className="admin-nav-link"
+              to={item.path}
+              key={item.path}
+            >
+              <span>{item.icon}</span>
 
-                {item.title}
+              {item.title}
 
-                {item.path ===
-                  "/super-admin/reviews" &&
-                  statistics.reviews
-                    .unreplied >
-                    0 && (
-                    <small className="admin-nav-count">
-                      {
-                        statistics
-                          .reviews
-                          .unreplied
-                      }
-                    </small>
-                  )}
-              </Link>
-            )
-          )}
+              {item.path ===
+                "/super-admin/reviews" &&
+                statistics.reviews
+                  .unreplied > 0 && (
+                  <small className="admin-nav-count">
+                    {
+                      statistics.reviews
+                        .unreplied
+                    }
+                  </small>
+                )}
+
+              {item.path ===
+                "/super-admin/owner-requests" &&
+                pendingOwnerRequests >
+                  0 && (
+                  <small className="admin-nav-count">
+                    {
+                      pendingOwnerRequests
+                    }
+                  </small>
+                )}
+            </Link>
+          ))}
         </nav>
 
         <div className="admin-sidebar-footer">
@@ -678,14 +830,14 @@ function SuperAdminDashboard() {
 
           <button
             type="button"
-            onClick={
-              handleLogout
-            }
+            onClick={handleLogout}
           >
             Sign out
           </button>
         </div>
       </aside>
+
+      {/* Main dashboard */}
 
       <section className="admin-main-content">
         <header className="admin-topbar">
@@ -712,9 +864,7 @@ function SuperAdminDashboard() {
               type="button"
               className="admin-refresh-button"
               onClick={() =>
-                loadStatistics(
-                  false
-                )
+                loadStatistics(false)
               }
               disabled={
                 loading ||
@@ -735,6 +885,8 @@ function SuperAdminDashboard() {
           </div>
         </header>
 
+        {/* Error */}
+
         {error && (
           <div className="admin-dashboard-error">
             <div>
@@ -748,18 +900,16 @@ function SuperAdminDashboard() {
             <button
               type="button"
               onClick={() =>
-                loadStatistics(
-                  false
-                )
+                loadStatistics(false)
               }
-              disabled={
-                refreshing
-              }
+              disabled={refreshing}
             >
               Try again
             </button>
           </div>
         )}
+
+        {/* Primary statistics */}
 
         <section className="admin-stat-grid">
           <article className="admin-stat-card">
@@ -768,14 +918,11 @@ function SuperAdminDashboard() {
             </div>
 
             <div>
-              <span>
-                Total users
-              </span>
+              <span>Total users</span>
 
               <strong>
                 {formatNumber(
-                  statistics.users
-                    .total
+                  statistics.users.total
                 )}
               </strong>
 
@@ -795,22 +942,18 @@ function SuperAdminDashboard() {
             </div>
 
             <div>
-              <span>
-                Properties
-              </span>
+              <span>Properties</span>
 
               <strong>
                 {formatNumber(
-                  statistics
-                    .properties
+                  statistics.properties
                     .total
                 )}
               </strong>
 
               <small>
                 {
-                  statistics
-                    .properties
+                  statistics.properties
                     .approved
                 }{" "}
                 approved
@@ -901,7 +1044,38 @@ function SuperAdminDashboard() {
               →
             </Link>
           </article>
+
+          <article className="admin-stat-card admin-review-stat-card">
+            <div className="stat-icon orange">
+              📋
+            </div>
+
+            <div>
+              <span>
+                Owner requests
+              </span>
+
+              <strong>
+                {formatNumber(
+                  pendingOwnerRequests
+                )}
+              </strong>
+
+              <small>
+                Awaiting verification
+              </small>
+            </div>
+
+            <Link
+              to="/super-admin/owner-requests"
+              aria-label="Review owner requests"
+            >
+              →
+            </Link>
+          </article>
         </section>
+
+        {/* Secondary statistics */}
 
         <section className="admin-secondary-stats">
           <article>
@@ -982,11 +1156,11 @@ function SuperAdminDashboard() {
           </article>
         </section>
 
+        {/* Booking overview */}
+
         <section className="admin-booking-overview">
           <div>
-            <span>
-              Confirmed
-            </span>
+            <span>Confirmed</span>
 
             <strong>
               {formatNumber(
@@ -997,9 +1171,7 @@ function SuperAdminDashboard() {
           </div>
 
           <div>
-            <span>
-              Checked In
-            </span>
+            <span>Checked In</span>
 
             <strong>
               {formatNumber(
@@ -1010,9 +1182,7 @@ function SuperAdminDashboard() {
           </div>
 
           <div>
-            <span>
-              Completed
-            </span>
+            <span>Completed</span>
 
             <strong>
               {formatNumber(
@@ -1023,9 +1193,7 @@ function SuperAdminDashboard() {
           </div>
 
           <div>
-            <span>
-              Cancelled
-            </span>
+            <span>Cancelled</span>
 
             <strong>
               {formatNumber(
@@ -1049,6 +1217,8 @@ function SuperAdminDashboard() {
           </div>
         </section>
 
+        {/* Management panels */}
+
         <section className="admin-panel-section">
           <div className="admin-section-heading">
             <div>
@@ -1064,45 +1234,119 @@ function SuperAdminDashboard() {
           </div>
 
           <div className="admin-panel-grid">
-            {panelItems.map(
-              (item) => (
-                <Link
-                  className="admin-panel-card"
-                  to={item.path}
-                  key={item.path}
-                >
-                  <span className="panel-card-icon">
-                    {item.icon}
-                  </span>
+            {panelItems.map((item) => (
+              <Link
+                className="admin-panel-card"
+                to={item.path}
+                key={item.path}
+              >
+                <span className="panel-card-icon">
+                  {item.icon}
+                </span>
 
-                  <div>
-                    <h3>
-                      {item.title}
-                    </h3>
+                <div>
+                  <h3>{item.title}</h3>
 
-                    <p>
-                      {
-                        item.description
-                      }
-                    </p>
-                  </div>
+                  <p>
+                    {item.description}
+                  </p>
+                </div>
 
-                  <span className="panel-arrow">
-                    →
-                  </span>
-                </Link>
-              )
-            )}
+                <span className="panel-arrow">
+                  →
+                </span>
+              </Link>
+            ))}
           </div>
         </section>
 
+        {/* Recent activity */}
+
         <section className="admin-recent-grid">
-          <article className="admin-recent-card">
+          {/* Owner requests */}
+
+          <article className="admin-recent-card admin-owner-request-card">
             <div className="admin-recent-heading">
               <div>
                 <h2>
-                  Recent users
+                  Owner requests
                 </h2>
+
+                <p>
+                  Applications awaiting
+                  review
+                </p>
+              </div>
+
+              <Link to="/super-admin/owner-requests">
+                Review all
+              </Link>
+            </div>
+
+            {recentOwnerRequests.length ===
+            0 ? (
+              <div className="admin-recent-empty">
+                No pending owner requests.
+              </div>
+            ) : (
+              <div className="admin-recent-list">
+                {recentOwnerRequests.map(
+                  (request) => (
+                    <div
+                      className="admin-recent-item"
+                      key={
+                        request._id ||
+                        request.id
+                      }
+                    >
+                      <div className="recent-avatar owner-request">
+                        🏡
+                      </div>
+
+                      <div>
+                        <strong>
+                          {request.fullName ||
+                            "Applicant"}
+                        </strong>
+
+                        <span>
+                          {request.propertyName ||
+                            "Property"}
+                          {" · "}
+                          {String(
+                            request.propertyType ||
+                              "property"
+                          ).replaceAll(
+                            "-",
+                            " "
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="recent-meta">
+                        <span className="recent-property-status pending">
+                          Pending
+                        </span>
+
+                        <small>
+                          {formatDate(
+                            request.createdAt
+                          )}
+                        </small>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </article>
+
+          {/* Recent users */}
+
+          <article className="admin-recent-card">
+            <div className="admin-recent-heading">
+              <div>
+                <h2>Recent users</h2>
 
                 <p>
                   Latest registrations
@@ -1114,8 +1358,7 @@ function SuperAdminDashboard() {
               </Link>
             </div>
 
-            {recentUsers.length ===
-            0 ? (
+            {recentUsers.length === 0 ? (
               <div className="admin-recent-empty">
                 No users found.
               </div>
@@ -1173,6 +1416,8 @@ function SuperAdminDashboard() {
               </div>
             )}
           </article>
+
+          {/* Recent properties */}
 
           <article className="admin-recent-card">
             <div className="admin-recent-heading">
@@ -1247,6 +1492,8 @@ function SuperAdminDashboard() {
               </div>
             )}
           </article>
+
+          {/* Recent bookings */}
 
           <article className="admin-recent-card">
             <div className="admin-recent-heading">
@@ -1330,6 +1577,8 @@ function SuperAdminDashboard() {
               </div>
             )}
           </article>
+
+          {/* Recent reviews */}
 
           <article className="admin-recent-card">
             <div className="admin-recent-heading">
