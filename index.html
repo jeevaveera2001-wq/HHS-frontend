@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en-IN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
 
@@ -44,6 +44,8 @@
       content="index, follow"
     />
 
+    <!-- Open Graph -->
+
     <meta
       property="og:type"
       content="website"
@@ -69,6 +71,8 @@
       content="en_IN"
     />
 
+    <!-- Twitter -->
+
     <meta
       name="twitter:card"
       content="summary"
@@ -83,6 +87,8 @@
       name="twitter:description"
       content="Discover trusted stays near Hogenakkal Falls."
     />
+
+    <!-- Application icons -->
 
     <link
       rel="icon"
@@ -102,20 +108,29 @@
       href="/manifest.json"
     />
 
-    <title>
-      Hogenakkal Home Stays | Trusted Stays Near Hogenakkal Falls
-    </title>
+    <!-- Google Identity Services -->
+
+    <script
+      src="https://accounts.google.com/gsi/client"
+      async
+      defer
+    ></script>
+
+    <!-- Service worker registration -->
 
     <script
       src="/sw-register.js"
       defer
     ></script>
+
+    <title>
+      Hogenakkal Home Stays | Trusted Stays Near Hogenakkal Falls
+    </title>
   </head>
 
   <body>
     <noscript>
-      JavaScript is required to use
-      Hogenakkal Home Stays.
+      JavaScript is required to use Hogenakkal Home Stays.
     </noscript>
 
     <div id="root"></div>
