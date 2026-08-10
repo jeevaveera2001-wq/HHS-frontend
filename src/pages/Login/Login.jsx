@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -15,6 +16,10 @@ import {
 import {
   loginUser,
 } from "../../services/authService";
+
+import {
+  loginWithGoogle,
+} from "../../services/googleAuthService";
 
 import getDashboardPath, {
   normalizeRole,
@@ -73,8 +78,11 @@ const getStoredAuthentication =
       localUser
     ) {
       return {
-        token: localToken,
-        user: localUser,
+        token:
+          localToken,
+
+        user:
+          localUser,
       };
     }
 
@@ -93,8 +101,11 @@ const getStoredAuthentication =
       sessionUser
     ) {
       return {
-        token: sessionToken,
-        user: sessionUser,
+        token:
+          sessionToken,
+
+        user:
+          sessionUser,
       };
     }
 
@@ -110,7 +121,10 @@ const storeAuthentication = ({
   user,
   rememberMe,
 }) => {
-  if (!token || !user) {
+  if (
+    !token ||
+    !user
+  ) {
     throw new Error(
       "Authentication information is incomplete."
     );
@@ -134,11 +148,6 @@ const storeAuthentication = ({
       user
     )
   );
-
-  /*
-   * Confirm that the browser actually
-   * persisted both values.
-   */
 
   const persistedToken =
     storage.getItem(
@@ -188,6 +197,296 @@ function Login() {
     setLoading,
   ] = useState(false);
 
+  const [
+    googleLoading,
+    setGoogleLoading,
+  ] = useState(false);
+
+  const googleButtonRef =
+    useRef(null);
+
+  /*
+   * Google is initialized once, but this
+   * ref always contains the latest
+   * Remember Me selection.
+   */
+
+  const rememberMeRef =
+    useRef(
+      rememberMe
+    );
+
+  useEffect(() => {
+    rememberMeRef.current =
+      rememberMe;
+  }, [rememberMe]);
+
+  /* =====================================
+     Google login initialization
+  ===================================== */
+
+  useEffect(() => {
+    const clientId =
+      import.meta.env
+        .VITE_GOOGLE_CLIENT_ID;
+
+    if (!clientId) {
+      console.error(
+        "VITE_GOOGLE_CLIENT_ID is missing."
+      );
+
+      return undefined;
+    }
+
+    let cancelled =
+      false;
+
+    const handleGoogleCredential =
+      async (response) => {
+        if (
+          !response?.credential ||
+          cancelled
+        ) {
+          toast.error(
+            "Google did not return a valid login credential."
+          );
+
+          return;
+        }
+
+        try {
+          setGoogleLoading(
+            true
+          );
+
+          const data =
+            await loginWithGoogle(
+              response.credential
+            );
+
+          if (
+            !data?.success ||
+            !data?.token ||
+            !data?.user
+          ) {
+            throw new Error(
+              "Invalid Google login response from the server."
+            );
+          }
+
+          const authenticatedUser =
+            {
+              ...data.user,
+
+              role:
+                normalizeRole(
+                  data.user.role
+                ),
+            };
+
+          storeAuthentication({
+            token:
+              data.token,
+
+            user:
+              authenticatedUser,
+
+            rememberMe:
+              rememberMeRef
+                .current,
+          });
+
+          toast.success(
+            `Welcome, ${
+              authenticatedUser
+                .fullName ||
+              "User"
+            }!`
+          );
+
+          window.location.replace(
+            getDashboardPath(
+              authenticatedUser
+                .role
+            )
+          );
+        } catch (error) {
+          console.error(
+            "Google login error:",
+            error
+          );
+
+          toast.error(
+            error?.response
+              ?.data
+              ?.message ||
+              error?.message ||
+              "Unable to continue with Google."
+          );
+        } finally {
+          setGoogleLoading(
+            false
+          );
+        }
+      };
+
+    const renderGoogleButton =
+      () => {
+        if (
+          cancelled ||
+          !window.google
+            ?.accounts
+            ?.id ||
+          !googleButtonRef
+            .current
+        ) {
+          return;
+        }
+
+        /*
+         * Google recommends initializing
+         * Identity Services only once.
+         */
+
+        window.google
+          .accounts
+          .id
+          .initialize({
+            client_id:
+              clientId,
+
+            callback:
+              handleGoogleCredential,
+
+            auto_select:
+              false,
+
+            cancel_on_tap_outside:
+              true,
+          });
+
+        googleButtonRef
+          .current
+          .replaceChildren();
+
+        const buttonWidth =
+          Math.min(
+            googleButtonRef
+              .current
+              .clientWidth ||
+              360,
+
+            400
+          );
+
+        window.google
+          .accounts
+          .id
+          .renderButton(
+            googleButtonRef
+              .current,
+
+            {
+              type:
+                "standard",
+
+              theme:
+                "outline",
+
+              size:
+                "large",
+
+              text:
+                "continue_with",
+
+              shape:
+                "rectangular",
+
+              logo_alignment:
+                "left",
+
+              width:
+                buttonWidth,
+            }
+          );
+      };
+
+    const scriptUrl =
+      "https://accounts.google.com/gsi/client";
+
+    const existingScript =
+      document.querySelector(
+        `script[src="${scriptUrl}"]`
+      );
+
+    if (existingScript) {
+      if (
+        window.google
+          ?.accounts
+          ?.id
+      ) {
+        renderGoogleButton();
+      } else {
+        existingScript
+          .addEventListener(
+            "load",
+
+            renderGoogleButton,
+
+            {
+              once:
+                true,
+            }
+          );
+      }
+    } else {
+      const script =
+        document
+          .createElement(
+            "script"
+          );
+
+      script.src =
+        scriptUrl;
+
+      script.async =
+        true;
+
+      script.defer =
+        true;
+
+      script.onload =
+        renderGoogleButton;
+
+      script.onerror =
+        () => {
+          toast.error(
+            "Unable to load Google login. Please check your internet connection."
+          );
+        };
+
+      document.head
+        .appendChild(
+          script
+        );
+    }
+
+    return () => {
+      cancelled =
+        true;
+
+      if (
+        existingScript
+      ) {
+        existingScript
+          .removeEventListener(
+            "load",
+            renderGoogleButton
+          );
+      }
+    };
+  }, []);
+
   /* =====================================
      Redirect an existing session
   ===================================== */
@@ -205,7 +504,8 @@ function Login() {
     try {
       const storedUser =
         JSON.parse(
-          storedAuthentication.user
+          storedAuthentication
+            .user
         );
 
       const destination =
@@ -227,7 +527,7 @@ function Login() {
   }, []);
 
   /* =====================================
-     Handle input
+     Handle email/password input
   ===================================== */
 
   const handleChange = (
@@ -241,197 +541,214 @@ function Login() {
     setFormData(
       (previous) => ({
         ...previous,
-        [name]: value,
+
+        [name]:
+          value,
       })
     );
   };
 
   /* =====================================
-     Validate login form
+     Validate normal login form
   ===================================== */
 
-  const validateForm = () => {
-    const email =
-      formData.email
-        .trim()
-        .toLowerCase();
+  const validateForm =
+    () => {
+      const email =
+        formData.email
+          .trim()
+          .toLowerCase();
 
-    const password =
-      formData.password;
-
-    if (!email || !password) {
-      toast.error(
-        "Please enter your email and password."
-      );
-
-      return null;
-    }
-
-    const emailPattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (
-      !emailPattern.test(
-        email
-      )
-    ) {
-      toast.error(
-        "Please enter a valid email address."
-      );
-
-      return null;
-    }
-
-    if (
-      password.length < 6
-    ) {
-      toast.error(
-        "Password must contain at least 6 characters."
-      );
-
-      return null;
-    }
-
-    return {
-      email,
-      password,
-    };
-  };
-
-  /* =====================================
-     Login submission
-  ===================================== */
-
-  const handleSubmit = async (
-    event
-  ) => {
-    event.preventDefault();
-
-    if (loading) {
-      return;
-    }
-
-    const credentials =
-      validateForm();
-
-    if (!credentials) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const data =
-        await loginUser(
-          credentials
-        );
+      const password =
+        formData.password;
 
       if (
-        !data?.success ||
-        !data?.token ||
-        !data?.user
+        !email ||
+        !password
       ) {
-        throw new Error(
-          "Invalid login response from the server."
+        toast.error(
+          "Please enter your email and password."
         );
+
+        return null;
       }
 
-      const normalizedRole =
-        normalizeRole(
-          data.user.role
-        );
-
-      const authenticatedUser = {
-        ...data.user,
-        role: normalizedRole,
-      };
-
-      /*
-       * Save authentication directly.
-       */
-
-      storeAuthentication({
-        token:
-          data.token,
-
-        user:
-          authenticatedUser,
-
-        rememberMe,
-      });
-
-      const destination =
-        getDashboardPath(
-          normalizedRole
-        );
-
-      toast.success(
-        `Welcome back, ${
-          authenticatedUser.fullName ||
-          "User"
-        }!`
-      );
-
-      /*
-       * A full navigation allows AuthProvider
-       * to initialize from the saved session.
-       */
-
-      window.location.replace(
-        destination
-      );
-    } catch (error) {
-      console.error(
-        "Login error:",
-        error
-      );
-
-      const responseData =
-        error.response?.data ||
-        error.data ||
-        {};
+      const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (
-        responseData.code ===
-          "EMAIL_NOT_VERIFIED" ||
-        responseData
-          .requiresEmailVerification
+        !emailPattern.test(
+          email
+        )
       ) {
-        toast.info(
-          responseData.message ||
-            "Please verify your email address."
+        toast.error(
+          "Please enter a valid email address."
         );
 
-        navigate(
-          "/verify-email",
-          {
-            replace: true,
+        return null;
+      }
 
-            state: {
-              email:
-                formData.email
-                  .trim()
-                  .toLowerCase(),
-
-              message:
-                responseData.message,
-            },
-          }
+      if (
+        password.length <
+        6
+      ) {
+        toast.error(
+          "Password must contain at least 6 characters."
         );
 
+        return null;
+      }
+
+      return {
+        email,
+        password,
+      };
+    };
+
+  /* =====================================
+     Email/password login submission
+  ===================================== */
+
+  const handleSubmit =
+    async (event) => {
+      event.preventDefault();
+
+      if (
+        loading ||
+        googleLoading
+      ) {
         return;
       }
 
-      const message =
-        responseData.message ||
-        error.message ||
-        "Unable to login. Please try again.";
+      const credentials =
+        validateForm();
 
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!credentials) {
+        return;
+      }
+
+      try {
+        setLoading(
+          true
+        );
+
+        const data =
+          await loginUser(
+            credentials
+          );
+
+        if (
+          !data?.success ||
+          !data?.token ||
+          !data?.user
+        ) {
+          throw new Error(
+            "Invalid login response from the server."
+          );
+        }
+                const normalizedRole =
+          normalizeRole(
+            data.user.role
+          );
+
+        const authenticatedUser =
+          {
+            ...data.user,
+
+            role:
+              normalizedRole,
+          };
+
+        storeAuthentication({
+          token:
+            data.token,
+
+          user:
+            authenticatedUser,
+
+          rememberMe,
+        });
+
+        const destination =
+          getDashboardPath(
+            normalizedRole
+          );
+
+        toast.success(
+          `Welcome back, ${
+            authenticatedUser
+              .fullName ||
+            "User"
+          }!`
+        );
+
+        /*
+         * Full navigation allows the
+         * AuthProvider to initialize
+         * using the saved session.
+         */
+
+        window.location.replace(
+          destination
+        );
+      } catch (error) {
+        console.error(
+          "Login error:",
+          error
+        );
+
+        const responseData =
+          error.response
+            ?.data ||
+          error.data ||
+          {};
+
+        if (
+          responseData.code ===
+            "EMAIL_NOT_VERIFIED" ||
+          responseData
+            .requiresEmailVerification
+        ) {
+          toast.info(
+            responseData.message ||
+              "Please verify your email address."
+          );
+
+          navigate(
+            "/verify-email",
+            {
+              replace: true,
+
+              state: {
+                email:
+                  formData.email
+                    .trim()
+                    .toLowerCase(),
+
+                message:
+                  responseData
+                    .message,
+              },
+            }
+          );
+
+          return;
+        }
+
+        const message =
+          responseData.message ||
+          error.message ||
+          "Unable to login. Please try again.";
+
+        toast.error(
+          message
+        );
+      } finally {
+        setLoading(
+          false
+        );
+      }
+    };
 
   return (
     <main className="login-wrapper">
@@ -512,7 +829,9 @@ function Login() {
       <section className="login-area">
         <form
           className="login-card"
-          onSubmit={handleSubmit}
+          onSubmit={
+            handleSubmit
+          }
           noValidate
         >
           <div className="login-card-heading">
@@ -548,7 +867,8 @@ function Login() {
                 handleChange
               }
               disabled={
-                loading
+                loading ||
+                googleLoading
               }
               required
             />
@@ -577,7 +897,8 @@ function Login() {
                   handleChange
                 }
                 disabled={
-                  loading
+                  loading ||
+                  googleLoading
                 }
                 required
               />
@@ -586,7 +907,8 @@ function Login() {
                 type="button"
                 className="password-toggle"
                 disabled={
-                  loading
+                  loading ||
+                  googleLoading
                 }
                 onClick={() => {
                   setShowPassword(
@@ -618,11 +940,15 @@ function Login() {
                   rememberMe
                 }
                 disabled={
-                  loading
+                  loading ||
+                  googleLoading
                 }
-                onChange={(event) => {
+                onChange={(
+                  event
+                ) => {
                   setRememberMe(
-                    event.target.checked
+                    event.target
+                      .checked
                   );
                 }}
               />
@@ -635,6 +961,10 @@ function Login() {
             <Link
               className="forgot-password-button"
               to="/forgot-password"
+              aria-disabled={
+                loading ||
+                googleLoading
+              }
             >
               Forgot password?
             </Link>
@@ -644,7 +974,8 @@ function Login() {
             type="submit"
             className="login-button"
             disabled={
-              loading
+              loading ||
+              googleLoading
             }
           >
             {loading
@@ -662,20 +993,34 @@ function Login() {
             <span />
           </div>
 
-          <button
-            type="button"
-            className="google-login"
-            disabled={
-              loading
+          {/* =================================
+              Official Google login button
+          ================================= */}
+
+          <div
+            className={`google-login-container ${
+              googleLoading
+                ? "loading"
+                : ""
+            }`}
+            aria-busy={
+              googleLoading
             }
-            onClick={() => {
-              toast.info(
-                "Google login will be available soon."
-              );
-            }}
           >
-            Continue with Google
-          </button>
+            <div
+              ref={
+                googleButtonRef
+              }
+              className="google-login-button"
+            />
+
+            {googleLoading && (
+              <span className="google-login-status">
+                Signing in with
+                Google...
+              </span>
+            )}
+          </div>
 
           <p className="register">
             Don&apos;t have an account?
