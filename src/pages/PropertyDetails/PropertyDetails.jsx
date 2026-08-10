@@ -9,6 +9,7 @@ import {
   Link,
   useNavigate,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -62,7 +63,9 @@ const getToday = () => {
   return `${year}-${month}-${day}`;
 };
 
-const getNextDate = (dateValue) => {
+const getNextDate = (
+  dateValue
+) => {
   if (!dateValue) {
     return getToday();
   }
@@ -75,7 +78,8 @@ const getNextDate = (dateValue) => {
     date.getDate() + 1
   );
 
-  const year = date.getFullYear();
+  const year =
+    date.getFullYear();
 
   const month = String(
     date.getMonth() + 1
@@ -88,7 +92,9 @@ const getNextDate = (dateValue) => {
   return `${year}-${month}-${day}`;
 };
 
-const formatRating = (rating) => {
+const formatRating = (
+  rating
+) => {
   const numericRating =
     Number(rating);
 
@@ -99,7 +105,9 @@ const formatRating = (rating) => {
     : "0.0";
 };
 
-const formatCurrency = (amount) => {
+const formatCurrency = (
+  amount
+) => {
   return new Intl.NumberFormat(
     "en-IN",
     {
@@ -112,7 +120,9 @@ const formatCurrency = (amount) => {
   );
 };
 
-const getEntityId = (value) => {
+const getEntityId = (
+  value
+) => {
   return String(
     value?._id ||
       value?.id ||
@@ -121,12 +131,15 @@ const getEntityId = (value) => {
   );
 };
 
-const formatReviewDate = (value) => {
+const formatReviewDate = (
+  value
+) => {
   if (!value) {
     return "Recently";
   }
 
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
   if (
     Number.isNaN(
@@ -167,14 +180,67 @@ const renderReviewStars = (
   )}`;
 };
 
+/*
+ * These frontend values provide the
+ * instant booking-price preview.
+ *
+ * The backend validates the offer again
+ * before creating the booking.
+ */
+
+const BOOKING_OFFERS =
+  Object.freeze({
+    "family-vacation": {
+      title:
+        "Family Vacation Package",
+
+      discountPercentage: 15,
+    },
+
+    "group-company-outing": {
+      title:
+        "Group & Company Outing",
+
+      discountPercentage: 10,
+    },
+
+    "couple-retreat": {
+      title:
+        "Couple Retreat",
+
+      discountPercentage: 10,
+    },
+  });
+
 /* =====================================
    Property details page
 ===================================== */
 
 function PropertyDetails() {
-  const { id } = useParams();
+  const {
+    id,
+  } = useParams();
 
-  const navigate = useNavigate();
+  const [
+    searchParams,
+  ] = useSearchParams();
+
+  const offerCode =
+    String(
+      searchParams.get(
+        "offer"
+      ) || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const selectedOffer =
+    BOOKING_OFFERS[
+      offerCode
+    ] || null;
+
+  const navigate =
+    useNavigate();
 
   const {
     user,
@@ -309,50 +375,59 @@ function PropertyDetails() {
   ===================================== */
 
   const loadProperty =
-    useCallback(async () => {
-      if (!id) {
-        setProperty(null);
+    useCallback(
+      async () => {
+        if (!id) {
+          setProperty(null);
 
-        setError(
-          "Invalid property ID."
-        );
-
-        setLoading(false);
-
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError("");
-
-        const data =
-          await getPropertyById(
-            id
+          setError(
+            "Invalid property ID."
           );
 
-        if (!data?.property) {
-          throw new Error(
-            "This property could not be found."
-          );
+          setLoading(false);
+
+          return;
         }
 
-        setProperty(
-          data.property
-        );
-      } catch (requestError) {
-        setProperty(null);
+        try {
+          setLoading(true);
 
-        setError(
-          requestError?.data
-            ?.message ||
-            requestError?.message ||
-            "Unable to load this property."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }, [id]);
+          setError("");
+
+          const data =
+            await getPropertyById(
+              id
+            );
+
+          if (
+            !data?.property
+          ) {
+            throw new Error(
+              "This property could not be found."
+            );
+          }
+
+          setProperty(
+            data.property
+          );
+        } catch (
+          requestError
+        ) {
+          setProperty(null);
+
+          setError(
+            requestError?.data
+              ?.message ||
+              requestError
+                ?.message ||
+              "Unable to load this property."
+          );
+        } finally {
+          setLoading(false);
+        }
+      },
+      [id]
+    );
 
   useEffect(() => {
     loadProperty();
@@ -367,12 +442,13 @@ function PropertyDetails() {
 
     const loadSavedStatus =
       async () => {
-        const canSaveProperty = [
-          "customer",
-          "owner",
-        ].includes(
-          user?.role
-        );
+        const canSaveProperty =
+          [
+            "customer",
+            "owner",
+          ].includes(
+            user?.role
+          );
 
         if (
           !id ||
@@ -407,7 +483,9 @@ function PropertyDetails() {
               )
             );
           }
-        } catch (requestError) {
+        } catch (
+          requestError
+        ) {
           if (isMounted) {
             setIsSaved(false);
           }
@@ -446,75 +524,94 @@ function PropertyDetails() {
   ===================================== */
 
   const loadReviews =
-    useCallback(async () => {
-      if (!id) {
-        return;
-      }
+    useCallback(
+      async () => {
+        if (!id) {
+          return;
+        }
 
-      try {
-        setReviewsLoading(true);
-        setReviewsError("");
-
-        const data =
-          await getPropertyReviews(
-            id,
-            {
-              sort: reviewSort,
-              page: reviewPage,
-              limit: 5,
-            }
+        try {
+          setReviewsLoading(
+            true
           );
 
-        setReviews(
-          Array.isArray(
-            data?.reviews
-          )
-            ? data.reviews
-            : []
-        );
+          setReviewsError("");
 
-        setReviewPagination({
-          currentPage:
-            Number(
-              data?.pagination
-                ?.currentPage
-            ) || reviewPage,
+          const data =
+            await getPropertyReviews(
+              id,
+              {
+                sort:
+                  reviewSort,
 
-          totalPages:
-            Number(
-              data?.pagination
-                ?.totalPages
-            ) || 0,
+                page:
+                  reviewPage,
 
-          totalReviews:
-            Number(
-              data?.pagination
-                ?.totalReviews
-            ) || 0,
+                limit: 5,
+              }
+            );
 
-          pageSize:
-            Number(
-              data?.pagination
-                ?.pageSize
-            ) || 5,
-        });
-      } catch (requestError) {
-        setReviews([]);
+          setReviews(
+            Array.isArray(
+              data?.reviews
+            )
+              ? data.reviews
+              : []
+          );
 
-        setReviewsError(
-          requestError?.data
-            ?.message ||
-            requestError?.message ||
-            "Unable to load property reviews."
-        );
-      } finally {
-        setReviewsLoading(false);
-      }
-    }, [
-      id,
-      reviewPage,
-      reviewSort,
-    ]);
+          setReviewPagination({
+            currentPage:
+              Number(
+                data?.pagination
+                  ?.currentPage
+              ) ||
+              reviewPage,
+
+            totalPages:
+              Number(
+                data?.pagination
+                  ?.totalPages
+              ) ||
+              0,
+
+            totalReviews:
+              Number(
+                data?.pagination
+                  ?.totalReviews
+              ) ||
+              0,
+
+            pageSize:
+              Number(
+                data?.pagination
+                  ?.pageSize
+              ) ||
+              5,
+          });
+        } catch (
+          requestError
+        ) {
+          setReviews([]);
+
+          setReviewsError(
+            requestError?.data
+              ?.message ||
+              requestError
+                ?.message ||
+              "Unable to load property reviews."
+          );
+        } finally {
+          setReviewsLoading(
+            false
+          );
+        }
+      },
+      [
+        id,
+        reviewPage,
+        reviewSort,
+      ]
+    );
 
   useEffect(() => {
     loadReviews();
@@ -525,138 +622,163 @@ function PropertyDetails() {
   ===================================== */
 
   const loadReviewEligibility =
-    useCallback(async () => {
-      if (
-        !id ||
-        !token ||
-        !user ||
-        ![
-          "customer",
-          "owner",
-        ].includes(user.role)
-      ) {
-        setMyReview(null);
-
-        setEligibleBooking(
-          null
-        );
-
-        setReviewForm({
-          rating: 5,
-          title: "",
-          comment: "",
-        });
-
-        return;
-      }
-
-      try {
-        setReviewEligibilityLoading(
-          true
-        );
-
-        const [
-          bookingData,
-          reviewData,
-        ] = await Promise.all([
-          getMyBookings(),
-          getMyReviews(),
-        ]);
-
-        const myReviews =
-          Array.isArray(
-            reviewData?.reviews
+    useCallback(
+      async () => {
+        if (
+          !id ||
+          !token ||
+          !user ||
+          ![
+            "customer",
+            "owner",
+          ].includes(
+            user.role
           )
-            ? reviewData.reviews
-            : [];
+        ) {
+          setMyReview(null);
 
-        const existingReview =
-          myReviews.find(
-            (review) => {
-              return (
-                getEntityId(
-                  review.property
-                ) === String(id)
-              );
-            }
-          ) || null;
+          setEligibleBooking(
+            null
+          );
 
-        const bookings =
-          Array.isArray(
-            bookingData?.bookings
-          )
-            ? bookingData.bookings
-            : [];
-
-        const completedBooking =
-          bookings.find(
-            (booking) => {
-              return (
-                getEntityId(
-                  booking.property
-                ) ===
-                  String(id) &&
-                booking.bookingStatus ===
-                  "completed"
-              );
-            }
-          ) || null;
-
-        setMyReview(
-          existingReview
-        );
-
-        setEligibleBooking(
-          completedBooking
-        );
-
-        if (existingReview) {
-          setReviewForm({
-            rating:
-              Number(
-                existingReview.rating
-              ) || 5,
-
-            title:
-              existingReview.title ||
-              "",
-
-            comment:
-              existingReview.comment ||
-              "",
-          });
-        } else {
           setReviewForm({
             rating: 5,
             title: "",
             comment: "",
           });
+
+          return;
         }
-      } catch (requestError) {
-        console.error(
-          "Load review eligibility error:",
+
+        try {
+          setReviewEligibilityLoading(
+            true
+          );
+
+          const [
+            bookingData,
+            reviewData,
+          ] =
+            await Promise.all(
+              [
+                getMyBookings(),
+                getMyReviews(),
+              ]
+            );
+
+          const myReviews =
+            Array.isArray(
+              reviewData
+                ?.reviews
+            )
+              ? reviewData
+                  .reviews
+              : [];
+
+          const existingReview =
+            myReviews.find(
+              (review) => {
+                return (
+                  getEntityId(
+                    review.property
+                  ) ===
+                  String(id)
+                );
+              }
+            ) || null;
+
+          const bookings =
+            Array.isArray(
+              bookingData
+                ?.bookings
+            )
+              ? bookingData
+                  .bookings
+              : [];
+
+          const completedBooking =
+            bookings.find(
+              (booking) => {
+                return (
+                  getEntityId(
+                    booking.property
+                  ) ===
+                    String(
+                      id
+                    ) &&
+                  booking
+                    .bookingStatus ===
+                    "completed"
+                );
+              }
+            ) || null;
+
+          setMyReview(
+            existingReview
+          );
+
+          setEligibleBooking(
+            completedBooking
+          );
+
+          if (
+            existingReview
+          ) {
+            setReviewForm({
+              rating:
+                Number(
+                  existingReview
+                    .rating
+                ) || 5,
+
+              title:
+                existingReview
+                  .title ||
+                "",
+
+              comment:
+                existingReview
+                  .comment ||
+                "",
+            });
+          } else {
+            setReviewForm({
+              rating: 5,
+              title: "",
+              comment: "",
+            });
+          }
+        } catch (
           requestError
-        );
+        ) {
+          console.error(
+            "Load review eligibility error:",
+            requestError
+          );
 
-        setMyReview(null);
+          setMyReview(null);
 
-        setEligibleBooking(
-          null
-        );
-      } finally {
-        setReviewEligibilityLoading(
-          false
-        );
-      }
-    }, [
-      id,
-      token,
-      user,
-    ]);
+          setEligibleBooking(
+            null
+          );
+        } finally {
+          setReviewEligibilityLoading(
+            false
+          );
+        }
+      },
+      [
+        id,
+        token,
+        user,
+      ]
+    );
 
   useEffect(() => {
     loadReviewEligibility();
-  }, [loadReviewEligibility]);
+  }, [
+    loadReviewEligibility,
+  ]);
 
   /* =====================================
      Fill user information
@@ -670,12 +792,18 @@ function PropertyDetails() {
     setFormData(
       (previous) => ({
         ...previous,
+
         fullName:
-          user.fullName || "",
+          user.fullName ||
+          "",
+
         email:
-          user.email || "",
+          user.email ||
+          "",
+
         phone:
-          user.phone || "",
+          user.phone ||
+          "",
       })
     );
   }, [user]);
@@ -722,7 +850,9 @@ function PropertyDetails() {
       name ===
         "numberOfRooms"
     ) {
-      setAvailableRooms(null);
+      setAvailableRooms(
+        null
+      );
     }
   };
 
@@ -733,8 +863,10 @@ function PropertyDetails() {
   const numberOfNights =
     useMemo(() => {
       if (
-        !formData.checkInDate ||
-        !formData.checkOutDate
+        !formData
+          .checkInDate ||
+        !formData
+          .checkOutDate
       ) {
         return 0;
       }
@@ -753,16 +885,20 @@ function PropertyDetails() {
         checkOut.getTime() -
         checkIn.getTime();
 
-      if (difference <= 0) {
+      if (
+        difference <= 0
+      ) {
         return 0;
       }
 
       return Math.ceil(
         difference /
-          (1000 *
+          (
+            1000 *
             60 *
             60 *
-            24)
+            24
+          )
       );
     }, [
       formData.checkInDate,
@@ -770,17 +906,21 @@ function PropertyDetails() {
     ]);
 
   /* =====================================
-     Estimate price
+     Estimate discounted price
   ===================================== */
 
   const priceEstimate =
     useMemo(() => {
       if (
         !property ||
-        numberOfNights === 0
+        numberOfNights ===
+          0
       ) {
         return {
           roomTotal: 0,
+          discount: 0,
+          discountedRoomTotal:
+            0,
           serviceFee: 0,
           taxes: 0,
           grandTotal: 0,
@@ -796,30 +936,55 @@ function PropertyDetails() {
         ) *
         numberOfNights;
 
+      const discount =
+        selectedOffer
+          ? Math.round(
+              roomTotal *
+                (
+                  selectedOffer
+                    .discountPercentage /
+                  100
+                )
+            )
+          : 0;
+
+      const discountedRoomTotal =
+        Math.max(
+          roomTotal -
+            discount,
+          0
+        );
+
       const serviceFee =
         Math.round(
-          roomTotal * 0.05
+          discountedRoomTotal *
+            0.05
         );
 
       const taxes =
         Math.round(
-          roomTotal * 0.12
+          discountedRoomTotal *
+            0.12
         );
+
+      const grandTotal =
+        discountedRoomTotal +
+        serviceFee +
+        taxes;
 
       return {
         roomTotal,
+        discount,
+        discountedRoomTotal,
         serviceFee,
         taxes,
-
-        grandTotal:
-          roomTotal +
-          serviceFee +
-          taxes,
+        grandTotal,
       };
     }, [
       property,
       formData.numberOfRooms,
       numberOfNights,
+      selectedOffer,
     ]);
 
   /* =====================================
@@ -828,16 +993,23 @@ function PropertyDetails() {
 
   const handleToggleSavedProperty =
     async () => {
-      if (!token || !user) {
+      if (
+        !token ||
+        !user
+      ) {
         toast.info(
           "Please log in to save this property."
         );
 
-        navigate("/login", {
-          state: {
-            from: `/property/${id}`,
-          },
-        });
+        navigate(
+          "/login",
+          {
+            state: {
+              from:
+                `/property/${id}`,
+            },
+          }
+        );
 
         return;
       }
@@ -846,7 +1018,9 @@ function PropertyDetails() {
         ![
           "customer",
           "owner",
-        ].includes(user.role)
+        ].includes(
+          user.role
+        )
       ) {
         toast.error(
           "Only customer and owner accounts can save properties."
@@ -854,8 +1028,7 @@ function PropertyDetails() {
 
         return;
       }
-
-      try {
+            try {
         setSavedPropertyLoading(
           true
         );
@@ -876,11 +1049,15 @@ function PropertyDetails() {
 
         toast.success(
           data?.message ||
-            (nextSavedStatus
-              ? "Property saved successfully."
-              : "Property removed from saved properties.")
+            (
+              nextSavedStatus
+                ? "Property saved successfully."
+                : "Property removed from saved properties."
+            )
         );
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         if (
           requestError?.status ===
           401
@@ -889,13 +1066,17 @@ function PropertyDetails() {
             "Your session has expired. Please log in again."
           );
 
-          navigate("/login", {
-            replace: true,
+          navigate(
+            "/login",
+            {
+              replace: true,
 
-            state: {
-              from: `/property/${id}`,
-            },
-          });
+              state: {
+                from:
+                  `/property/${id}`,
+              },
+            }
+          );
 
           return;
         }
@@ -983,7 +1164,8 @@ function PropertyDetails() {
         );
 
         if (
-          normalizedAvailability.available
+          normalizedAvailability
+            .available
         ) {
           toast.success(
             `${normalizedAvailableRooms} room(s) available.`
@@ -995,7 +1177,9 @@ function PropertyDetails() {
         }
 
         return normalizedAvailability;
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         toast.error(
           requestError?.message ||
             "Unable to check availability."
@@ -1013,177 +1197,215 @@ function PropertyDetails() {
      Create booking
   ===================================== */
 
-  const handleBooking = async (
-    event
-  ) => {
-    event.preventDefault();
+  const handleBooking =
+    async (event) => {
+      event.preventDefault();
 
-    if (!token || !user) {
-      toast.info(
-        "Please log in to book this property."
-      );
-
-      navigate("/login", {
-        state: {
-          from: `/property/${id}`,
-        },
-      });
-
-      return;
-    }
-
-    if (
-      ![
-        "customer",
-        "owner",
-      ].includes(user.role)
-    ) {
-      toast.error(
-        "Staff accounts cannot create customer bookings."
-      );
-
-      return;
-    }
-
-    if (
-      !formData.fullName.trim() ||
-      !formData.email.trim() ||
-      !formData.phone.trim()
-    ) {
-      toast.error(
-        "Complete the primary guest information."
-      );
-
-      return;
-    }
-
-    const requestedRooms =
-      Number(
-        formData.numberOfRooms
-      );
-
-    const requestedGuests =
-      Number(
-        formData.numberOfGuests
-      );
-
-    if (
-      !Number.isInteger(
-        requestedRooms
-      ) ||
-      requestedRooms < 1 ||
-      requestedRooms >
-        Number(
-          property.availableRooms
-        )
-    ) {
-      toast.error(
-        "Select a valid number of available rooms."
-      );
-
-      return;
-    }
-
-    if (
-      !Number.isInteger(
-        requestedGuests
-      ) ||
-      requestedGuests < 1 ||
-      requestedGuests >
-        Number(
-          property.maxGuests
-        ) *
-          requestedRooms
-    ) {
-      toast.error(
-        "The guest count exceeds this property's capacity."
-      );
-
-      return;
-    }
-
-    const availability =
-      await handleAvailabilityCheck();
-
-    if (
-      !availability?.available ||
-      requestedRooms >
-        availability.availableRooms
-    ) {
-      toast.error(
-        "The requested number of rooms is unavailable."
-      );
-
-      return;
-    }
-
-    try {
-      setBookingLoading(true);
-
-      const data =
-        await createBooking({
-          propertyId: id,
-
-          checkInDate:
-            formData.checkInDate,
-
-          checkOutDate:
-            formData.checkOutDate,
-
-          numberOfRooms:
-            requestedRooms,
-
-          numberOfGuests:
-            requestedGuests,
-
-          primaryGuest: {
-            fullName:
-              formData.fullName.trim(),
-
-            email:
-              formData.email
-                .trim()
-                .toLowerCase(),
-
-            phone:
-              formData.phone.trim(),
-          },
-
-          specialRequests:
-            formData.specialRequests.trim(),
-
-          guests: [],
-        });
-
-      if (!data?.booking) {
-        throw new Error(
-          "The booking was created, but booking details were not returned."
+      if (
+        !token ||
+        !user
+      ) {
+        toast.info(
+          "Please log in to book this property."
         );
+
+        navigate(
+          "/login",
+          {
+            state: {
+              from:
+                `/property/${id}`,
+            },
+          }
+        );
+
+        return;
       }
 
-      setCreatedBooking(
-        data.booking
-      );
+      if (
+        ![
+          "customer",
+          "owner",
+        ].includes(
+          user.role
+        )
+      ) {
+        toast.error(
+          "Staff accounts cannot create customer bookings."
+        );
 
-      toast.success(
-        `Booking ${data.booking.bookingReference} created. Complete payment to confirm it.`
-      );
-    } catch (requestError) {
-      toast.error(
-        requestError?.message ||
-          "Unable to create booking."
-      );
-    } finally {
-      setBookingLoading(false);
-    }
-  };
+        return;
+      }
+
+      if (
+        !formData.fullName
+          .trim() ||
+        !formData.email
+          .trim() ||
+        !formData.phone
+          .trim()
+      ) {
+        toast.error(
+          "Complete the primary guest information."
+        );
+
+        return;
+      }
+
+      const requestedRooms =
+        Number(
+          formData.numberOfRooms
+        );
+
+      const requestedGuests =
+        Number(
+          formData.numberOfGuests
+        );
+
+      if (
+        !Number.isInteger(
+          requestedRooms
+        ) ||
+        requestedRooms < 1 ||
+        requestedRooms >
+          Number(
+            property.availableRooms
+          )
+      ) {
+        toast.error(
+          "Select a valid number of available rooms."
+        );
+
+        return;
+      }
+
+      if (
+        !Number.isInteger(
+          requestedGuests
+        ) ||
+        requestedGuests < 1 ||
+        requestedGuests >
+          Number(
+            property.maxGuests
+          ) *
+            requestedRooms
+      ) {
+        toast.error(
+          "The guest count exceeds this property's capacity."
+        );
+
+        return;
+      }
+
+      const availability =
+        await handleAvailabilityCheck();
+
+      if (
+        !availability?.available ||
+        requestedRooms >
+          availability.availableRooms
+      ) {
+        toast.error(
+          "The requested number of rooms is unavailable."
+        );
+
+        return;
+      }
+
+      try {
+        setBookingLoading(
+          true
+        );
+
+        const data =
+          await createBooking({
+            propertyId: id,
+
+            checkInDate:
+              formData.checkInDate,
+
+            checkOutDate:
+              formData.checkOutDate,
+
+            numberOfRooms:
+              requestedRooms,
+
+            numberOfGuests:
+              requestedGuests,
+
+            primaryGuest: {
+              fullName:
+                formData.fullName
+                  .trim(),
+
+              email:
+                formData.email
+                  .trim()
+                  .toLowerCase(),
+
+              phone:
+                formData.phone
+                  .trim(),
+            },
+
+            specialRequests:
+              formData
+                .specialRequests
+                .trim(),
+
+            /*
+             * Send only the offer
+             * identifier. The browser
+             * never sends the discount
+             * percentage.
+             */
+            offerCode:
+              selectedOffer
+                ? offerCode
+                : "",
+
+            guests: [],
+          });
+
+        if (
+          !data?.booking
+        ) {
+          throw new Error(
+            "The booking was created, but booking details were not returned."
+          );
+        }
+
+        setCreatedBooking(
+          data.booking
+        );
+
+        toast.success(
+          `Booking ${data.booking.bookingReference} created. Complete payment to confirm it.`
+        );
+      } catch (
+        requestError
+      ) {
+        toast.error(
+          requestError?.data
+            ?.message ||
+            requestError?.message ||
+            "Unable to create booking."
+        );
+      } finally {
+        setBookingLoading(
+          false
+        );
+      }
+    };
 
   /* =====================================
      Payment success
   ===================================== */
 
   const handlePaymentSuccess =
-    async (paymentData) => {
+    async (
+      paymentData
+    ) => {
       const paidBooking =
         paymentData?.booking ||
         createdBooking;
@@ -1196,17 +1418,21 @@ function PropertyDetails() {
         );
       }
 
-      navigate("/bookings", {
-        replace: true,
+      navigate(
+        "/bookings",
+        {
+          replace: true,
 
-        state: {
-          paymentSuccess: true,
+          state: {
+            paymentSuccess:
+              true,
 
-          bookingId:
-            paidBooking?._id ||
-            paidBooking?.id,
-        },
-      });
+            bookingId:
+              paidBooking?._id ||
+              paidBooking?.id,
+          },
+        }
+      );
     };
 
   /* =====================================
@@ -1237,16 +1463,23 @@ function PropertyDetails() {
     async (event) => {
       event.preventDefault();
 
-      if (!token || !user) {
+      if (
+        !token ||
+        !user
+      ) {
         toast.info(
           "Please log in to submit a review."
         );
 
-        navigate("/login", {
-          state: {
-            from: `/property/${id}`,
-          },
-        });
+        navigate(
+          "/login",
+          {
+            state: {
+              from:
+                `/property/${id}`,
+            },
+          }
+        );
 
         return;
       }
@@ -1308,10 +1541,12 @@ function PropertyDetails() {
                 numericRating,
 
               title:
-                reviewForm.title.trim(),
+                reviewForm.title
+                  .trim(),
 
               comment:
-                reviewForm.comment.trim(),
+                reviewForm.comment
+                  .trim(),
             }
           );
 
@@ -1331,10 +1566,12 @@ function PropertyDetails() {
               numericRating,
 
             title:
-              reviewForm.title.trim(),
+              reviewForm.title
+                .trim(),
 
             comment:
-              reviewForm.comment.trim(),
+              reviewForm.comment
+                .trim(),
           });
 
           toast.success(
@@ -1349,7 +1586,9 @@ function PropertyDetails() {
           loadReviewEligibility(),
           loadProperty(),
         ]);
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         toast.error(
           requestError?.data
             ?.message ||
@@ -1408,7 +1647,9 @@ function PropertyDetails() {
           loadReviewEligibility(),
           loadProperty(),
         ]);
-      } catch (requestError) {
+      } catch (
+        requestError
+      ) {
         toast.error(
           requestError?.data
             ?.message ||
@@ -1426,26 +1667,27 @@ function PropertyDetails() {
      Property cover image
   ===================================== */
 
-  const getCoverImage = () => {
-    const images =
-      Array.isArray(
-        property?.images
-      )
-        ? property.images
-        : [];
+  const getCoverImage =
+    () => {
+      const images =
+        Array.isArray(
+          property?.images
+        )
+          ? property.images
+          : [];
 
-    const cover =
-      images.find(
-        (image) =>
-          image.isCover
+      const cover =
+        images.find(
+          (image) =>
+            image.isCover
+        );
+
+      return (
+        cover?.url ||
+        images[0]?.url ||
+        null
       );
-
-    return (
-      cover?.url ||
-      images[0]?.url ||
-      null
-    );
-  };
+    };
 
   /* =====================================
      Loading screen
@@ -1457,7 +1699,8 @@ function PropertyDetails() {
         <div className="property-details-spinner" />
 
         <p>
-          Loading property details...
+          Loading property
+          details...
         </p>
       </main>
     );
@@ -1473,7 +1716,9 @@ function PropertyDetails() {
   ) {
     return (
       <main className="property-details-state">
-        <span>🏨</span>
+        <span>
+          🏨
+        </span>
 
         <h1>
           Property unavailable
@@ -1508,13 +1753,15 @@ function PropertyDetails() {
           ← Back to Explore
         </Link>
 
-        {(!user ||
+        {(
+          !user ||
           [
             "customer",
             "owner",
           ].includes(
             user.role
-          )) && (
+          )
+        ) && (
           <button
             type="button"
             className={`property-save-button ${
@@ -1537,7 +1784,9 @@ function PropertyDetails() {
                 : "Save property"
             }
           >
-            <span aria-hidden="true">
+            <span
+              aria-hidden="true"
+            >
               {isSaved
                 ? "♥"
                 : "♡"}
@@ -1553,8 +1802,12 @@ function PropertyDetails() {
 
         {coverImage ? (
           <img
-            src={coverImage}
-            alt={property.title}
+            src={
+              coverImage
+            }
+            alt={
+              property.title
+            }
           />
         ) : (
           <div className="property-details-placeholder">
@@ -1567,7 +1820,9 @@ function PropertyDetails() {
         <div className="property-details-title">
           <div className="property-details-badges">
             <span>
-              {property.propertyType}
+              {
+                property.propertyType
+              }
             </span>
 
             {property.isFeatured && (
@@ -1603,10 +1858,14 @@ function PropertyDetails() {
         <section className="property-information">
           <div className="property-summary">
             <div>
-              <span>Guests</span>
+              <span>
+                Guests
+              </span>
 
               <strong>
-                {property.maxGuests}
+                {
+                  property.maxGuests
+                }
               </strong>
             </div>
 
@@ -1616,7 +1875,9 @@ function PropertyDetails() {
               </span>
 
               <strong>
-                {property.bedrooms}
+                {
+                  property.bedrooms
+                }
               </strong>
             </div>
 
@@ -1626,7 +1887,9 @@ function PropertyDetails() {
               </span>
 
               <strong>
-                {property.bathrooms}
+                {
+                  property.bathrooms
+                }
               </strong>
             </div>
 
@@ -1648,17 +1911,22 @@ function PropertyDetails() {
               </span>
 
               <strong>
-                {property.totalRooms}
+                {
+                  property.totalRooms
+                }
               </strong>
             </div>
 
             <div>
-              <span>Rating</span>
+              <span>
+                Rating
+              </span>
 
               <strong>
                 ⭐{" "}
                 {formatRating(
-                  property.rating
+                  property.rating ??
+                    property.averageRating
                 )}
               </strong>
             </div>
@@ -1723,7 +1991,10 @@ function PropertyDetails() {
                         amenity
                       }
                     >
-                      ✓ {amenity}
+                      ✓{" "}
+                      {
+                        amenity
+                      }
                     </span>
                   )
                 )}
@@ -1747,10 +2018,13 @@ function PropertyDetails() {
                 {property.rules.map(
                   (rule) => (
                     <li
-                      key={rule}
+                      key={
+                        rule
+                      }
                     >
                       {rule}
-                    </li>
+
+                                          </li>
                   )
                 )}
               </ul>
@@ -1804,8 +2078,7 @@ function PropertyDetails() {
                       alt={`${
                         property.title
                       } ${
-                        index +
-                        1
+                        index + 1
                       }`}
                       key={
                         image.publicId ||
@@ -1845,13 +2118,15 @@ function PropertyDetails() {
               <div className="property-review-overview">
                 <strong>
                   {formatRating(
-                    property.rating
+                    property.rating ??
+                      property.averageRating
                   )}
                 </strong>
 
                 <span>
                   {renderReviewStars(
-                    property.rating
+                    property.rating ??
+                      property.averageRating
                   )}
                 </span>
 
@@ -1859,7 +2134,8 @@ function PropertyDetails() {
                   {Number(
                     property.totalReviews
                   ) ||
-                    reviewPagination.totalReviews ||
+                    reviewPagination
+                      .totalReviews ||
                     0}{" "}
                   review(s)
                 </small>
@@ -1888,7 +2164,8 @@ function PropertyDetails() {
                 <Link
                   to="/login"
                   state={{
-                    from: `/property/${id}`,
+                    from:
+                      `/property/${id}`,
                   }}
                 >
                   Login to review
@@ -1900,8 +2177,10 @@ function PropertyDetails() {
               ].includes(
                 user.role
               ) &&
-              (eligibleBooking ||
-                myReview) ? (
+              (
+                eligibleBooking ||
+                myReview
+              ) ? (
               <form
                 className="property-review-form"
                 onSubmit={
@@ -1923,7 +2202,8 @@ function PropertyDetails() {
                   </div>
 
                   {myReview &&
-                    !myReview.isVisible && (
+                    !myReview
+                      .isVisible && (
                       <small>
                         Your review is
                         currently hidden
@@ -1947,11 +2227,14 @@ function PropertyDetails() {
                     ].map(
                       (star) => (
                         <button
-                          key={star}
+                          key={
+                            star
+                          }
                           type="button"
                           className={
                             star <=
-                            reviewForm.rating
+                            reviewForm
+                              .rating
                               ? "active"
                               : ""
                           }
@@ -1970,7 +2253,8 @@ function PropertyDetails() {
                           aria-label={`${star} star rating`}
                           aria-pressed={
                             star ===
-                            reviewForm.rating
+                            reviewForm
+                              .rating
                           }
                         >
                           ★
@@ -2073,7 +2357,8 @@ function PropertyDetails() {
             <div className="property-review-toolbar">
               <strong>
                 {
-                  reviewPagination.totalReviews
+                  reviewPagination
+                    .totalReviews
                 }{" "}
                 public review(s)
               </strong>
@@ -2130,7 +2415,9 @@ function PropertyDetails() {
               </div>
             ) : reviewsError ? (
               <div className="property-reviews-state error">
-                <span>!</span>
+                <span>
+                  !
+                </span>
 
                 <p>
                   {reviewsError}
@@ -2148,7 +2435,9 @@ function PropertyDetails() {
             ) : reviews.length ===
               0 ? (
               <div className="property-reviews-state">
-                <span>☆</span>
+                <span>
+                  ☆
+                </span>
 
                 <h3>
                   No reviews yet
@@ -2263,7 +2552,8 @@ function PropertyDetails() {
               </div>
             )}
 
-            {reviewPagination.totalPages >
+            {reviewPagination
+              .totalPages >
               1 && (
               <div className="property-review-pagination">
                 <button
@@ -2289,11 +2579,13 @@ function PropertyDetails() {
                 <span>
                   Page{" "}
                   {
-                    reviewPagination.currentPage
+                    reviewPagination
+                      .currentPage
                   }{" "}
                   of{" "}
                   {
-                    reviewPagination.totalPages
+                    reviewPagination
+                      .totalPages
                   }
                 </span>
 
@@ -2305,13 +2597,15 @@ function PropertyDetails() {
                         Math.min(
                           previous +
                             1,
-                          reviewPagination.totalPages
+                          reviewPagination
+                            .totalPages
                         )
                     );
                   }}
                   disabled={
                     reviewPage >=
-                      reviewPagination.totalPages ||
+                      reviewPagination
+                        .totalPages ||
                     reviewsLoading
                   }
                 >
@@ -2329,8 +2623,12 @@ function PropertyDetails() {
         <aside className="booking-card">
           <div className="booking-price">
             <div>
-              {property.originalPrice >
-                property.pricePerNight && (
+              {Number(
+                property.originalPrice
+              ) >
+                Number(
+                  property.pricePerNight
+                ) && (
                 <del>
                   {formatCurrency(
                     property.originalPrice
@@ -2352,10 +2650,23 @@ function PropertyDetails() {
             <span>
               ⭐{" "}
               {formatRating(
-                property.rating
+                property.rating ??
+                  property.averageRating
               )}
             </span>
           </div>
+
+          {selectedOffer && (
+            <div className="availability-result available">
+              {selectedOffer.title}
+              {" — "}
+              {
+                selectedOffer
+                  .discountPercentage
+              }
+              % OFF applied
+            </div>
+          )}
 
           {createdBooking ? (
             <form
@@ -2378,7 +2689,8 @@ function PropertyDetails() {
 
                   <strong>
                     {
-                      createdBooking.bookingReference
+                      createdBooking
+                        .bookingReference
                     }
                   </strong>
                 </div>
@@ -2390,7 +2702,8 @@ function PropertyDetails() {
 
                   <strong>
                     {new Date(
-                      createdBooking.checkInDate
+                      createdBooking
+                        .checkInDate
                     ).toLocaleDateString(
                       "en-IN"
                     )}
@@ -2404,7 +2717,8 @@ function PropertyDetails() {
 
                   <strong>
                     {new Date(
-                      createdBooking.checkOutDate
+                      createdBooking
+                        .checkOutDate
                     ).toLocaleDateString(
                       "en-IN"
                     )}
@@ -2412,24 +2726,56 @@ function PropertyDetails() {
                 </div>
 
                 <div>
-                  <span>Rooms</span>
+                  <span>
+                    Rooms
+                  </span>
 
                   <strong>
                     {
-                      createdBooking.numberOfRooms
+                      createdBooking
+                        .numberOfRooms
                     }
                   </strong>
                 </div>
 
                 <div>
-                  <span>Guests</span>
+                  <span>
+                    Guests
+                  </span>
 
                   <strong>
                     {
-                      createdBooking.numberOfGuests
+                      createdBooking
+                        .numberOfGuests
                     }
                   </strong>
                 </div>
+
+                {Number(
+                  createdBooking
+                    .priceDetails
+                    ?.discount
+                ) > 0 && (
+                  <div>
+                    <span>
+                      {
+                        createdBooking
+                          .priceDetails
+                          ?.offerTitle
+                      }{" "}
+                      discount
+                    </span>
+
+                    <strong>
+                      -
+                      {formatCurrency(
+                        createdBooking
+                          .priceDetails
+                          ?.discount
+                      )}
+                    </strong>
+                  </div>
+                )}
 
                 <div className="booking-total">
                   <span>
@@ -2450,7 +2796,9 @@ function PropertyDetails() {
                 booking={
                   createdBooking
                 }
-                user={user}
+                user={
+                  user
+                }
                 onPaymentSuccess={
                   handlePaymentSuccess
                 }
@@ -2491,9 +2839,12 @@ function PropertyDetails() {
                     id="checkInDate"
                     name="checkInDate"
                     type="date"
-                    min={getToday()}
+                    min={
+                      getToday()
+                    }
                     value={
-                      formData.checkInDate
+                      formData
+                        .checkInDate
                     }
                     onChange={
                       handleChange
@@ -2512,10 +2863,12 @@ function PropertyDetails() {
                     name="checkOutDate"
                     type="date"
                     min={getNextDate(
-                      formData.checkInDate
+                      formData
+                        .checkInDate
                     )}
                     value={
-                      formData.checkOutDate
+                      formData
+                        .checkOutDate
                     }
                     onChange={
                       handleChange
@@ -2543,7 +2896,8 @@ function PropertyDetails() {
                       1
                     )}
                     value={
-                      formData.numberOfRooms
+                      formData
+                        .numberOfRooms
                     }
                     onChange={
                       handleChange
@@ -2567,11 +2921,13 @@ function PropertyDetails() {
                         property.maxGuests
                       ) *
                       Number(
-                        formData.numberOfRooms
+                        formData
+                          .numberOfRooms
                       )
                     }
                     value={
-                      formData.numberOfGuests
+                      formData
+                        .numberOfGuests
                     }
                     onChange={
                       handleChange
@@ -2600,12 +2956,14 @@ function PropertyDetails() {
                 null && (
                 <div
                   className={
-                    availableRooms > 0
+                    availableRooms >
+                    0
                       ? "availability-result available"
                       : "availability-result unavailable"
                   }
                 >
-                  {availableRooms > 0
+                  {availableRooms >
+                  0
                     ? `${availableRooms} room(s) available`
                     : "No rooms available"}
                 </div>
@@ -2649,8 +3007,7 @@ function PropertyDetails() {
                   required
                 />
               </div>
-
-              <div className="booking-field">
+                            <div className="booking-field">
                 <label htmlFor="phone">
                   Phone number
                 </label>
@@ -2680,7 +3037,8 @@ function PropertyDetails() {
                   name="specialRequests"
                   rows="3"
                   value={
-                    formData.specialRequests
+                    formData
+                      .specialRequests
                   }
                   onChange={
                     handleChange
@@ -2715,6 +3073,45 @@ function PropertyDetails() {
                     </strong>
                   </div>
 
+                  {selectedOffer && (
+                    <>
+                      <div>
+                        <span>
+                          {
+                            selectedOffer.title
+                          }{" "}
+                          (
+                          {
+                            selectedOffer
+                              .discountPercentage
+                          }
+                          % OFF)
+                        </span>
+
+                        <strong>
+                          -
+                          {formatCurrency(
+                            priceEstimate.discount
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Price after
+                          offer
+                        </span>
+
+                        <strong>
+                          {formatCurrency(
+                            priceEstimate
+                              .discountedRoomTotal
+                          )}
+                        </strong>
+                      </div>
+                    </>
+                  )}
+
                   <div>
                     <span>
                       Service fee
@@ -2741,7 +3138,7 @@ function PropertyDetails() {
 
                   <div className="booking-total">
                     <span>
-                      Total
+                      Total payable
                     </span>
 
                     <strong>

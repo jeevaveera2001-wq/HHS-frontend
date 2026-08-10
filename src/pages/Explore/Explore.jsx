@@ -6,11 +6,10 @@ import {
 
 import {
   Link,
+  useSearchParams,
 } from "react-router-dom";
 
-import {
-  toast,
-} from "react-toastify";
+import { toast } from "react-toastify";
 
 import {
   getProperties,
@@ -39,6 +38,12 @@ const PROPERTY_TYPES = [
   "Villa",
   "Cottage",
   "Guest House",
+];
+
+const VALID_OFFERS = [
+  "family-vacation",
+  "group-company-outing",
+  "couple-retreat",
 ];
 
 const PAGE_SIZE = 9;
@@ -86,6 +91,25 @@ const formatRating = (rating) => {
 };
 
 function Explore() {
+  const [searchParams] =
+    useSearchParams();
+
+  const requestedOfferCode =
+    String(
+      searchParams.get(
+        "offer"
+      ) || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const offerCode =
+    VALID_OFFERS.includes(
+      requestedOfferCode
+    )
+      ? requestedOfferCode
+      : "";
+
   const [
     properties,
     setProperties,
@@ -130,6 +154,18 @@ function Explore() {
     setTotalProperties,
   ] = useState(0);
 
+  const getPropertyPath = (
+    propertyId
+  ) => {
+    const query = offerCode
+      ? `?offer=${encodeURIComponent(
+          offerCode
+        )}`
+      : "";
+
+    return `/property/${propertyId}${query}`;
+  };
+
   const loadProperties =
     useCallback(
       async (
@@ -145,12 +181,8 @@ function Explore() {
           const data =
             await getProperties({
               ...appliedFilters,
-
-              page:
-                currentPage,
-
-              limit:
-                PAGE_SIZE,
+              page: currentPage,
+              limit: PAGE_SIZE,
             });
 
           const responsePagination =
@@ -161,17 +193,17 @@ function Explore() {
             Number(
               responsePagination
                 .totalPages ??
-              data?.totalPages ??
-              0
+                data?.totalPages ??
+                0
             );
 
           const responseTotalProperties =
             Number(
               responsePagination
                 .totalProperties ??
-              data?.totalProperties ??
-              data?.count ??
-              0
+                data?.totalProperties ??
+                data?.count ??
+                0
             );
 
           setProperties(
@@ -226,10 +258,6 @@ function Explore() {
    * Refresh approved properties whenever
    * the backend broadcasts a property
    * create, update, approval or deletion.
-   *
-   * false prevents the complete loading
-   * screen from appearing during a
-   * background real-time refresh.
    */
 
   const handleRealtimePropertyChange =
@@ -240,11 +268,6 @@ function Explore() {
   usePropertyRealtime(
     handleRealtimePropertyChange
   );
-
-  /*
-   * Initial loading and loading whenever
-   * filters or pagination changes.
-   */
 
   useEffect(() => {
     loadProperties();
@@ -333,11 +356,8 @@ function Explore() {
             "explore-results"
           )
           ?.scrollIntoView({
-            behavior:
-              "smooth",
-
-            block:
-              "start",
+            behavior: "smooth",
+            block: "start",
           });
       }
     );
@@ -348,8 +368,7 @@ function Explore() {
       <section className="explore-hero">
         <div>
           <span className="explore-badge">
-            Stay near Hogenakkal
-            Falls
+            Stay near Hogenakkal Falls
           </span>
 
           <h1>
@@ -357,9 +376,8 @@ function Explore() {
           </h1>
 
           <p>
-            Explore approved
-            homestays, cottages,
-            hotels and resorts
+            Explore approved homestays,
+            cottages, hotels and resorts
             around Hogenakkal.
           </p>
         </div>
@@ -631,8 +649,8 @@ function Explore() {
             <div className="loading-spinner" />
 
             <p>
-              Finding the best
-              stays for you...
+              Finding the best stays
+              for you...
             </p>
           </div>
         ) : error ? (
@@ -642,11 +660,12 @@ function Explore() {
             </div>
 
             <h2>
-              Unable to load
-              properties
+              Unable to load properties
             </h2>
 
-            <p>{error}</p>
+            <p>
+              {error}
+            </p>
 
             <button
               type="button"
@@ -669,9 +688,8 @@ function Explore() {
             </h2>
 
             <p>
-              Try changing your
-              search, price or guest
-              filters.
+              Try changing your search,
+              price or guest filters.
             </p>
 
             <button
@@ -693,6 +711,11 @@ function Explore() {
                       property
                     );
 
+                  const propertyPath =
+                    getPropertyPath(
+                      property._id
+                    );
+
                   return (
                     <article
                       className="explore-property-card"
@@ -702,7 +725,9 @@ function Explore() {
                     >
                       <Link
                         className="property-image-wrapper"
-                        to={`/property/${property._id}`}
+                        to={
+                          propertyPath
+                        }
                         aria-label={`View ${property.title}`}
                       >
                         {coverImage ? (
@@ -758,7 +783,9 @@ function Explore() {
 
                         <h3>
                           <Link
-                            to={`/property/${property._id}`}
+                            to={
+                              propertyPath
+                            }
                           >
                             {
                               property.title
@@ -842,7 +869,9 @@ function Explore() {
 
                         <Link
                           className="view-property-button"
-                          to={`/property/${property._id}`}
+                          to={
+                            propertyPath
+                          }
                         >
                           View property
                         </Link>
