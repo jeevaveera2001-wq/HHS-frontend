@@ -15,7 +15,6 @@ import RoleRoute from "./RoleRoute";
 
 import BrandLogo from "../components/BrandLogo/BrandLogo";
 
-
 /* =====================================
    Layout
 ===================================== */
@@ -85,6 +84,7 @@ const RequestOwnerAccess = lazy(() =>
     "../pages/RequestOwnerAccess/RequestOwnerAccess.jsx"
   )
 );
+
 /* =====================================
    Legal pages
 ===================================== */
@@ -130,6 +130,14 @@ const Profile = lazy(() =>
 const MyBookings = lazy(() =>
   import(
     "../pages/MyBookings/MyBookings"
+  )
+);
+
+/* Booking receipt page */
+
+const BookingReceipt = lazy(() =>
+  import(
+    "../pages/BookingReceipt/BookingReceipt"
   )
 );
 
@@ -271,7 +279,7 @@ const SupportManagement = lazy(() =>
 );
 
 /* =====================================
-   Route-loading screen
+   Route loading screen
 ===================================== */
 
 function RouteLoading() {
@@ -298,6 +306,7 @@ function RouteLoading() {
             "4px solid #cffafe",
           borderTopColor: "#0891b2",
           borderRadius: "50%",
+
           animation:
             "hhs-route-spin 0.75s linear infinite",
         }}
@@ -329,7 +338,7 @@ function RouteLoading() {
 }
 
 /* =====================================
-   Protected-route helpers
+   Protected route helpers
 ===================================== */
 
 const createProtectedElement = (
@@ -356,7 +365,7 @@ const createRoleElement = (
 };
 
 /* =====================================
-   Not-found page
+   Not found page
 ===================================== */
 
 function NotFoundPage() {
@@ -372,6 +381,7 @@ function NotFoundPage() {
         gap: "14px",
         color: "#0f172a",
         textAlign: "center",
+
         background:
           "linear-gradient(135deg, #f8fafc, #cffafe)",
       }}
@@ -420,10 +430,13 @@ function NotFoundPage() {
           padding: "13px 25px",
           borderRadius: "12px",
           color: "#ffffff",
+
           background:
             "linear-gradient(135deg, #0e7490, #06b6d4)",
+
           boxShadow:
             "0 10px 25px rgba(8, 145, 178, 0.25)",
+
           textDecoration: "none",
           fontWeight: 800,
         }}
@@ -462,7 +475,9 @@ function AppRoutes() {
       <Routes>
         {/* Public website layout */}
 
-        <Route element={<MainLayout />}>
+        <Route
+          element={<MainLayout />}
+        >
           <Route
             path="/"
             element={<Home />}
@@ -500,7 +515,7 @@ function AppRoutes() {
             element={<Register />}
           />
 
-          {/* Owner-access request */}
+          {/* Owner access request */}
 
           <Route
             path="/request-owner-access"
@@ -609,6 +624,8 @@ function AppRoutes() {
             )}
           />
 
+          {/* Customer bookings */}
+
           <Route
             path="/bookings"
             element={createRoleElement(
@@ -616,6 +633,25 @@ function AppRoutes() {
               [
                 "customer",
                 "owner",
+              ]
+            )}
+          />
+
+          {/* Booking receipt */}
+
+          <Route
+            path="/bookings/:bookingId/receipt"
+            element={createRoleElement(
+              BookingReceipt,
+              [
+                "customer",
+                "owner",
+                "booking_manager",
+                "operations_manager",
+                "property_admin",
+                "finance_manager",
+                "admin",
+                "super_admin",
               ]
             )}
           />
@@ -670,7 +706,7 @@ function AppRoutes() {
           />
         </Route>
 
-        {/* Property-submission page */}
+        {/* Property submission page */}
 
         <Route
           path="/my-properties"
@@ -735,7 +771,7 @@ function AppRoutes() {
           )}
         />
 
-        {/* Admin owner-request alias */}
+        {/* Admin owner request alias */}
 
         <Route
           path="/admin/owner-requests"
@@ -925,7 +961,7 @@ function AppRoutes() {
           )}
         />
 
-        {/* Finance */}
+        {/* Finance routes */}
 
         <Route
           path="/finance"
@@ -953,7 +989,7 @@ function AppRoutes() {
           )}
         />
 
-        {/* Owner */}
+        {/* Owner routes */}
 
         <Route
           path="/owner"
