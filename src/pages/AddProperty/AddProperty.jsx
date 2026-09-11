@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { createProperty } from "../../services/propertyService";
+import PropertySubmittedModal from "../propertySuccess/PropertySubmittedModal";
 import "./AddProperty.css";
 
 // Fix Leaflet marker icon asset paths broken by bundlers (Webpack/Vite)
@@ -19,6 +20,23 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
+
+// Force Leaflet to recalculate container dimensions on initial SPA route entry
+function MapResizeFix() {
+  const map = useMap();
+
+  useEffect(() => {
+    map.invalidateSize();
+
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [map]);
+
+  return null;
+}
 
 // Helper component to capture map clicks and move the pin
 function MapClickHandler({ onLocationSelect }) {
@@ -74,6 +92,7 @@ function MapPicker({ lat, lng, onChange }) {
         scrollWheelZoom={false}
         className="leaflet-picker-container"
       >
+        <MapResizeFix />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -118,6 +137,7 @@ const initialForm = {
 function AddProperty() {
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -235,10 +255,10 @@ function AddProperty() {
 
       const data = await createProperty(formData);
 
-      toast.success(data.message);
-      navigate("/my-properties");
+      toast.success(data?.message || "Property submitted successfully!");
+      setShowSuccessModal(true);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "Failed to submit property.");
     } finally {
       setSubmitting(false);
     }
@@ -246,6 +266,14 @@ function AddProperty() {
 
   return (
     <main className="add-property-page">
+      {showSuccessModal && (
+        <PropertySubmittedModal
+          redirectPath="/owner/properties"
+          delaySeconds={3}
+          onClose={() => setShowSuccessModal(false)}
+        />
+      )}
+
       <div className="add-property-container">
         <header className="add-property-header">
           <span>HHS Property Management</span>
