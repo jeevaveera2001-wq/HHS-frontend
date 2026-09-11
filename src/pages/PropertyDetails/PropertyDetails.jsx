@@ -40,7 +40,7 @@ import {
 } from "../../services/savedPropertyService";
 
 import RazorpayPaymentButton from "../../components/RazorpayPaymentButton/RazorpayPaymentButton";
-
+import { getGoogleMapsUrl, getEmbedMapUrl } from "../../utils/mapUtils";
 import "./PropertyDetails.css";
 
 /* =====================================
@@ -2091,6 +2091,57 @@ function PropertyDetails() {
               </div>
             </article>
           )}
+          {/* ====================================================
+              Location & Exact Map Pin Section
+          ==================================================== */}
+          <section className="property-details-map-section">
+            <div className="details-map-header">
+              <div>
+                <h2>Where you’ll be</h2>
+                <p className="details-map-address">
+                  📍 {property.location?.address}, {property.location?.city},{" "}
+                  {property.location?.district}, {property.location?.state}{" "}
+                  {property.location?.pincode ? `- ${property.location.pincode}` : ""}
+                </p>
+              </div>
+
+              <a
+                href={getGoogleMapsUrl(property.location)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="google-maps-redirect-btn"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                Open in Google Maps
+              </a>
+            </div>
+
+            <div className="details-map-frame-wrapper">
+              <iframe
+                title={`Map view for ${property.title}`}
+                src={getEmbedMapUrl(property.location)}
+                className="details-map-iframe"
+                loading="lazy"
+              />
+
+              <div className="map-floating-overlay">
+                <div className="overlay-info">
+                  <strong>Exact Location Pinned</strong>
+                  <span>Click below for live turn-by-turn navigation</span>
+                </div>
+                <a
+                  href={getGoogleMapsUrl(property.location)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="overlay-directions-btn"
+                >
+                  Get Directions ↗
+                </a>
+              </div>
+            </div>
+          </section>
 
           {/* =================================
               Verified guest reviews

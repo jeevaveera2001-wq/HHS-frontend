@@ -1,0 +1,250 @@
+/* =====================================================
+   Property Card Container
+===================================================== */
+.property-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 10px 30px rgba(15, 35, 50, 0.06);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(15, 35, 50, 0.12);
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
+/* =====================================================
+   Image & Badges
+===================================================== */
+.property-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.property-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.property-card:hover .property-card-img {
+  transform: scale(1.05);
+}
+
+.property-type-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(15, 37, 53, 0.82);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.property-favorite-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #ef4444;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.property-favorite-btn:hover {
+  transform: scale(1.1);
+  background: #ffffff;
+}
+
+/* =====================================================
+   Card Content Body
+===================================================== */
+.property-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.property-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.property-card-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #071827;
+  margin: 0 0 10px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =====================================================
+   Location & Map Pin Action Row
+===================================================== */
+.property-card-location-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.location-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location-icon {
+  color: #ef4444;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.map-action-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #ecfeff;
+  color: #0891b2;
+  border: 1px solid #a5f3fc;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(8, 145, 178, 0.08);
+  transition: all 0.2s ease;
+}
+
+.map-action-pill:hover {
+  background: #0891b2;
+  color: #ffffff;
+  border-color: #0891b2;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+  transform: translateY(-1px);
+}
+
+.map-action-pill svg {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+/* =====================================================
+   Rating & Price Row
+===================================================== */
+.property-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.property-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.property-rating .star-icon {
+  color: #eab308;
+}
+
+.property-rating .review-count {
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.property-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.price-amount {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0e7490;
+}
+
+.price-period {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* =====================================================
+   Card Action Button
+===================================================== */
+.property-card-actions {
+  padding: 0 20px 20px;
+}
+
+.property-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #0e7490, #06b6d4);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(8, 145, 178, 0.2);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.property-card-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.property-card-btn:active {
+  transform: scale(0.99);
+}

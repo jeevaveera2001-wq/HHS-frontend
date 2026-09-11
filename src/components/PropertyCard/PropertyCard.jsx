@@ -1,5 +1,7 @@
 import { FaStar, FaMapMarkerAlt, FaHeart } from "react-icons/fa";
 import { SiGooglemaps } from "react-icons/si";
+import "./PropertyCard.css";
+
 
 function PropertyCard({ property }) {
   if (!property) return null;
