@@ -142,12 +142,74 @@
   box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.11);
 }
 
+.property-form-field input[readonly] {
+  background-color: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
 .property-form-field small {
   display: block;
   margin: 7px 0 0 3px;
   color: #8292a2;
 }
 
+/* --- Map Picker & Geolocation Elements --- */
+.detect-location-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 20px;
+  border: 1px solid #cce3ea;
+  border-radius: 13px;
+  color: #0e7490;
+  background: #ecfeff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.detect-location-btn:hover {
+  background: #cffafe;
+  border-color: #a5f3fc;
+  color: #0891b2;
+}
+
+.map-picker-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.map-picker-instructions {
+  display: flex;
+  align-items: center;
+  padding: 11px 16px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.leaflet-picker-container {
+  height: 350px;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid #d7e2e9;
+  box-shadow: 0 4px 18px rgba(15, 35, 50, 0.04);
+  z-index: 1; /* Keeps tile overlays beneath modals and tooltips */
+}
+
+/* --- Form Footer Actions --- */
 .property-form-actions {
   display: flex;
   justify-content: flex-end;
@@ -170,11 +232,21 @@
   background: #ffffff;
 }
 
+.property-cancel-button:hover {
+  background: #f8fafc;
+}
+
 .property-submit-button {
   border: 0;
   color: #ffffff;
   background: linear-gradient(135deg, #0e7490, #06b6d4);
   box-shadow: 0 12px 25px rgba(8, 145, 178, 0.25);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.property-submit-button:hover:not(:disabled) {
+  opacity: 0.95;
+  transform: translateY(-1px);
 }
 
 .property-submit-button:disabled {
@@ -182,6 +254,7 @@
   opacity: 0.6;
 }
 
+/* --- Responsive Breakpoint --- */
 @media (max-width: 700px) {
   .add-property-page {
     padding: 100px 13px 50px;
@@ -198,6 +271,14 @@
   .property-form-field.form-full,
   .property-form-field.form-wide {
     grid-column: auto;
+  }
+
+  .detect-location-btn {
+    width: 100%;
+  }
+
+  .leaflet-picker-container {
+    height: 280px;
   }
 
   .property-form-actions {
