@@ -12,7 +12,7 @@ import {
 
 import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
-
+import EditProperty from "../pages/Owner/EditProperty";
 import BrandLogo from "../components/BrandLogo/BrandLogo";
 
 /* =====================================
@@ -202,6 +202,7 @@ const OwnerPayoutSettings = lazy(() =>
     "../pages/Owner/OwnerPayoutSettings"
   )
 );
+
 
 /* =====================================
    Super Admin pages
@@ -1022,6 +1023,14 @@ function AppRoutes() {
             ["owner"]
           )}
         />
+
+
+        
+// Inside your owner/protected routes:
+<Route path="/edit-property/:id" element={<EditProperty />} />
+// or: <Route path="/owner/properties/edit/:id" element={<EditProperty />} />
+
+
 
         <Route
           path="/owner/payout-settings"

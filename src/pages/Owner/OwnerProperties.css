@@ -23,6 +23,11 @@
   text-decoration: none;
   font-size: 13px;
   font-weight: 750;
+  transition: color 0.2s ease;
+}
+
+.owner-properties-back:hover {
+  color: #0891b2;
 }
 
 .owner-properties-header div > span {
@@ -53,6 +58,13 @@
   background: linear-gradient(135deg, #0e7490, #06b6d4);
   text-decoration: none;
   font-weight: 800;
+  box-shadow: 0 6px 18px rgba(8, 145, 178, 0.25);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.owner-add-property:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
 }
 
 .owner-property-summary {
@@ -73,10 +85,15 @@
   border-radius: 15px;
   color: #102235;
   background: #ffffff;
+  transition: all 0.2s ease;
 }
 
 .owner-property-summary button {
   cursor: pointer;
+}
+
+.owner-property-summary button:hover {
+  border-color: #99e6f2;
 }
 
 .owner-property-summary button.active {
@@ -128,6 +145,9 @@
   border-radius: 11px;
   outline: none;
   background: #f9fbfc;
+  color: #102235;
+  font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .owner-properties-toolbar input:focus {
@@ -144,6 +164,17 @@
   background: #ecfeff;
   cursor: pointer;
   font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+.owner-properties-toolbar button:hover:not(:disabled) {
+  background: #cffafe;
+  border-color: #0891b2;
+}
+
+.owner-properties-toolbar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .owner-properties-grid {
@@ -159,6 +190,15 @@
   border-radius: 20px;
   background: #ffffff;
   box-shadow: 0 12px 30px rgba(15, 35, 50, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.owner-managed-property:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(15, 35, 50, 0.1);
 }
 
 .owner-managed-image {
@@ -176,6 +216,7 @@
 
 .owner-managed-image img {
   object-fit: cover;
+  display: block;
 }
 
 .owner-managed-image > div {
@@ -195,6 +236,7 @@
   border-radius: 999px;
   font-size: 9px;
   font-weight: 850;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .owner-approval-badge {
@@ -224,6 +266,9 @@
 
 .owner-managed-content {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .owner-managed-type {
@@ -231,23 +276,28 @@
   font-size: 10px;
   font-weight: 850;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .owner-managed-content h2 {
   margin: 8px 0;
   color: #071827;
   font-size: 20px;
+  line-height: 1.35;
 }
 
 .owner-managed-content > p {
   color: #718294;
   font-size: 11px;
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
 .owner-managed-details {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+  margin-bottom: auto;
 }
 
 .owner-managed-details span {
@@ -256,6 +306,7 @@
   color: #53697a;
   background: #f1f5f9;
   font-size: 10px;
+  font-weight: 600;
 }
 
 .owner-managed-footer {
@@ -265,6 +316,7 @@
   align-items: flex-end;
   justify-content: space-between;
   border-top: 1px solid #e6edf1;
+  gap: 10px;
 }
 
 .owner-managed-footer > div:first-child {
@@ -275,62 +327,124 @@
 .owner-managed-footer span {
   color: #8292a2;
   font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .owner-managed-footer strong {
   color: #0e7490;
   font-size: 19px;
+  font-weight: 800;
 }
 
+/* =====================================
+   Property Card Actions (View / Edit)
+===================================== */
 .owner-managed-actions {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
 
 .owner-managed-actions a,
 .owner-managed-actions button {
-  padding: 8px 10px;
-  border: 0;
+  padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
   text-decoration: none;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.owner-managed-actions a {
+/* View Link */
+.owner-action-view {
+  color: #475569;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.owner-action-view:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Edit Link */
+.owner-action-edit {
   color: #0e7490;
   background: #ecfeff;
+  border-color: #a5f3fc;
 }
 
-.owner-managed-actions button {
-  color: #991b1b;
-  background: #fee2e2;
+.owner-action-edit:hover {
+  background: #0891b2;
+  color: #ffffff;
+  border-color: #0891b2;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2);
 }
 
+/* Standalone Button Helper */
+.owner-edit-property-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #ecfeff;
+  color: #0e7490;
+  border: 1px solid #cce3ea;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.owner-edit-property-btn:hover {
+  background: #0891b2;
+  color: #ffffff;
+  border-color: #0891b2;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2);
+}
+
+/* =====================================
+   Empty / Loading / Error States
+===================================== */
 .owner-properties-state {
   min-height: 350px;
   display: grid;
   place-items: center;
   align-content: center;
   text-align: center;
+  padding: 40px 20px;
 }
 
 .owner-properties-state > span {
   font-size: 50px;
+  margin-bottom: 12px;
 }
 
 .owner-properties-state h2 {
-  margin-bottom: 0;
+  margin-bottom: 6px;
+  color: #071827;
 }
 
 .owner-properties-state p {
   color: #718294;
+  margin-bottom: 18px;
 }
 
 .owner-properties-state a {
   color: #0891b2;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.owner-properties-state a:hover {
+  text-decoration: underline;
 }
 
 .owner-properties-spinner {
@@ -340,6 +454,7 @@
   border-top-color: #0891b2;
   border-radius: 50%;
   animation: owner-properties-spin 0.75s linear infinite;
+  margin-bottom: 14px;
 }
 
 @keyframes owner-properties-spin {
@@ -348,6 +463,9 @@
   }
 }
 
+/* =====================================
+   Responsive Breakpoints
+===================================== */
 @media (max-width: 1050px) {
   .owner-property-summary {
     grid-template-columns: repeat(3, 1fr);
@@ -377,5 +495,16 @@
   .owner-properties-grid,
   .owner-properties-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .owner-managed-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .owner-managed-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

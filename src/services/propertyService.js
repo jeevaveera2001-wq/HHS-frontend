@@ -1,6 +1,6 @@
 const API_URL = (
   import.meta.env.PROD
-    ? "https://hhs-backend-cwzx.onrender.com/api" // Or "https://hogenakkalhomestays.com/api"
+    ? "https://hhs-backend-cwzx.onrender.com/api"
     : "http://localhost:5000/api"
 ).replace(/\/+$/, "");
 
@@ -110,6 +110,7 @@ const handleResponse = async (response) => {
 /* =====================================
    Request helper
 ===================================== */
+
 const request = async (
   path,
   { method = "GET", includeAuth = false, body } = {}
@@ -167,7 +168,7 @@ export const getPropertyById = async (propertyId) => {
 };
 
 /* =====================================
-   Owner/authenticated-user APIs
+   Owner / Managed property APIs
 ===================================== */
 
 export const getMyProperties = async (filters = {}) => {
@@ -177,11 +178,21 @@ export const getMyProperties = async (filters = {}) => {
   });
 };
 
+export const getOwnerAllProperties = async (filters = {}) => {
+  const queryString = createQueryString(filters);
+  return request(`/properties/owner/all${queryString}`, {
+    includeAuth: true,
+  });
+};
+
 export const getManagedPropertyById = async (propertyId) => {
   return request(`/properties/manage/${propertyId}`, {
     includeAuth: true,
   });
 };
+
+// Explicit alias for edit screens
+export const getPropertyForEdit = getManagedPropertyById;
 
 export const createProperty = async (propertyData) => {
   return request("/properties", {
@@ -260,7 +271,7 @@ export const updatePropertyFeaturedStatus = async (
 };
 
 /* =====================================
-   Backward-compatible function names
+   Backward-compatible aliases & helpers
 ===================================== */
 
 export const getApprovalQueue = getPendingProperties;
